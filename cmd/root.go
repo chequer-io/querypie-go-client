@@ -2,10 +2,13 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/spf13/viper"
 	"os"
 
 	"github.com/spf13/cobra"
 )
+
+var configFile string
 
 var rootCmd = &cobra.Command{
 	Use:   "qpc",
@@ -26,6 +29,26 @@ func Execute() {
 }
 
 func init() {
+	cobra.OnInitialize(initConfig)
+	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file (default is ./.querypie-client.yaml)")
 	// Add global flags or subcommands here
 	rootCmd.AddCommand(versionCmd)
+	rootCmd.AddCommand(serverCmd)
+}
+
+func initConfig() {
+	v := viper.New()
+	if configFile != "" {
+		v.SetConfigFile(configFile)
+	} else {
+		v.AddConfigPath(".")
+		v.SetConfigFile(".querypie-client.yaml")
+	}
+	v.AutomaticEnv()
+	if err := v.ReadInConfig(); err != nil {
+		fmt.Println("Can't read config:", err)
+		os.Exit(1)
+	}
+
+	initConfigForServer(v)
 }

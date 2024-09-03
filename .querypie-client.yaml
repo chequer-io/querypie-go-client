@@ -1,0 +1,6 @@
+# Default config of qpc
+servers:
+  - name: "internal.querypie.io"
+    url: https://internal.querypie.io/
+  - name: "perf.querypie-stage.com"
+    url: https://perf.querypie-stage.com/login
