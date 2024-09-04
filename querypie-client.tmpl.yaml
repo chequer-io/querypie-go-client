@@ -2,5 +2,7 @@
 servers:
   - name: "internal.querypie.io"
     url: https://internal.querypie.io/
+    token: ap5bbb2a2f-****-****-****-************
   - name: "perf.querypie-stage.com"
     url: https://perf.querypie-stage.com/login
+    token: your_access_token_here

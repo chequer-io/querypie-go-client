@@ -2,13 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
 
 	"github.com/spf13/cobra"
 )
 
-var configFile string
+var (
+	configFile string
+	logLevel   string
+)
 
 var rootCmd = &cobra.Command{
 	Use:   "qpc",
@@ -31,6 +35,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file (default is ./.querypie-client.yaml)")
+	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "info", "Set the logging level (debug, info, warn, error, fatal, panic)")
 	// Add global flags or subcommands here
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(serverCmd)
@@ -49,6 +54,14 @@ func initConfig() {
 		fmt.Println("Can't read config:", err)
 		os.Exit(1)
 	}
+
+	// Parse and set log level
+	level, err := logrus.ParseLevel(logLevel)
+	if err != nil {
+		fmt.Printf("Invalid log level: %s\n", logLevel)
+		os.Exit(1)
+	}
+	logrus.SetLevel(level)
 
 	initConfigForServer(v)
 }
