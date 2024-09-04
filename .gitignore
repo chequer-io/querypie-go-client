@@ -1,3 +1,4 @@
 .idea/
 qpc
 .querypie-client.yaml
+var/*.db

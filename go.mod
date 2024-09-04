@@ -3,6 +3,7 @@ module qpc
 go 1.23.0
 
 require (
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/viper v1.19.0

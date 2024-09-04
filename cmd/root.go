@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
+	"qpc/local_db"
 
 	"github.com/spf13/cobra"
 )
@@ -35,7 +36,7 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file (default is ./.querypie-client.yaml)")
-	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "info", "Set the logging level (debug, info, warn, error, fatal, panic)")
+	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "warn", "Set the logging level (debug, info, warn, error, fatal, panic)")
 	// Add global flags or subcommands here
 	rootCmd.AddCommand(versionCmd)
 	rootCmd.AddCommand(serverCmd)
@@ -64,4 +65,5 @@ func initConfig() {
 	logrus.SetLevel(level)
 
 	initConfigForServer(v)
+	local_db.InitConfigForResource(v)
 }

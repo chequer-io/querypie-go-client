@@ -80,14 +80,14 @@ func initConfigForServer(viper *viper.Viper) {
 
 	for i, server := range serverConfigs {
 		if !isValidURL(server.BaseURL) {
-			fmt.Printf("Invalid URL for server %s: %s\n", server.Name, server.BaseURL)
+			logrus.Fatalf("Invalid URL for server %s: %s\n", server.Name, server.BaseURL)
 			os.Exit(1)
 		}
 
 		// Extract base URL
 		parsedURL, err := url.Parse(server.BaseURL)
 		if err != nil {
-			fmt.Printf("Error parsing URL for server %s: %s\n", server.Name, server.BaseURL)
+			logrus.Fatalf("Error parsing URL for server %s: %s\n", server.Name, server.BaseURL)
 			os.Exit(1)
 		}
 		baseURL := fmt.Sprintf("%s://%s", parsedURL.Scheme, parsedURL.Host)

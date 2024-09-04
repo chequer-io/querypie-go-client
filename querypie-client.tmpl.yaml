@@ -6,3 +6,4 @@ servers:
   - name: "perf.querypie-stage.com"
     url: https://perf.querypie-stage.com/login
     token: your_access_token_here
+sqlite3_data_source: ./var/resources.db
