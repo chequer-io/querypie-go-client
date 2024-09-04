@@ -1,5 +1,5 @@
 # Default config of qpc
-servers:
+querypie-servers:
   - name: "internal.querypie.io"
     url: https://internal.querypie.io/
     token: ap5bbb2a2f-****-****-****-************

@@ -39,7 +39,7 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "warn", "Set the logging level (debug, info, warn, error, fatal, panic)")
 	// Add global flags or subcommands here
 	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(serverCmd)
+	rootCmd.AddCommand(querypieServerCmd)
 }
 
 func initConfig() {
@@ -64,6 +64,6 @@ func initConfig() {
 	}
 	logrus.SetLevel(level)
 
-	initConfigForServer(v)
+	initConfigForQueryPieServer(v)
 	local_db.InitConfigForResource(v)
 }

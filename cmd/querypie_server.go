@@ -11,17 +11,17 @@ import (
 	"unicode"
 )
 
-type ServerConfig struct {
+type QueryPieServerConfig struct {
 	Name        string `mapstructure:"name"`
 	BaseURL     string `mapstructure:"url"`
 	AccessToken string `mapstructure:"token"`
 }
 
-var serverConfigs []ServerConfig
+var querypieServerConfigs []QueryPieServerConfig
 
-var serverCmd = &cobra.Command{
-	Use:   "server",
-	Short: "List all servers",
+var querypieServerCmd = &cobra.Command{
+	Use:   "querypie-servers",
+	Short: "List all querypie servers",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Printf("%-30s %-40s %-40s %-5s\n",
 			"NAME",
@@ -29,8 +29,8 @@ var serverCmd = &cobra.Command{
 			"ACCESS_TOKEN",
 			"STATUS",
 		)
-		// Iterate over serverConfigs and print each server's configuration
-		for _, server := range serverConfigs {
+		// Iterate over querypieServerConfigs and print each server's configuration
+		for _, server := range querypieServerConfigs {
 			status := "FAIL"
 			if checkEndpoint(server, "/api/external/users?pageSize=3") {
 				status = "OK"
@@ -45,7 +45,7 @@ var serverCmd = &cobra.Command{
 	},
 }
 
-func checkEndpoint(server ServerConfig, uri string) bool {
+func checkEndpoint(server QueryPieServerConfig, uri string) bool {
 	client := rest.NewAPIClient(server.BaseURL, server.AccessToken)
 	// Call the GetData method
 	result, err := client.GetData(uri)
@@ -72,13 +72,13 @@ func maskAccessToken(token string) string {
 	return string(masked)
 }
 
-func initConfigForServer(viper *viper.Viper) {
-	if err := viper.UnmarshalKey("servers", &serverConfigs); err != nil {
+func initConfigForQueryPieServer(viper *viper.Viper) {
+	if err := viper.UnmarshalKey("querypie-servers", &querypieServerConfigs); err != nil {
 		fmt.Println("Unable to decode into struct:", err)
 		os.Exit(1)
 	}
 
-	for i, server := range serverConfigs {
+	for i, server := range querypieServerConfigs {
 		if !isValidURL(server.BaseURL) {
 			logrus.Fatalf("Invalid URL for server %s: %s\n", server.Name, server.BaseURL)
 			os.Exit(1)
@@ -91,7 +91,7 @@ func initConfigForServer(viper *viper.Viper) {
 			os.Exit(1)
 		}
 		baseURL := fmt.Sprintf("%s://%s", parsedURL.Scheme, parsedURL.Host)
-		serverConfigs[i].BaseURL = baseURL
+		querypieServerConfigs[i].BaseURL = baseURL
 	}
 }
 
