@@ -38,8 +38,8 @@
   ],
   "page": {
     "currentPage": 0,
-    "pageSize": 0,
-    "totalElements": 0,
-    "totalPages": 0
+    "pageSize": 40,
+    "totalElements": 1,
+    "totalPages": 1
   }
 }

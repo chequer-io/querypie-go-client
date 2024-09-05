@@ -61,18 +61,6 @@ type PagedUserV1List struct {
 	PagedList[UserV1]
 }
 
-type Role struct {
-	Uuid string `json:"uuid" gorm:"primaryKey"`
-	Name string `json:"name"`
-}
-
-func (r Role) String() string {
-	return fmt.Sprintf(
-		"{ Uuid=%s, Name=%s }",
-		r.Uuid, r.Name,
-	)
-}
-
 type UserRole struct {
 	Uuid       string `json:"uuid" gorm:"primaryKey"`
 	UserV1Uuid string `gorm:"index"`

@@ -1,0 +1,125 @@
+{
+  "additionalInfo": {
+    "accessEndTime": "string",
+    "accessStartTime": "string",
+    "auditEnabled": true,
+    "databaseVersion": "string",
+    "description": "string",
+    "dmlSnapshotEnabled": true,
+    "loginRules": {
+      "interval": "DISABLED",
+      "maxLoginFailures": -1
+    },
+    "maxDisplayRows": -1,
+    "maxExportRows": -1,
+    "networkId": "string",
+    "proxyAuthType": "QUERYPIE",
+    "proxyEnabled": true,
+    "weekdayAccessDenied": "Monday"
+  },
+  "advancedPrivilegeSetting": [
+    {
+      "dbAccountName": "string",
+      "privilegeName": "string",
+      "privilegeUuid": "string"
+    }
+  ],
+  "cloudProviderType": "NONE",
+  "cloudProviderUuid": "string",
+  "clusters": [
+    {
+      "cloudIdentifier": "string",
+      "deleted": true,
+      "host": "string",
+      "port": "string",
+      "replicationType": "string",
+      "uuid": "string"
+    }
+  ],
+  "connectionAccount": {
+    "dbAccountName": "string",
+    "kerberosProtocol": {
+      "principal": "string",
+      "realm": "string",
+      "serviceName": "string"
+    },
+    "secretStore": {
+      "account": "string",
+      "name": "string",
+      "uuid": "string"
+    },
+    "secretStoreEnabled": true,
+    "type": "UIDPWD"
+  },
+  "connectionOwners": [
+    {
+      "objectUuid": "string",
+      "ownedBy": {
+        "active": true,
+        "authType": "QueryPie",
+        "email": "string",
+        "loginId": "string",
+        "name": "string",
+        "userType": "USER",
+        "uuid": "string"
+      },
+      "role": {
+        "name": "string",
+        "uuid": "string"
+      },
+      "uuid": "string"
+    }
+  ],
+  "createdAt": "2019-08-24T14:15:22Z",
+  "createdBy": {
+    "email": "string",
+    "loginId": "string",
+    "name": "string",
+    "uuid": "string"
+  },
+  "databaseType": "ATHENA",
+  "hideCredential": true,
+  "justificationSettings": {
+    "requireExecuteReason": true,
+    "requireExportDataReason": true,
+    "requireExportSchemaReason": true,
+    "requireImportDataReason": true,
+    "requireImportSchemaReason": true
+  },
+  "ledger": true,
+  "name": "string",
+  "sshSetting": {
+    "sshConfigName": "string",
+    "sshConfigUuid": "string",
+    "useSsh": true
+  },
+  "sslSetting": {
+    "sslConfigName": "string",
+    "sslConfigUuid": "string",
+    "useSsl": true
+  },
+  "updatedAt": "2019-08-24T14:15:22Z",
+  "updatedBy": {
+    "email": "string",
+    "loginId": "string",
+    "name": "string",
+    "uuid": "string"
+  },
+  "uuid": "string",
+  "vendorDetail": {
+    "cloudRegion": "string",
+    "databaseName": "string",
+    "workGroupName": "string"
+  },
+  "zones": [
+    {
+      "createdAt": "2019-08-24T14:15:22Z",
+      "ipBands": [
+        "string"
+      ],
+      "name": "string",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "uuid": "string"
+    }
+  ]
+}
