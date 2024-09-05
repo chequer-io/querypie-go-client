@@ -18,20 +18,57 @@ var fetchUserCmd = &cobra.Command{
 	Use:   "user",
 	Short: "Fetch users from QueryPie server",
 	Run: func(cmd *cobra.Command, args []string) {
-		users, err := fetchUsersFromQueryPie(defaultQuerypieServer)
-		if err != nil {
-			logrus.Fatalf("Failed to fetch user data: %v", err)
-		}
+		page := 0
+		size := 40 // Set the desired page size
 
-		// Print the fetched user data
-		for _, user := range users.List {
-			fmt.Printf("UUID: %s, Email: %s\n", user.Uuid, user.Email)
+		for {
+			users, err := fetchUsersFromQueryPie(defaultQuerypieServer, size, page)
+			if err != nil {
+				logrus.Fatalf("Failed to fetch user data: %v", err)
+			}
+			printUserList(*users, page == 0, !users.Page.HasNext())
+
+			if !users.Page.HasNext() {
+				break
+			}
+			page++
 		}
 	},
 }
 
-func fetchUsersFromQueryPie(querypie QueryPieServerConfig) (*models.PagedUserList, error) {
-	uri := "/api/external/users?pageSize=3"
+func printUserList(list models.PagedUserList, first bool, last bool) {
+	format := "%-36s  %-24s  %-24s  %-20s  %-8s  %-16s  %-16s\n"
+	if first {
+		logrus.Debugf("Page: %v", list.Page)
+		fmt.Printf(format,
+			"UUID",
+			"LOGIN_ID",
+			"EMAIL",
+			"NAME",
+			"STATUS",
+			"CREATED",
+			"UPDATED",
+		)
+
+	}
+	for _, user := range list.List {
+		fmt.Printf(format,
+			user.Uuid,
+			user.LoginId,
+			user.Email,
+			user.Name,
+			user.Status(),
+			user.ShortCreatedAt(),
+			user.ShortUpdatedAt(),
+		)
+	}
+	if last {
+		logrus.Infof("TotalElements: %v", list.Page.TotalElements)
+	}
+}
+
+func fetchUsersFromQueryPie(querypie QueryPieServerConfig, size int, page int) (*models.PagedUserList, error) {
+	uri := fmt.Sprintf("/api/external/users?pageSize=%d&pageNumber=%d", size, page)
 	client := rest.NewAPIClient(querypie.BaseURL, querypie.AccessToken)
 
 	// Call the GetData method

@@ -1,5 +1,7 @@
 package models
 
+import "qpc/rest"
+
 type User struct {
 	CreatedAt   string     `json:"createdAt"`
 	Deleted     bool       `json:"deleted"`
@@ -12,6 +14,27 @@ type User struct {
 	UpdatedAt   string     `json:"updatedAt"`
 	UserRoles   []UserRole `json:"userRoles"`
 	Uuid        string     `json:"uuid"`
+}
+
+func (u *User) Status() string {
+	if u.Deleted {
+		return "deleted"
+	}
+	if u.Expired {
+		return "expired"
+	}
+	if u.Locked {
+		return "locked"
+	}
+	return "active"
+}
+
+func (u *User) ShortCreatedAt() string {
+	return rest.ShortDatetimeWithTZ(u.CreatedAt)
+}
+
+func (u *User) ShortUpdatedAt() string {
+	return rest.ShortDatetimeWithTZ(u.UpdatedAt)
 }
 
 type PagedUserList struct {
