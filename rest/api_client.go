@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
 )
@@ -43,6 +44,7 @@ func (client *APIClient) doRequest(method, endpoint string, body interface{}) ([
 	req.Header.Set("Authorization", "Bearer "+client.AuthToken)
 	req.Header.Set("Content-Type", "application/json")
 
+	logrus.Debugf("%s %s %s", method, url, MaskAccessToken(client.AuthToken))
 	resp, err := client.HTTPClient.Do(req)
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("error sending request: %v", err))

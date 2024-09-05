@@ -8,16 +8,17 @@ import (
 	"net/url"
 	"os"
 	"qpc/rest"
-	"unicode"
 )
 
 type QueryPieServerConfig struct {
 	Name        string `mapstructure:"name"`
 	BaseURL     string `mapstructure:"url"`
 	AccessToken string `mapstructure:"token"`
+	Default     bool   `mapstructure:"default"`
 }
 
 var querypieServerConfigs []QueryPieServerConfig
+var defaultQuerypieServer QueryPieServerConfig
 
 var querypieServerCmd = &cobra.Command{
 	Use:   "querypie-servers",
@@ -31,14 +32,18 @@ var querypieServerCmd = &cobra.Command{
 		)
 		// Iterate over querypieServerConfigs and print each server's configuration
 		for _, server := range querypieServerConfigs {
+			defaultFlag := ""
 			status := "FAIL"
 			if checkEndpoint(server, "/api/external/users?pageSize=3") {
 				status = "OK"
 			}
+			if server.Default {
+				defaultFlag = "[*]"
+			}
 			fmt.Printf("%-30s %-40s %-40s %-5s\n",
-				server.Name,
+				server.Name+defaultFlag,
 				server.BaseURL,
-				maskAccessToken(server.AccessToken),
+				rest.MaskAccessToken(server.AccessToken),
 				status,
 			)
 		}
@@ -57,28 +62,14 @@ func checkEndpoint(server QueryPieServerConfig, uri string) bool {
 	}
 }
 
-func maskAccessToken(token string) string {
-	if len(token) <= 11 {
-		return token
-	}
-	masked := []rune(token[:11])
-	for _, r := range token[11:] {
-		if unicode.IsLetter(r) || unicode.IsDigit(r) {
-			masked = append(masked, '*')
-		} else {
-			masked = append(masked, r)
-		}
-	}
-	return string(masked)
-}
-
 func initConfigForQueryPieServer(viper *viper.Viper) {
 	if err := viper.UnmarshalKey("querypie-servers", &querypieServerConfigs); err != nil {
 		fmt.Println("Unable to decode into struct:", err)
 		os.Exit(1)
 	}
 
-	for i, server := range querypieServerConfigs {
+	for i := range querypieServerConfigs {
+		server := &querypieServerConfigs[i]
 		if !isValidURL(server.BaseURL) {
 			logrus.Fatalf("Invalid URL for server %s: %s\n", server.Name, server.BaseURL)
 			os.Exit(1)
@@ -91,7 +82,22 @@ func initConfigForQueryPieServer(viper *viper.Viper) {
 			os.Exit(1)
 		}
 		baseURL := fmt.Sprintf("%s://%s", parsedURL.Scheme, parsedURL.Host)
-		querypieServerConfigs[i].BaseURL = baseURL
+		server.BaseURL = baseURL
+
+		// Check if the server is the default server
+		if server.Default {
+			if defaultQuerypieServer == (QueryPieServerConfig{}) {
+				defaultQuerypieServer = *server
+			} else {
+				logrus.Fatalf("Configuration error: Multiple default querypie-server configurations found. Name: %s, URL: %s\n", server.Name, server.BaseURL)
+				os.Exit(1)
+			}
+		}
+	}
+
+	if defaultQuerypieServer == (QueryPieServerConfig{}) {
+		logrus.Fatalf("Configuration error: No default querypie-server configuration found.\n")
+		os.Exit(1)
 	}
 }
 
