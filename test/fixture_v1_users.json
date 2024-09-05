@@ -1,0 +1,43 @@
+{
+  "list": [
+    {
+      "createdAt": "2019-08-24T14:15:22Z",
+      "deleted": false,
+      "email": "brant@querypie.com",
+      "expired": false,
+      "lastLoginAt": "2019-08-24T14:15:22Z",
+      "locked": false,
+      "loginId": "brant",
+      "name": "Brant",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "userRoles": [
+        {
+          "objectType": "COMPANY",
+          "objectUuid": "string",
+          "role": {
+            "name": "string",
+            "uuid": "string"
+          },
+          "user": {
+            "active": true,
+            "authProvider": "swivelsecure",
+            "email": "string",
+            "id": 0,
+            "loginId": "string",
+            "name": "string",
+            "type": "USER",
+            "uuid": "string"
+          },
+          "uuid": "string"
+        }
+      ],
+      "uuid": "UUID"
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 30,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}

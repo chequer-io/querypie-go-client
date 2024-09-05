@@ -1,0 +1,33 @@
+{
+  "list": [
+    {
+      "adminRoles": [
+        {
+          "roleName": "string",
+          "roleUuid": "string"
+        }
+      ],
+      "createdAt": "2019-08-24T14:15:22Z",
+      "deleted": true,
+      "email": "string",
+      "expired": true,
+      "factor": {
+        "enabled": true,
+        "type": "NONE"
+      },
+      "locked": true,
+      "loginId": "string",
+      "name": "string",
+      "passwordExpired": true,
+      "status": "ACTIVE",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "uuid": "string"
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 0,
+    "totalElements": 0,
+    "totalPages": 0
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "list": [
+    {
+      "cloudProvider": {
+        "name": "string",
+        "type": "AWS",
+        "uuid": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f"
+      },
+      "createdAt": "2019-08-24T14:15:22Z",
+      "server": {
+        "host": "string",
+        "name": "string",
+        "osType": "ETC",
+        "sshPort": 0,
+        "tags": {
+          "customTags": [
+            {
+              "key": "string",
+              "value": "string"
+            }
+          ],
+          "providerTags": [
+            {
+              "key": "string",
+              "value": "string"
+            }
+          ]
+        },
+        "uuid": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f"
+      },
+      "updatedAt": "2019-08-24T14:15:22Z"
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 0,
+    "totalElements": 0,
+    "totalPages": 0
+  }
+}

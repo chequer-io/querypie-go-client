@@ -1,0 +1,101 @@
+{
+  "list": [
+    {
+      "audited": true,
+      "authenticationDb": "string",
+      "awsRegionValue": "ap-northeast-2",
+      "cloudProviderUuid": "63d2cc6d-dd83-4a31-a817-fc13f1fc57a3",
+      "clusters": [
+        {
+          "deleted": false,
+          "host": "test-db.querypie.com",
+          "port": 1521,
+          "type": "Primary",
+          "uuid": "63d2cc6d-dd83-4a31-a817-fc13f1fc57a3"
+        }
+      ],
+      "connectionAccount": {
+        "kerberosProtocols": {
+          "common": {
+            "principal": "string",
+            "realm": "string",
+            "serviceName": "string"
+          }
+        },
+        "type": "UIDPWD",
+        "useMultipleDatabaseAccount": false,
+        "usernamePasswords": {
+          "admin": {
+            "username": "string"
+          },
+          "common": {
+            "username": "string"
+          },
+          "proxy": {
+            "username": "string"
+          }
+        }
+      },
+      "connectionOwners": [
+        {
+          "objectType": "COMPANY",
+          "objectUuid": "string",
+          "role": {
+            "name": "string",
+            "uuid": "string"
+          },
+          "user": {
+            "active": true,
+            "authProvider": "swivelsecure",
+            "email": "string",
+            "id": 0,
+            "loginId": "string",
+            "name": "string",
+            "type": "USER",
+            "uuid": "string"
+          },
+          "uuid": "string"
+        }
+      ],
+      "databaseType": "MySQL",
+      "databaseVersion": "5.7.10",
+      "deleted": false,
+      "dmlSnapshot": false,
+      "hideCredential": true,
+      "ledger": true,
+      "listenerType": "SID",
+      "maxDisplayRows": 1000,
+      "maxExportRows": 1000,
+      "name": "QueryPie Connection",
+      "networkId": "string",
+      "proxyAuthType": "QUERYPIE",
+      "roleName": "string",
+      "schemaName": "test_db",
+      "tags": [
+        {
+          "key": "string",
+          "synchronized": true,
+          "value": "string"
+        }
+      ],
+      "useProxy": true,
+      "uuid": "63d2cc6d-dd83-4a31-a817-fc13f1fc57a3",
+      "warehouseName": "string",
+      "zones": [
+        {
+          "createdAt": "2019-08-24T14:15:22Z",
+          "ipBands": "CIDR or IP",
+          "name": "Zone Name",
+          "updatedAt": "2019-08-24T14:15:22Z",
+          "uuid": "UUID"
+        }
+      ]
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 0,
+    "totalElements": 0,
+    "totalPages": 0
+  }
+}

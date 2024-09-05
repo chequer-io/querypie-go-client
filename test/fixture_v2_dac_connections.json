@@ -1,0 +1,45 @@
+{
+  "list": [
+    {
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyAuthType": "QUERYPIE",
+        "proxyEnabled": true
+      },
+      "cloudProviderType": "NONE",
+      "cloudProviderUuid": "string",
+      "createdAt": "2019-08-24T14:15:22Z",
+      "createdBy": {
+        "email": "string",
+        "loginId": "string",
+        "name": "string",
+        "uuid": "string"
+      },
+      "databaseType": "MYSQL",
+      "deleted": true,
+      "ledger": true,
+      "name": "string",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "updatedBy": {
+        "email": "string",
+        "loginId": "string",
+        "name": "string",
+        "uuid": "string"
+      },
+      "uuid": "string",
+      "zones": [
+        {
+          "name": "string",
+          "uuid": "string"
+        }
+      ]
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 0,
+    "totalElements": 0,
+    "totalPages": 0
+  }
+}
