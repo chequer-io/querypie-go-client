@@ -13,8 +13,8 @@ func TestParseFixtureV1Users(t *testing.T) {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
 
-	// Unmarshal the JSON data into a PagedUserList struct
-	var users PagedUserList
+	// Unmarshal the JSON data into a PagedUserV1List struct
+	var users PagedUserV1List
 	if err := json.Unmarshal(data, &users); err != nil {
 		t.Fatalf("Failed to unmarshal JSON data: %v", err)
 	}
