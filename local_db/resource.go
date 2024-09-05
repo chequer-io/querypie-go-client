@@ -1,38 +1,37 @@
 package local_db
 
 import (
-	"database/sql"
+	_ "github.com/mattn/go-sqlite3" // Import for side effects to register the SQLite3 driver
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 	"os"
-
-	_ "github.com/mattn/go-sqlite3" // Import for side effects to register the SQLite3 driver
+	"qpc/models"
 )
 
-var localDatabase *sql.DB
+var LocalDatabase *gorm.DB
 
 func initLocalDatabase(dataSourceName string) {
-	// Open a connection to the SQLite database
-	db, err := sql.Open("sqlite3", dataSourceName)
+	// Initialize the GORM connection with SQLite
+	db, err := gorm.Open(sqlite.Open(dataSourceName), &gorm.Config{})
 	if err != nil {
 		logrus.Fatal(err)
 	}
-	localDatabase = db
-	defer db.Close()
+	LocalDatabase = db
 
-	// Create a table
-	//goland:noinspection SqlNoDataSourceInspection
-	createTableSQL := `CREATE TABLE IF NOT EXISTS users (
-		"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,		
-		"name" TEXT,
-		"age" INTEGER
-	);`
-	_, err = db.Exec(createTableSQL)
-	if err != nil {
+	err1 := db.AutoMigrate(
+		&models.UserV2{},
+		&models.AdminRole{},
+		&models.UserV1{},
+		&models.UserRole{},
+		&models.Role{},
+	)
+	if err1 != nil {
 		logrus.Fatal(err)
 	}
 
-	logrus.Infof("Table created successfully!")
+	logrus.Infof("AutoMigrate has done successfully!")
 }
 
 func InitConfigForResource(viper *viper.Viper) {

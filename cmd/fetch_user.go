@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"qpc/local_db"
 	"qpc/models"
 	"qpc/rest"
 )
@@ -22,6 +23,7 @@ var fetchUserCmdV1 = &cobra.Command{
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}
 			printUserListV1(*users, page == 0, !users.Page.HasNext())
+			saveUserListV1(users.List)
 
 			if !users.Page.HasNext() {
 				break
@@ -29,6 +31,22 @@ var fetchUserCmdV1 = &cobra.Command{
 			page++
 		}
 	},
+}
+
+func saveUserListV1(list []models.UserV1) {
+	for _, user := range list {
+		// Attempt to update the user
+		result := local_db.LocalDatabase.Model(&models.UserV1{}).Where("uuid = ?", user.Uuid).Updates(&user)
+
+		// If no rows were affected, create a new user
+		if result.RowsAffected == 0 {
+			if err := local_db.LocalDatabase.Create(&user).Error; err != nil {
+				logrus.Errorf("Failed to save user %s: %v", user.ShortID(), err)
+			}
+		} else if result.Error != nil {
+			logrus.Errorf("Failed to update user %s: %v", user.ShortID(), result.Error)
+		}
+	}
 }
 
 func printUserListV1(list models.PagedUserV1List, first bool, last bool) {
@@ -102,6 +120,7 @@ var fetchUserCmdV2 = &cobra.Command{
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}
 			printUserListV2(*users, page == 0, !users.Page.HasNext())
+			saveUserListV2(users.List)
 
 			if !users.Page.HasNext() {
 				break
@@ -109,6 +128,22 @@ var fetchUserCmdV2 = &cobra.Command{
 			page++
 		}
 	},
+}
+
+func saveUserListV2(list []models.UserV2) {
+	for _, user := range list {
+		// Attempt to update the user
+		result := local_db.LocalDatabase.Model(&models.UserV2{}).Where("uuid = ?", user.Uuid).Updates(&user)
+
+		// If no rows were affected, create a new user
+		if result.RowsAffected == 0 {
+			if err := local_db.LocalDatabase.Create(&user).Error; err != nil {
+				logrus.Errorf("Failed to save user %s: %v", user.ShortID(), err)
+			}
+		} else if result.Error != nil {
+			logrus.Errorf("Failed to update user %s: %v", user.ShortID(), result.Error)
+		}
+	}
 }
 
 func printUserListV2(list models.PagedUserV2List, first bool, last bool) {

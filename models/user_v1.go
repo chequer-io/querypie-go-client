@@ -6,11 +6,11 @@ import (
 )
 
 type UserV1 struct {
-	Uuid        string     `json:"uuid"`
+	Uuid        string     `json:"uuid" gorm:"primaryKey"`
 	LoginId     string     `json:"loginId"`
 	Email       string     `json:"email"`
 	Name        string     `json:"name"`
-	UserRoles   []UserRole `json:"userRoles"`
+	UserRoles   []UserRole `json:"userRoles" gorm:"foreignKey:UserV1Uuid"`
 	LastLoginAt string     `json:"lastLoginAt"`
 	Locked      bool       `json:"locked"`
 	Expired     bool       `json:"expired"`
@@ -40,6 +40,13 @@ func (u UserV1) ShortUpdatedAt() string {
 	return rest.ShortDatetimeWithTZ(u.UpdatedAt)
 }
 
+func (u UserV1) ShortID() string {
+	return fmt.Sprintf(
+		"{ Uuid=%s, LoginId=%s }",
+		u.Uuid, u.LoginId,
+	)
+}
+
 func (u UserV1) String() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s, Email=%s, Name=%s, UserRoles=%v, "+
@@ -52,4 +59,34 @@ func (u UserV1) String() string {
 
 type PagedUserV1List struct {
 	PagedList[UserV1]
+}
+
+type Role struct {
+	Uuid string `json:"uuid" gorm:"primaryKey"`
+	Name string `json:"name"`
+}
+
+func (r Role) String() string {
+	return fmt.Sprintf(
+		"{ Uuid=%s, Name=%s }",
+		r.Uuid, r.Name,
+	)
+}
+
+type UserRole struct {
+	Uuid       string `json:"uuid" gorm:"primaryKey"`
+	UserV1Uuid string `gorm:"index"`
+	RoleUuid   string `json:"-"`
+	Role       Role   `json:"role" gorm:"foreignKey:RoleUuid"`
+	ObjectUuid string `json:"objectUuid"`
+	ObjectType string `json:"objectType"`
+}
+
+func (r UserRole) String() string {
+	return fmt.Sprintf(
+		"{ Uuid=%s, Role=%s, "+
+			"ObjectUuid=%s, ObjectType=%s }",
+		r.Uuid, r.Role,
+		r.ObjectUuid, r.ObjectType,
+	)
 }
