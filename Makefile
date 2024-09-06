@@ -6,7 +6,7 @@ all: build
 # Build the application
 build: $(BINARY_NAME)
 
-$(BINARY_NAME): $(shell find cmd local_db models rest -name '*.go')
+$(BINARY_NAME): $(shell find cmd local_db models utils -name '*.go')
 	@echo "Building the application..."
 	go build -o $(BINARY_NAME) main.go
 	@echo "Build complete!"

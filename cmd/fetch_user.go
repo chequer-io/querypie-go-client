@@ -1,13 +1,12 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"qpc/local_db"
 	"qpc/models"
-	"qpc/rest"
 )
 
 var fetchUserCmdV1 = &cobra.Command{
@@ -18,14 +17,27 @@ var fetchUserCmdV1 = &cobra.Command{
 		size := 40 // Set the desired page size
 
 		for {
-			users, err := fetchUsersV1FromQueryPie(defaultQuerypieServer, size, page)
+			var restClient = resty.New()
+			var list models.PagedUserV1List
+			resp, err := restClient.R().
+				SetQueryParams(
+					map[string]string{
+						"pageSize":   fmt.Sprintf("%d", size),
+						"pageNumber": fmt.Sprintf("%d", page),
+					},
+				).
+				SetHeader("Accept", "application/json").
+				SetAuthToken(defaultQuerypieServer.AccessToken).
+				SetResult(&list).
+				Get(defaultQuerypieServer.BaseURL + "/api/external/users")
+			logrus.Infof("Response: %v", resp)
 			if err != nil {
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}
-			printUserListV1(*users, page == 0, !users.Page.HasNext())
-			saveUserListV1(users.List)
+			printUserListV1(list, page == 0, !list.Page.HasNext())
+			saveUserListV1(list.List)
 
-			if !users.Page.HasNext() {
+			if !list.Page.HasNext() {
 				break
 			}
 			page++
@@ -81,31 +93,6 @@ func printUserListV1(list models.PagedUserV1List, first bool, last bool) {
 	}
 }
 
-func fetchUsersV1FromQueryPie(querypie QueryPieServerConfig, size int, page int) (*models.PagedUserV1List, error) {
-	uri := fmt.Sprintf("/api/external/users?pageSize=%d&pageNumber=%d", size, page)
-	client := rest.NewAPIClient(querypie.BaseURL, querypie.AccessToken)
-
-	// Call the GetData method
-	result, err := client.GetData(uri)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch user data: %v", err)
-	}
-
-	// Convert result to []byte
-	resultBytes, err := json.Marshal(result)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal result: %v", err)
-	}
-
-	// Unmarshal the JSON data into a PagedUserV1List struct
-	var users models.PagedUserV1List
-	if err := json.Unmarshal(resultBytes, &users); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON data: %v", err)
-	}
-
-	return &users, nil
-}
-
 var fetchUserCmdV2 = &cobra.Command{
 	Use:     "user",
 	Aliases: []string{"user-v2"},
@@ -115,14 +102,27 @@ var fetchUserCmdV2 = &cobra.Command{
 		size := 40 // Set the desired page size
 
 		for {
-			users, err := fetchUsersV2FromQueryPie(defaultQuerypieServer, size, page)
+			var restClient = resty.New()
+			var list models.PagedUserV2List
+			resp, err := restClient.R().
+				SetQueryParams(
+					map[string]string{
+						"pageSize":   fmt.Sprintf("%d", size),
+						"pageNumber": fmt.Sprintf("%d", page),
+					},
+				).
+				SetHeader("Accept", "application/json").
+				SetAuthToken(defaultQuerypieServer.AccessToken).
+				SetResult(&list).
+				Get(defaultQuerypieServer.BaseURL + "/api/external/v2/users")
+			logrus.Infof("Response: %v", resp)
 			if err != nil {
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}
-			printUserListV2(*users, page == 0, !users.Page.HasNext())
-			saveUserListV2(users.List)
+			printUserListV2(list, page == 0, !list.Page.HasNext())
+			saveUserListV2(list.List)
 
-			if !users.Page.HasNext() {
+			if !list.Page.HasNext() {
 				break
 			}
 			page++
@@ -178,31 +178,6 @@ func printUserListV2(list models.PagedUserV2List, first bool, last bool) {
 	if last {
 		logrus.Infof("TotalElements: %v", list.Page.TotalElements)
 	}
-}
-
-func fetchUsersV2FromQueryPie(querypie QueryPieServerConfig, size int, page int) (*models.PagedUserV2List, error) {
-	uri := fmt.Sprintf("/api/external/v2/users?pageSize=%d&pageNumber=%d", size, page)
-	client := rest.NewAPIClient(querypie.BaseURL, querypie.AccessToken)
-
-	// Call the GetData method
-	result, err := client.GetData(uri)
-	if err != nil {
-		return nil, fmt.Errorf("failed to fetch user data: %v", err)
-	}
-
-	// Convert result to []byte
-	resultBytes, err := json.Marshal(result)
-	if err != nil {
-		return nil, fmt.Errorf("failed to marshal result: %v", err)
-	}
-
-	// Unmarshal the JSON data into a PagedUserV1List struct
-	var users models.PagedUserV2List
-	if err := json.Unmarshal(resultBytes, &users); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal JSON data: %v", err)
-	}
-
-	return &users, nil
 }
 
 func init() {

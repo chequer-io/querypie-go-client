@@ -2,23 +2,17 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"net/url"
 	"os"
-	"qpc/rest"
+	"qpc/utils"
 )
 
-type QueryPieServerConfig struct {
-	Name        string `mapstructure:"name"`
-	BaseURL     string `mapstructure:"url"`
-	AccessToken string `mapstructure:"token"`
-	Default     bool   `mapstructure:"default"`
-}
-
-var querypieServerConfigs []QueryPieServerConfig
-var defaultQuerypieServer QueryPieServerConfig
+var querypieServerConfigs []utils.QueryPieServerConfig
+var defaultQuerypieServer utils.QueryPieServerConfig
 
 var querypieServerCmd = &cobra.Command{
 	Use:   "querypie-servers",
@@ -43,23 +37,32 @@ var querypieServerCmd = &cobra.Command{
 			fmt.Printf("%-30s %-40s %-40s %-5s\n",
 				server.Name+defaultFlag,
 				server.BaseURL,
-				rest.MaskAccessToken(server.AccessToken),
+				utils.MaskAccessToken(server.AccessToken),
 				status,
 			)
 		}
 	},
 }
 
-func checkEndpoint(server QueryPieServerConfig, uri string) bool {
-	client := rest.NewAPIClient(server.BaseURL, server.AccessToken)
-	// Call the GetData method
-	result, err := client.GetData(uri)
-	logrus.Debugf("Result: %v", result)
-	if err == nil {
-		return true
-	} else {
+func checkEndpoint(server utils.QueryPieServerConfig, uri string) bool {
+	client := resty.New()
+
+	resp, err := client.R().
+		SetHeader("Authorization", "Bearer "+server.AccessToken).
+		SetHeader("Content-Type", "application/json").
+		Get(server.BaseURL + uri)
+
+	if err != nil {
+		logrus.Errorf("Failed to check endpoint: %v", err)
 		return false
 	}
+
+	if resp.StatusCode() != 200 {
+		logrus.Errorf("Received non-200 status code: %d", resp.StatusCode())
+		return false
+	}
+
+	return true
 }
 
 func initConfigForQueryPieServer(viper *viper.Viper) {
@@ -86,7 +89,7 @@ func initConfigForQueryPieServer(viper *viper.Viper) {
 
 		// Check if the server is the default server
 		if server.Default {
-			if defaultQuerypieServer == (QueryPieServerConfig{}) {
+			if defaultQuerypieServer == (utils.QueryPieServerConfig{}) {
 				defaultQuerypieServer = *server
 			} else {
 				logrus.Fatalf("Configuration error: Multiple default querypie-server configurations found. Name: %s, URL: %s\n", server.Name, server.BaseURL)
@@ -95,7 +98,7 @@ func initConfigForQueryPieServer(viper *viper.Viper) {
 		}
 	}
 
-	if defaultQuerypieServer == (QueryPieServerConfig{}) {
+	if defaultQuerypieServer == (utils.QueryPieServerConfig{}) {
 		logrus.Fatalf("Configuration error: No default querypie-server configuration found.\n")
 		os.Exit(1)
 	}

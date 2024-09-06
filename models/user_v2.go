@@ -2,7 +2,7 @@ package models
 
 import (
 	"fmt"
-	"qpc/rest"
+	"qpc/utils"
 )
 
 type UserV2 struct {
@@ -38,11 +38,11 @@ func (u UserV2) StatusMore() string {
 }
 
 func (u UserV2) ShortCreatedAt() string {
-	return rest.ShortDatetimeWithTZ(u.CreatedAt)
+	return utils.ShortDatetimeWithTZ(u.CreatedAt)
 }
 
 func (u UserV2) ShortUpdatedAt() string {
-	return rest.ShortDatetimeWithTZ(u.UpdatedAt)
+	return utils.ShortDatetimeWithTZ(u.UpdatedAt)
 }
 
 func (u UserV2) ShortID() string {
