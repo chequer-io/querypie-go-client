@@ -1,19 +1,70 @@
 package models
 
+import (
+	"fmt"
+	"qpc/utils"
+)
+
 type SummarizedConnectionV2 struct {
-	AdditionalInfo    SummarizedAdditionalInfo `json:"additionalInfo"`
-	CloudProviderType string                   `json:"cloudProviderType"`
-	CloudProviderUuid string                   `json:"cloudProviderUuid"`
-	CreatedAt         string                   `json:"createdAt"`
-	CreatedBy         Modifier                 `json:"createdBy"`
-	DatabaseType      string                   `json:"databaseType"`
-	Deleted           bool                     `json:"deleted"`
-	Ledger            bool                     `json:"ledger"`
-	Name              string                   `json:"name"`
-	UpdatedAt         string                   `json:"updatedAt"`
-	UpdatedBy         Modifier                 `json:"updatedBy"`
-	Uuid              string                   `json:"uuid"`
-	Zones             []SummarizedZone         `json:"zones"`
+	Uuid              string `json:"uuid" gorm:"primaryKey"`
+	DatabaseType      string `json:"databaseType"`
+	CloudProviderType string `json:"cloudProviderType"`
+	CloudProviderUuid string `json:"cloudProviderUuid"`
+
+	Name string `json:"name"`
+
+	AdditionalInfo SummarizedAdditionalInfo `json:"additionalInfo" gorm:"-"`
+
+	Zones   []SummarizedZone `json:"zones" gorm:"-"`
+	Ledger  bool             `json:"ledger"`
+	Deleted bool             `json:"deleted"`
+
+	CreatedAt     string   `json:"createdAt"`
+	CreatedBy     Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid"`
+	CreatedByUuid string   `json:"-"`
+	UpdatedAt     string   `json:"updatedAt"`
+	UpdatedBy     Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid"`
+	UpdatedByUuid string   `json:"-"`
+}
+
+func (c SummarizedConnectionV2) String() string {
+	return fmt.Sprintf(
+		"{ Uuid=%s, DatabaseType=%s, "+
+			"CloudProviderType=%s, CloudProviderUuid=%s, "+
+			"Name=%s,, AdditionalInfo=%v, "+
+			"Zones=%v, Ledger=%t, Deleted=%t, "+
+			"CreatedAt=%s, CreatedBy=%v, UpdatedAt=%s, UpdatedBy=%v }",
+		c.Uuid, c.DatabaseType,
+		c.CloudProviderType, c.CloudProviderUuid,
+		c.Name, c.AdditionalInfo,
+		c.Zones, c.Ledger, c.Deleted,
+		c.CreatedAt, c.CreatedBy, c.UpdatedAt, c.UpdatedBy,
+	)
+}
+
+func (c SummarizedConnectionV2) Status() string {
+	if c.Deleted {
+		return "deleted"
+	}
+	if c.Ledger {
+		return "ledger"
+	}
+	return "-"
+}
+
+func (c SummarizedConnectionV2) ShortCreatedAt() string {
+	return utils.ShortDatetimeWithTZ(c.CreatedAt)
+}
+
+func (c SummarizedConnectionV2) ShortUpdatedAt() string {
+	return utils.ShortDatetimeWithTZ(c.UpdatedAt)
+}
+
+func (c SummarizedConnectionV2) ShortID() string {
+	return fmt.Sprintf(
+		"{ Uuid=%s, Name=%s }",
+		c.Uuid, c.Name,
+	)
 }
 
 type SummarizedAdditionalInfo struct {
@@ -23,32 +74,50 @@ type SummarizedAdditionalInfo struct {
 	ProxyAuthType      string `json:"proxyAuthType"`
 }
 
+func (i SummarizedAdditionalInfo) String() string {
+	return fmt.Sprintf(
+		"{ AuditEnabled=%t, DmlSnapshotEnabled=%t "+
+			"ProxyEnabled=%t, ProxyAuthType=%s }",
+		i.AuditEnabled, i.DmlSnapshotEnabled,
+		i.ProxyEnabled, i.ProxyAuthType,
+	)
+}
+
 type PagedConnectionV2List struct {
 	PagedList[SummarizedConnectionV2]
 }
 
 type ConnectionV2 struct {
-	AdditionalInfo           AdditionalInfo             `json:"additionalInfo"`
+	Uuid              string `json:"uuid"`
+	DatabaseType      string `json:"databaseType"`
+	CloudProviderType string `json:"cloudProviderType"`
+	CloudProviderUuid string `json:"cloudProviderUuid"`
+
+	Name string `json:"name"`
+
+	Clusters          []Cluster         `json:"clusters"`
+	ConnectionAccount ConnectionAccount `json:"connectionAccount"`
+	HideCredential    bool              `json:"hideCredential"`
+
+	// More tabs
+	AdditionalInfo        AdditionalInfo        `json:"additionalInfo"`
+	JustificationSettings JustificationSettings `json:"justificationSettings"`
+
+	SslSetting SslSetting `json:"sslSetting"`
+	SshSetting SshSetting `json:"sshSetting"`
+
+	ConnectionOwners []ConnectionOwner `json:"connectionOwners"`
+
 	AdvancedPrivilegeSetting []AdvancedPrivilegeSetting `json:"advancedPrivilegeSetting"`
-	CloudProviderType        string                     `json:"cloudProviderType"`
-	CloudProviderUuid        string                     `json:"cloudProviderUuid"`
-	Clusters                 []Cluster                  `json:"clusters"`
-	ConnectionAccount        ConnectionAccount          `json:"connectionAccount"`
-	ConnectionOwners         []ConnectionOwner          `json:"connectionOwners"`
-	CreatedAt                string                     `json:"createdAt"`
-	CreatedBy                Modifier                   `json:"createdBy"`
-	DatabaseType             string                     `json:"databaseType"`
-	HideCredential           bool                       `json:"hideCredential"`
-	JustificationSettings    JustificationSettings      `json:"justificationSettings"`
-	Ledger                   bool                       `json:"ledger"`
-	Name                     string                     `json:"name"`
-	SshSetting               SshSetting                 `json:"sshSetting"`
-	SslSetting               SslSetting                 `json:"sslSetting"`
-	UpdatedAt                string                     `json:"updatedAt"`
-	UpdatedBy                Modifier                   `json:"updatedBy"`
-	Uuid                     string                     `json:"uuid"`
-	VendorDetail             VendorDetail               `json:"vendorDetail"`
-	Zones                    []Zone                     `json:"zones"`
+
+	Zones        []Zone       `json:"zones"`
+	Ledger       bool         `json:"ledger"`
+	VendorDetail VendorDetail `json:"vendorDetail"`
+
+	CreatedAt string   `json:"createdAt"`
+	CreatedBy Modifier `json:"createdBy"`
+	UpdatedAt string   `json:"updatedAt"`
+	UpdatedBy Modifier `json:"updatedBy"`
 }
 
 type AdditionalInfo struct {

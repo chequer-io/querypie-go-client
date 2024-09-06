@@ -30,7 +30,7 @@ var fetchUserCmdV1 = &cobra.Command{
 				SetAuthToken(defaultQuerypieServer.AccessToken).
 				SetResult(&list).
 				Get(defaultQuerypieServer.BaseURL + "/api/external/users")
-			logrus.Infof("Response: %v", resp)
+			logrus.Debugf("Response: %v", resp)
 			if err != nil {
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}
@@ -115,7 +115,7 @@ var fetchUserCmdV2 = &cobra.Command{
 				SetAuthToken(defaultQuerypieServer.AccessToken).
 				SetResult(&list).
 				Get(defaultQuerypieServer.BaseURL + "/api/external/v2/users")
-			logrus.Infof("Response: %v", resp)
+			logrus.Debugf("Response: %v", resp)
 			if err != nil {
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}

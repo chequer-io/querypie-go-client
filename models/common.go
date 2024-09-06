@@ -9,10 +9,14 @@ type CloudProvider struct {
 }
 
 type Modifier struct {
-	Uuid    string `json:"uuid"`
+	Uuid    string `json:"uuid" gorm:"primaryKey"`
 	LoginId string `json:"loginId"`
 	Email   string `json:"email"`
 	Name    string `json:"name"`
+}
+
+func (m Modifier) String() string {
+	return fmt.Sprint(m.LoginId)
 }
 
 type SummarizedZone struct {

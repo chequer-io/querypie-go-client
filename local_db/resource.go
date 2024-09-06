@@ -26,6 +26,7 @@ func initLocalDatabase(dataSourceName string) {
 		&models.UserV1{},
 		&models.UserRole{},
 		&models.Role{},
+		&models.SummarizedConnectionV2{},
 	)
 	if err1 != nil {
 		logrus.Fatal(err)
