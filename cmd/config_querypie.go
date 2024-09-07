@@ -14,34 +14,46 @@ import (
 var querypieServerConfigs []utils.QueryPieServerConfig
 var defaultQuerypieServer utils.QueryPieServerConfig
 
-var querypieServerCmd = &cobra.Command{
-	Use:   "querypie-servers",
-	Short: "List all querypie servers",
+var configQuerypieCmd = &cobra.Command{
+	Use:     "config <key-name>",
+	Short:   "Show detailed configuration for a specific key",
+	Example: `  qpc config querypie     # List querypie servers in config`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("%-30s %-40s %-40s %-5s\n",
-			"NAME",
-			"BASE_URL",
-			"ACCESS_TOKEN",
-			"STATUS",
-		)
-		// Iterate over querypieServerConfigs and print each server's configuration
-		for _, server := range querypieServerConfigs {
-			defaultFlag := ""
-			status := "FAIL"
-			if checkEndpoint(server, "/api/external/v2/security") {
-				status = "OK"
-			}
-			if server.Default {
-				defaultFlag = "[*]"
-			}
-			fmt.Printf("%-30s %-40s %-40s %-5s\n",
-				server.Name+defaultFlag,
-				server.BaseURL,
-				utils.MaskAccessToken(server.AccessToken),
-				status,
-			)
+		if len(args) == 0 {
+			_ = cmd.Help()
+		} else if args[0] == "querypie" {
+			listQuerypieServers()
+		} else {
+			_ = cmd.Help()
+			os.Exit(1)
 		}
 	},
+}
+
+func listQuerypieServers() {
+	fmt.Printf("%-30s %-40s %-40s %-5s\n",
+		"NAME",
+		"BASE_URL",
+		"ACCESS_TOKEN",
+		"STATUS",
+	)
+	// Iterate over querypieServerConfigs and print each server's configuration
+	for _, server := range querypieServerConfigs {
+		defaultFlag := ""
+		status := "FAIL"
+		if checkEndpoint(server, "/api/external/v2/security") {
+			status = "OK"
+		}
+		if server.Default {
+			defaultFlag = "[*]"
+		}
+		fmt.Printf("%-30s %-40s %-40s %-5s\n",
+			server.Name+defaultFlag,
+			server.BaseURL,
+			utils.MaskAccessToken(server.AccessToken),
+			status,
+		)
+	}
 }
 
 func checkEndpoint(server utils.QueryPieServerConfig, uri string) bool {

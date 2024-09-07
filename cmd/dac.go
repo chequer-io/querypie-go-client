@@ -12,6 +12,14 @@ var dacCmd = &cobra.Command{
 	Short: "Manage DAC resources",
 }
 
+var dacFetchAllConnectionsCmd = &cobra.Command{
+	Use:   "fetch-all",
+	Short: "Fetch all DAC connections from QueryPie server and save them to local sqlite database",
+	Run: func(cmd *cobra.Command, args []string) {
+		fetchPrintSave("dac", "/api/external/v2/dac/connections")
+	},
+}
+
 var dacListCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List DAC connections in local sqlite database",
@@ -70,7 +78,7 @@ func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (mode
 func init() {
 	// Add dacListCmd subcommands to dacCmd
 	dacCmd.AddCommand(dacListCmd)
+	dacCmd.AddCommand(dacFetchAllConnectionsCmd)
 
-	// Add dacCmd to the root command
-	rootCmd.AddCommand(dacCmd)
+	// dacCmd is added rootCmd in init() of root.go
 }

@@ -9,6 +9,7 @@ import (
 	"qpc/models"
 )
 
+// @Deprecated - Use fetchAllCmd instead
 var fetchUserCmdV1 = &cobra.Command{
 	Use:   "fetch-all-user-v1",
 	Short: "Fetch users from QueryPie API v0.9",
@@ -93,6 +94,7 @@ func printUserListV1(list models.PagedUserV1List, first bool, last bool) {
 	}
 }
 
+// @Deprecated - Use fetchAllCmd instead
 var fetchUserCmdV2 = &cobra.Command{
 	Use:   "fetch-all-user",
 	Short: "Fetch users from QueryPie API v2",
@@ -181,6 +183,4 @@ func printUserListV2(list models.PagedUserV2List, first bool, last bool) {
 
 func init() {
 	// Add fetch subcommands to fetchCmd
-	rootCmd.AddCommand(fetchUserCmdV1)
-	rootCmd.AddCommand(fetchUserCmdV2)
 }

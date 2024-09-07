@@ -9,6 +9,7 @@ import (
 	"qpc/models"
 )
 
+// @Deprecated - Use fetchAllCmd instead
 var fetchDacCmd = &cobra.Command{
 	Use:   "dac",
 	Short: "Fetch DAC resources from QueryPie API v2",
@@ -95,5 +96,5 @@ func printConnectionV2List(list models.PagedConnectionV2List, first bool, last b
 
 func init() {
 	// Add fetch subcommands to fetchCmd
-	rootCmd.AddCommand(fetchDacCmd)
+	// rootCmd.AddCommand(fetchDacCmd) // @Deprecated - Use fetchAllCmd instead
 }

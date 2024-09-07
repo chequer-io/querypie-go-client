@@ -18,10 +18,9 @@ var (
 var rootCmd = &cobra.Command{
 	Use:   "qpc",
 	Short: "QueryPie Client for Operation",
-	Long:  `QueryPie Client for Operation is a CLI client for managing QueryPie operations.`,
+	Long:  `QueryPie Client for Operation - you can manage resources, access control policies`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// Default action when no subcommands are provided
-		fmt.Println("Hello from QueryPie Client for Operation!")
+		_ = cmd.Help()
 	},
 }
 
@@ -35,11 +34,20 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-	rootCmd.PersistentFlags().StringVar(&configFile, "config", "", "config file (default is ./.querypie-client.yaml)")
-	rootCmd.PersistentFlags().StringVar(&logLevel, "log-level", "warn", "Set the logging level (debug, info, warn, error, fatal, panic)")
+	cobra.EnableCommandSorting = false // Do not sort commands alphabetically
+	rootCmd.PersistentFlags().StringVar(&configFile,
+		"config", ".querypie-client.yaml",
+		"yaml file for configuration")
+	rootCmd.PersistentFlags().StringVar(&logLevel,
+		"log-level", "warn",
+		"Set the logging level (debug, info, warn, error, fatal, panic)")
 	// Add global flags or subcommands here
+	rootCmd.AddCommand(dacCmd)
+	rootCmd.AddCommand(userCmd)
+	rootCmd.AddCommand(userV1Cmd)
+	rootCmd.AddCommand(fetchAllCmd)
+	rootCmd.AddCommand(configQuerypieCmd)
 	rootCmd.AddCommand(versionCmd)
-	rootCmd.AddCommand(querypieServerCmd)
 }
 
 func initConfig() {
