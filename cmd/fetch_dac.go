@@ -95,5 +95,5 @@ func printConnectionV2List(list models.PagedConnectionV2List, first bool, last b
 
 func init() {
 	// Add fetch subcommands to fetchCmd
-	fetchCmd.AddCommand(fetchDacCmd)
+	rootCmd.AddCommand(fetchDacCmd)
 }

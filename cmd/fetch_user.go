@@ -10,7 +10,7 @@ import (
 )
 
 var fetchUserCmdV1 = &cobra.Command{
-	Use:   "user-v1",
+	Use:   "fetch-all-user-v1",
 	Short: "Fetch users from QueryPie API v0.9",
 	Run: func(cmd *cobra.Command, args []string) {
 		page := 0
@@ -94,9 +94,8 @@ func printUserListV1(list models.PagedUserV1List, first bool, last bool) {
 }
 
 var fetchUserCmdV2 = &cobra.Command{
-	Use:     "user",
-	Aliases: []string{"user-v2"},
-	Short:   "Fetch users from QueryPie API v2",
+	Use:   "fetch-all-user",
+	Short: "Fetch users from QueryPie API v2",
 	Run: func(cmd *cobra.Command, args []string) {
 		page := 0
 		size := 40 // Set the desired page size
@@ -182,6 +181,6 @@ func printUserListV2(list models.PagedUserV2List, first bool, last bool) {
 
 func init() {
 	// Add fetch subcommands to fetchCmd
-	fetchCmd.AddCommand(fetchUserCmdV1)
-	fetchCmd.AddCommand(fetchUserCmdV2)
+	rootCmd.AddCommand(fetchUserCmdV1)
+	rootCmd.AddCommand(fetchUserCmdV2)
 }
