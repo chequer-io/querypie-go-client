@@ -162,12 +162,6 @@ type KerberosProtocol struct {
 	ServiceName string `json:"serviceName"`
 }
 
-type SecretStore struct {
-	Account string `json:"account"`
-	Name    string `json:"name"`
-	Uuid    string `json:"uuid"`
-}
-
 type ConnectionAccount struct {
 	DbAccountName      string           `json:"dbAccountName"`
 	KerberosProtocol   KerberosProtocol `json:"kerberosProtocol"`

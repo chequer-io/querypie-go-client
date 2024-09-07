@@ -49,3 +49,9 @@ func (r Role) String() string {
 		r.Uuid, r.Name,
 	)
 }
+
+type SecretStore struct {
+	Uuid    string `json:"uuid"`
+	Name    string `json:"name"`
+	Account string `json:"account"`
+}

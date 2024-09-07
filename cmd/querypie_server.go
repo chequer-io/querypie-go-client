@@ -28,7 +28,7 @@ var querypieServerCmd = &cobra.Command{
 		for _, server := range querypieServerConfigs {
 			defaultFlag := ""
 			status := "FAIL"
-			if checkEndpoint(server, "/api/external/users?pageSize=3") {
+			if checkEndpoint(server, "/api/external/v2/security") {
 				status = "OK"
 			}
 			if server.Default {

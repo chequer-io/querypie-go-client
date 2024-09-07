@@ -1,0 +1,47 @@
+{
+  "accountLockoutPolicy": {
+    "accountLockoutEnabled": false,
+    "accountLockoutSetting": null,
+    "expirationPeriod": 30
+  },
+  "dbConnectionSecurity": {
+    "advancedPrivilegeSetting": true,
+    "displayRows": true,
+    "maxAccessDuration": 365,
+    "privilegeDeactivationPeriod": 90
+  },
+  "kubernetesConnectionSecurity": {
+    "idleSessionTimeoutMinutes": 3
+  },
+  "others": {
+    "fileExportEncryption": "REQUIRED"
+  },
+  "passwordSetting": {
+    "maxPasswordAge": 90,
+    "passwordHistoryCount": 1
+  },
+  "secretStores": [
+    {
+      "name": "string",
+      "uuid": "095be615-a8ad-4c33-8e9c-c7612fbf6c9f"
+    }
+  ],
+  "serverConnectionSecurity": {
+    "osAccountLockoutEnabled": false,
+    "osAccountLockoutSetting": null,
+    "serverSessionTimeout": 10,
+    "sessionTerminationEnabled": false,
+    "sessionTerminationSetting": null
+  },
+  "timeout": {
+    "agentSessionTimeout": 1440,
+    "webInactivityTimeout": 60
+  },
+  "vaultEnabled": true,
+  "webIpAccessControl": {
+    "individualize": true,
+    "ipBands": [
+      "string"
+    ]
+  }
+}
