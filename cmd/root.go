@@ -3,11 +3,12 @@ package cmd
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
-	"qpc/local_db"
-
-	"github.com/spf13/cobra"
+	"qpc/config"
+	"qpc/entity/user"
+	"qpc/models"
 )
 
 var (
@@ -73,5 +74,20 @@ func initConfig() {
 	logrus.SetLevel(level)
 
 	initConfigForQueryPieServer(v)
-	local_db.InitConfigForResource(v)
+	config.InitConfigForLocalDatabase(v)
+
+	db := config.LocalDatabase
+	err1 := db.AutoMigrate(
+		&user.User{},
+		&user.AdminRole{},
+		&models.UserV1{},
+		&models.UserRole{},
+		&models.Role{},
+		&models.SummarizedConnectionV2{},
+	)
+	if err1 != nil {
+		logrus.Fatal(err)
+	}
+
+	logrus.Infof("AutoMigrate has done successfully!")
 }

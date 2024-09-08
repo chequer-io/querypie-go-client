@@ -14,8 +14,8 @@ var fetchAllCmd = &cobra.Command{
 	Short: "Fetch various resources from QueryPie server, and save them to local sqlite database",
 	Example: `  fetch-all dac       # DAC resources from QueryPie API v2
   fetch-all sac       # N/A Yet - SAC resources from QueryPie API v2
-  fetch-all user      # Users from QueryPie API v2
-  fetch-all user-v1   # Users from QueryPie API v0.9`,
+  fetch-all users     # Users from QueryPie API v2
+  fetch-all users-v1  # Users from QueryPie API v0.9`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			_ = cmd.Help()
@@ -30,7 +30,7 @@ var fetchAllCmd = &cobra.Command{
 
 func validate(resource string) string {
 	switch resource {
-	case "dac", "sac", "user", "user-v1":
+	case "dac", "sac", "users", "users-v1":
 		return resource
 	default:
 		logrus.Fatalf("Unknown resource: %s", resource)
@@ -44,9 +44,9 @@ func getUri(resource string) string {
 		return "/api/external/v2/dac/connections"
 	case "sac":
 		return "/api/external/v2/sac/servers"
-	case "user":
+	case "users":
 		return "/api/external/v2/users"
-	case "user-v1":
+	case "users-v1":
 		return "/api/external/users"
 	default:
 		logrus.Fatalf("Unknown resource: %s", resource)
@@ -65,9 +65,9 @@ func fetchPrintSave(resource string, uri string) {
 		result = &models.PagedConnectionV2List{}
 	case "sac":
 		result = nil
-	case "user":
-		result = &user.PagedUserV2List{}
-	case "user-v1":
+	case "users":
+		result = &user.PagedUserList{}
+	case "users-v1":
 		result = &models.PagedUserV1List{}
 	default:
 		logrus.Fatalf("Unknown resource: %s", resource)
@@ -95,8 +95,8 @@ func fetchPrintSave(resource string, uri string) {
 		switch v := result.(type) {
 		case *models.PagedConnectionV2List:
 			printConnectionV2List(*v, page == 0, !v.Page.HasNext())
-		case *user.PagedUserV2List:
-			printUserListV2(*v, page == 0, !v.Page.HasNext())
+		case *user.PagedUserList:
+			v.Print()
 		case *models.PagedUserV1List:
 			printUserListV1(*v, page == 0, !v.Page.HasNext())
 		default:
@@ -110,8 +110,8 @@ func fetchPrintSave(resource string, uri string) {
 			if !v.Page.HasNext() {
 				shouldBreak = true
 			}
-		case *user.PagedUserV2List:
-			saveUserListV2(v.List)
+		case *user.PagedUserList:
+			v.Save()
 			if !v.Page.HasNext() {
 				shouldBreak = true
 			}

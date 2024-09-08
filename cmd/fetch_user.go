@@ -5,8 +5,8 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"qpc/config"
 	"qpc/entity/user"
-	"qpc/local_db"
 	"qpc/models"
 )
 
@@ -50,11 +50,11 @@ var fetchUserCmdV1 = &cobra.Command{
 func saveUserListV1(list []models.UserV1) {
 	for _, userV1 := range list {
 		// Attempt to update the user
-		result := local_db.LocalDatabase.Model(&models.UserV1{}).Where("uuid = ?", userV1.Uuid).Updates(&userV1)
+		result := config.LocalDatabase.Model(&models.UserV1{}).Where("uuid = ?", userV1.Uuid).Updates(&userV1)
 
 		// If no rows were affected, create a new user
 		if result.RowsAffected == 0 {
-			if err := local_db.LocalDatabase.Create(&userV1).Error; err != nil {
+			if err := config.LocalDatabase.Create(&userV1).Error; err != nil {
 				logrus.Errorf("Failed to save user %s: %v", userV1.ShortID(), err)
 			}
 		} else if result.Error != nil {
@@ -105,7 +105,7 @@ var fetchUserCmdV2 = &cobra.Command{
 
 		for {
 			var restClient = resty.New()
-			var list user.PagedUserV2List
+			var list user.PagedUserList
 			resp, err := restClient.R().
 				SetQueryParams(
 					map[string]string{
@@ -121,8 +121,8 @@ var fetchUserCmdV2 = &cobra.Command{
 			if err != nil {
 				logrus.Fatalf("Failed to fetch user data: %v", err)
 			}
-			printUserListV2(list, page == 0, !list.Page.HasNext())
-			saveUserListV2(list.List)
+			list.Print()
+			list.Save()
 
 			if !list.Page.HasNext() {
 				break
@@ -130,56 +130,6 @@ var fetchUserCmdV2 = &cobra.Command{
 			page++
 		}
 	},
-}
-
-func saveUserListV2(list []user.UserV2) {
-	for _, userV2 := range list {
-		// Attempt to update the user
-		result := local_db.LocalDatabase.Model(&user.UserV2{}).Where("uuid = ?", userV2.Uuid).Updates(&userV2)
-
-		// If no rows were affected, create a new user
-		if result.RowsAffected == 0 {
-			if err := local_db.LocalDatabase.Create(&userV2).Error; err != nil {
-				logrus.Errorf("Failed to save user %s: %v", userV2.ShortID(), err)
-			}
-		} else if result.Error != nil {
-			logrus.Errorf("Failed to update user %s: %v", userV2.ShortID(), result.Error)
-		}
-	}
-}
-
-func printUserListV2(list user.PagedUserV2List, first bool, last bool) {
-	format := "%-36s  %-22s  %-22s  %-18s  %-8s  %-8s %-16s  %-16s\n"
-	if first {
-		logrus.Debugf("Page: %v", list.Page)
-		fmt.Printf(format,
-			"UUID",
-			"LOGIN_ID",
-			"EMAIL",
-			"NAME",
-			"STATUS",
-			"MORE",
-			"CREATED",
-			"UPDATED",
-		)
-
-	}
-	for _, u := range list.List {
-		logrus.Debug(u)
-		fmt.Printf(format,
-			u.Uuid,
-			u.LoginId,
-			u.Email,
-			u.Name,
-			u.Status,
-			u.StatusMore(),
-			u.ShortCreatedAt(),
-			u.ShortUpdatedAt(),
-		)
-	}
-	if last {
-		logrus.Infof("TotalElements: %v", list.Page.TotalElements)
-	}
 }
 
 func init() {

@@ -13,7 +13,7 @@ var userFetchAllCmd = &cobra.Command{
 	Use:   "fetch-all",
 	Short: "Fetch all users from QueryPie server and save them to local sqlite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		fetchPrintSave("user", "/api/external/v2/users")
+		fetchPrintSave("users", "/api/external/v2/users")
 	},
 }
 
@@ -26,7 +26,7 @@ var userV1FetchAllCmd = &cobra.Command{
 	Use:   "fetch-all",
 	Short: "Fetch all users from QueryPie server and save them to local sqlite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		fetchPrintSave("user-v1", "/api/external/users")
+		fetchPrintSave("users-v1", "/api/external/users")
 	},
 }
 

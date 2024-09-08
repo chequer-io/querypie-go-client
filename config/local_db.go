@@ -1,4 +1,4 @@
-package local_db
+package config
 
 import (
 	_ "github.com/mattn/go-sqlite3" // Import for side effects to register the SQLite3 driver
@@ -7,8 +7,6 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"os"
-	"qpc/entity/user"
-	"qpc/models"
 )
 
 var LocalDatabase *gorm.DB
@@ -20,31 +18,17 @@ func initLocalDatabase(dataSourceName string) {
 		logrus.Fatal(err)
 	}
 	LocalDatabase = db
-
-	err1 := db.AutoMigrate(
-		&user.UserV2{},
-		&user.AdminRole{},
-		&models.UserV1{},
-		&models.UserRole{},
-		&models.Role{},
-		&models.SummarizedConnectionV2{},
-	)
-	if err1 != nil {
-		logrus.Fatal(err)
-	}
-
-	logrus.Infof("AutoMigrate has done successfully!")
 }
 
-func InitConfigForResource(viper *viper.Viper) {
+func InitConfigForLocalDatabase(viper *viper.Viper) {
 	var dataSourceName string
-	if err := viper.UnmarshalKey("sqlite3_data_source", &dataSourceName); err != nil {
-		logrus.Fatalf("Unable to unmarshal sqlite3_data_source: %v", err)
+	if err := viper.UnmarshalKey("sqlite3-data-source", &dataSourceName); err != nil {
+		logrus.Fatalf("Unable to unmarshal sqlite3-data-source: %v", err)
 		os.Exit(1)
 	}
 
 	if dataSourceName == "" {
-		logrus.Fatalf("sqlite3_data_source is not set in the configuration")
+		logrus.Fatalf("sqlite3-data-source is not set in the configuration")
 		os.Exit(1)
 	}
 

@@ -5,7 +5,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"qpc/local_db"
+	"qpc/config"
 	"qpc/models"
 )
 
@@ -49,11 +49,11 @@ var fetchDacCmd = &cobra.Command{
 func saveConnectionV2List(list []models.SummarizedConnectionV2) {
 	for _, conn := range list {
 		// Attempt to update the user
-		result := local_db.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Where("uuid = ?", conn.Uuid).Updates(&conn)
+		result := config.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Where("uuid = ?", conn.Uuid).Updates(&conn)
 
 		// If no rows were affected, create a new summarized connection
 		if result.RowsAffected == 0 {
-			if err := local_db.LocalDatabase.Create(&conn).Error; err != nil {
+			if err := config.LocalDatabase.Create(&conn).Error; err != nil {
 				logrus.Errorf("Failed to save connection %s: %v", conn.ShortID(), err)
 			}
 		} else if result.Error != nil {

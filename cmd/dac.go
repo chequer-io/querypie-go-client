@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"qpc/local_db"
+	"qpc/config"
 	"qpc/models"
 )
 
@@ -25,7 +25,7 @@ var dacListCmd = &cobra.Command{
 	Short: "List DAC connections in local sqlite database",
 	Run: func(cmd *cobra.Command, args []string) {
 		var total, fetched int64 = 0, 0
-		result := local_db.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Count(&total)
+		result := config.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Count(&total)
 		if result.Error != nil {
 			logrus.Fatalf("Failed to count dac connections: %v", result.Error)
 		}
@@ -59,7 +59,7 @@ func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (mode
 	var page models.Page
 	var connections []models.SummarizedConnectionV2
 	offset := currentPage * pageSize
-	result := local_db.LocalDatabase.
+	result := config.LocalDatabase.
 		Offset(offset).
 		Limit(pageSize).
 		Find(&connections)

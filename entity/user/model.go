@@ -6,7 +6,7 @@ import (
 	"qpc/utils"
 )
 
-type UserV2 struct {
+type User struct {
 	Uuid            string        `json:"uuid" gorm:"primaryKey"`
 	LoginId         string        `json:"loginId"`
 	Email           string        `json:"email"`
@@ -22,7 +22,7 @@ type UserV2 struct {
 	UpdatedAt       string        `json:"updatedAt"`
 }
 
-func (u UserV2) StatusMore() string {
+func (u User) StatusMore() string {
 	if u.Deleted {
 		return "deleted"
 	}
@@ -38,22 +38,22 @@ func (u UserV2) StatusMore() string {
 	return "-"
 }
 
-func (u UserV2) ShortCreatedAt() string {
+func (u User) ShortCreatedAt() string {
 	return utils.ShortDatetimeWithTZ(u.CreatedAt)
 }
 
-func (u UserV2) ShortUpdatedAt() string {
+func (u User) ShortUpdatedAt() string {
 	return utils.ShortDatetimeWithTZ(u.UpdatedAt)
 }
 
-func (u UserV2) ShortID() string {
+func (u User) ShortID() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s }",
 		u.Uuid, u.LoginId,
 	)
 }
 
-func (u UserV2) String() string {
+func (u User) String() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s, Email=%s, Name=%s, AdminRoles=%v, "+
 			"Status=%s, Factor=%v, PasswordExpired=%t, Locked=%t, "+
@@ -63,6 +63,19 @@ func (u UserV2) String() string {
 		u.Expired, u.Deleted, u.CreatedAt, u.UpdatedAt)
 }
 
-type PagedUserV2List struct {
-	models.PagedList[UserV2]
+type AdminRole struct {
+	UserV2Uuid string `gorm:"primaryKey"`
+	RoleUuid   string `json:"roleUuid" gorm:"primaryKey"`
+	RoleName   string `json:"roleName"`
+}
+
+func (r AdminRole) String() string {
+	return fmt.Sprintf(
+		"{ RoleUuid=%s, RoleName=%s }",
+		r.RoleUuid, r.RoleName,
+	)
+}
+
+type PagedUserList struct {
+	models.PagedList[User]
 }

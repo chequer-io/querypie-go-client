@@ -6,7 +6,7 @@ all: build
 # Build the application
 build: $(BINARY_NAME)
 
-$(BINARY_NAME): $(shell find cmd local_db models utils -name '*.go')
+$(BINARY_NAME): $(shell find cmd config entity models utils -name '*.go')
 	@echo "Building the application..."
 	go build -o $(BINARY_NAME) main.go
 	@echo "Build complete!"
@@ -22,5 +22,6 @@ config:
 
 .PHONY: test
 test:
-	go test ./cmd/... ./entity/... ./local_db/... ./models/... ./utils/...
+	go test ./cmd/... ./config/... ./entity/... ./models/... ./utils/...
+	prove -v t/run-qpc t/run-qpc-config-querypie t/run-qpc-user
 
