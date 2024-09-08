@@ -5,6 +5,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"qpc/entity/user"
 	"qpc/models"
 )
 
@@ -65,7 +66,7 @@ func fetchPrintSave(resource string, uri string) {
 	case "sac":
 		result = nil
 	case "user":
-		result = &models.PagedUserV2List{}
+		result = &user.PagedUserV2List{}
 	case "user-v1":
 		result = &models.PagedUserV1List{}
 	default:
@@ -94,7 +95,7 @@ func fetchPrintSave(resource string, uri string) {
 		switch v := result.(type) {
 		case *models.PagedConnectionV2List:
 			printConnectionV2List(*v, page == 0, !v.Page.HasNext())
-		case *models.PagedUserV2List:
+		case *user.PagedUserV2List:
 			printUserListV2(*v, page == 0, !v.Page.HasNext())
 		case *models.PagedUserV1List:
 			printUserListV1(*v, page == 0, !v.Page.HasNext())
@@ -109,7 +110,7 @@ func fetchPrintSave(resource string, uri string) {
 			if !v.Page.HasNext() {
 				shouldBreak = true
 			}
-		case *models.PagedUserV2List:
+		case *user.PagedUserV2List:
 			saveUserListV2(v.List)
 			if !v.Page.HasNext() {
 				shouldBreak = true

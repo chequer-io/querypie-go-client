@@ -22,4 +22,5 @@ config:
 
 .PHONY: test
 test:
-	go test ./...
+	go test ./cmd/... ./entity/... ./local_db/... ./models/... ./utils/...
+

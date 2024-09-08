@@ -5,6 +5,7 @@ import (
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"qpc/entity/user"
 	"qpc/local_db"
 	"qpc/models"
 )
@@ -47,17 +48,17 @@ var fetchUserCmdV1 = &cobra.Command{
 }
 
 func saveUserListV1(list []models.UserV1) {
-	for _, user := range list {
+	for _, userV1 := range list {
 		// Attempt to update the user
-		result := local_db.LocalDatabase.Model(&models.UserV1{}).Where("uuid = ?", user.Uuid).Updates(&user)
+		result := local_db.LocalDatabase.Model(&models.UserV1{}).Where("uuid = ?", userV1.Uuid).Updates(&userV1)
 
 		// If no rows were affected, create a new user
 		if result.RowsAffected == 0 {
-			if err := local_db.LocalDatabase.Create(&user).Error; err != nil {
-				logrus.Errorf("Failed to save user %s: %v", user.ShortID(), err)
+			if err := local_db.LocalDatabase.Create(&userV1).Error; err != nil {
+				logrus.Errorf("Failed to save user %s: %v", userV1.ShortID(), err)
 			}
 		} else if result.Error != nil {
-			logrus.Errorf("Failed to update user %s: %v", user.ShortID(), result.Error)
+			logrus.Errorf("Failed to update user %s: %v", userV1.ShortID(), result.Error)
 		}
 	}
 }
@@ -77,16 +78,16 @@ func printUserListV1(list models.PagedUserV1List, first bool, last bool) {
 		)
 
 	}
-	for _, user := range list.List {
-		logrus.Debug(user)
+	for _, u := range list.List {
+		logrus.Debug(u)
 		fmt.Printf(format,
-			user.Uuid,
-			user.LoginId,
-			user.Email,
-			user.Name,
-			user.Status(),
-			user.ShortCreatedAt(),
-			user.ShortUpdatedAt(),
+			u.Uuid,
+			u.LoginId,
+			u.Email,
+			u.Name,
+			u.Status(),
+			u.ShortCreatedAt(),
+			u.ShortUpdatedAt(),
 		)
 	}
 	if last {
@@ -104,7 +105,7 @@ var fetchUserCmdV2 = &cobra.Command{
 
 		for {
 			var restClient = resty.New()
-			var list models.PagedUserV2List
+			var list user.PagedUserV2List
 			resp, err := restClient.R().
 				SetQueryParams(
 					map[string]string{
@@ -131,23 +132,23 @@ var fetchUserCmdV2 = &cobra.Command{
 	},
 }
 
-func saveUserListV2(list []models.UserV2) {
-	for _, user := range list {
+func saveUserListV2(list []user.UserV2) {
+	for _, userV2 := range list {
 		// Attempt to update the user
-		result := local_db.LocalDatabase.Model(&models.UserV2{}).Where("uuid = ?", user.Uuid).Updates(&user)
+		result := local_db.LocalDatabase.Model(&user.UserV2{}).Where("uuid = ?", userV2.Uuid).Updates(&userV2)
 
 		// If no rows were affected, create a new user
 		if result.RowsAffected == 0 {
-			if err := local_db.LocalDatabase.Create(&user).Error; err != nil {
-				logrus.Errorf("Failed to save user %s: %v", user.ShortID(), err)
+			if err := local_db.LocalDatabase.Create(&userV2).Error; err != nil {
+				logrus.Errorf("Failed to save user %s: %v", userV2.ShortID(), err)
 			}
 		} else if result.Error != nil {
-			logrus.Errorf("Failed to update user %s: %v", user.ShortID(), result.Error)
+			logrus.Errorf("Failed to update user %s: %v", userV2.ShortID(), result.Error)
 		}
 	}
 }
 
-func printUserListV2(list models.PagedUserV2List, first bool, last bool) {
+func printUserListV2(list user.PagedUserV2List, first bool, last bool) {
 	format := "%-36s  %-22s  %-22s  %-18s  %-8s  %-8s %-16s  %-16s\n"
 	if first {
 		logrus.Debugf("Page: %v", list.Page)
@@ -163,17 +164,17 @@ func printUserListV2(list models.PagedUserV2List, first bool, last bool) {
 		)
 
 	}
-	for _, user := range list.List {
-		logrus.Debug(user)
+	for _, u := range list.List {
+		logrus.Debug(u)
 		fmt.Printf(format,
-			user.Uuid,
-			user.LoginId,
-			user.Email,
-			user.Name,
-			user.Status,
-			user.StatusMore(),
-			user.ShortCreatedAt(),
-			user.ShortUpdatedAt(),
+			u.Uuid,
+			u.LoginId,
+			u.Email,
+			u.Name,
+			u.Status,
+			u.StatusMore(),
+			u.ShortCreatedAt(),
+			u.ShortUpdatedAt(),
 		)
 	}
 	if last {

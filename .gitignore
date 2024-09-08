@@ -2,3 +2,4 @@
 qpc
 .querypie-client.yaml
 var/*.db
+pkg/*

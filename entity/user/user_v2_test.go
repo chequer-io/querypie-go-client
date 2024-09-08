@@ -1,4 +1,4 @@
-package models
+package user
 
 import (
 	"encoding/json"
@@ -8,7 +8,7 @@ import (
 
 func TestParseFixtureV2Users(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../test/fixture_v2_users.json")
+	data, err := os.ReadFile("../../test/fixture_v2_users.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}

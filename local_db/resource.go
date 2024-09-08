@@ -7,6 +7,7 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"os"
+	"qpc/entity/user"
 	"qpc/models"
 )
 
@@ -21,8 +22,8 @@ func initLocalDatabase(dataSourceName string) {
 	LocalDatabase = db
 
 	err1 := db.AutoMigrate(
-		&models.UserV2{},
-		&models.AdminRole{},
+		&user.UserV2{},
+		&user.AdminRole{},
 		&models.UserV1{},
 		&models.UserRole{},
 		&models.Role{},

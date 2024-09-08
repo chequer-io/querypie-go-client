@@ -1,24 +1,25 @@
-package models
+package user
 
 import (
 	"fmt"
+	"qpc/models"
 	"qpc/utils"
 )
 
 type UserV2 struct {
-	Uuid            string      `json:"uuid" gorm:"primaryKey"`
-	LoginId         string      `json:"loginId"`
-	Email           string      `json:"email"`
-	Name            string      `json:"name"`
-	AdminRoles      []AdminRole `json:"adminRoles" gorm:"foreignKey:UserV2Uuid"`
-	Status          string      `json:"status"`
-	Factor          Factor      `json:"factor" gorm:"-"`
-	PasswordExpired bool        `json:"passwordExpired"`
-	Locked          bool        `json:"locked"`
-	Expired         bool        `json:"expired"`
-	Deleted         bool        `json:"deleted"`
-	CreatedAt       string      `json:"createdAt"`
-	UpdatedAt       string      `json:"updatedAt"`
+	Uuid            string        `json:"uuid" gorm:"primaryKey"`
+	LoginId         string        `json:"loginId"`
+	Email           string        `json:"email"`
+	Name            string        `json:"name"`
+	AdminRoles      []AdminRole   `json:"adminRoles" gorm:"foreignKey:UserV2Uuid"`
+	Status          string        `json:"status"`
+	Factor          models.Factor `json:"factor" gorm:"-"`
+	PasswordExpired bool          `json:"passwordExpired"`
+	Locked          bool          `json:"locked"`
+	Expired         bool          `json:"expired"`
+	Deleted         bool          `json:"deleted"`
+	CreatedAt       string        `json:"createdAt"`
+	UpdatedAt       string        `json:"updatedAt"`
 }
 
 func (u UserV2) StatusMore() string {
@@ -63,18 +64,5 @@ func (u UserV2) String() string {
 }
 
 type PagedUserV2List struct {
-	PagedList[UserV2]
-}
-
-type AdminRole struct {
-	UserV2Uuid string `gorm:"primaryKey"`
-	RoleUuid   string `json:"roleUuid" gorm:"primaryKey"`
-	RoleName   string `json:"roleName"`
-}
-
-func (r AdminRole) String() string {
-	return fmt.Sprintf(
-		"{ RoleUuid=%s, RoleName=%s }",
-		r.RoleUuid, r.RoleName,
-	)
+	models.PagedList[UserV2]
 }
