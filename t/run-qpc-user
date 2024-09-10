@@ -14,6 +14,10 @@ function test_qpc_exists() {
 }
 
 function test_qpc_user() {
+  echo "# ##########"
+  echo "# test_qpc_user"
+  echo "# "
+
   local actual_header expected actual
   actual_header=$(qpc user | head -1 || true)
   is "${actual_header}" "Manage user accounts with QueryPie API v2" \
@@ -29,12 +33,15 @@ Flags:"
 
 function test_qpc_user_fetch_all() {
   local actual_header actual_output
+  echo "# ##########"
+  echo "# test_qpc_user_fetch_all"
+  echo "# "
 
   actual_header=$(qpc user fetch-all | head -1 || true)
   like "${actual_header}" "^UUID * LOGIN_ID * EMAIL * NAME * STATUS * MORE * CREATED * UPDATED *$" \
     "It should print a header line of UUID, LOGIN_ID, EMAIL, NAME, STATUS, MORE, CREATED, UPDATED."
 
-  actual_output=$(qpc user fetch-all | grep brant | sed 's/   */\t/g')
+  actual_output=$(qpc user fetch-all | grep brant | sed 's/   */\t/g' || true)
   IFS=$'\t'
   read -r UUID LOGIN_ID EMAIL NAME STATUS MORE CREATED UPDATED <<< "${actual_output}"
 

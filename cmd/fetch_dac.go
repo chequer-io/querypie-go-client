@@ -79,10 +79,14 @@ func printConnectionV2List(list models.PagedConnectionV2List, first bool, last b
 	}
 	for _, conn := range list.List {
 		logrus.Debug(conn)
+		cloudProviderType := conn.CloudProviderType
+		if cloudProviderType == "" {
+			cloudProviderType = "-"
+		}
 		fmt.Printf(format,
 			conn.Uuid,
 			conn.DatabaseType,
-			conn.CloudProviderType,
+			cloudProviderType,
 			conn.Name,
 			conn.Status(),
 			conn.ShortCreatedAt(),
