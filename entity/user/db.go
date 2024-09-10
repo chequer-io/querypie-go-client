@@ -6,7 +6,7 @@ import (
 )
 
 func (pul PagedUserList) Save() {
-	for _, user := range pul.List {
+	for _, user := range pul.GetList() {
 		user.Save()
 	}
 }

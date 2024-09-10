@@ -16,7 +16,7 @@ var dacFetchAllConnectionsCmd = &cobra.Command{
 	Use:   "fetch-all",
 	Short: "Fetch all DAC connections from QueryPie server and save them to local sqlite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		fetchPrintSave("dac", "/api/external/v2/dac/connections")
+		fetchDACPrintAndSave()
 	},
 }
 

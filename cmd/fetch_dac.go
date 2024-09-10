@@ -2,49 +2,10 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
-	"github.com/spf13/cobra"
 	"qpc/config"
 	"qpc/models"
 )
-
-// @Deprecated - Use fetchAllCmd instead
-var fetchDacCmd = &cobra.Command{
-	Use:   "dac",
-	Short: "Fetch DAC resources from QueryPie API v2",
-	Run: func(cmd *cobra.Command, args []string) {
-		page := 0
-		size := 40 // Set the desired page size
-
-		for {
-			var restClient = resty.New()
-			var list models.PagedConnectionV2List
-			resp, err := restClient.R().
-				SetQueryParams(
-					map[string]string{
-						"pageSize":   fmt.Sprintf("%d", size),
-						"pageNumber": fmt.Sprintf("%d", page),
-					},
-				).
-				SetHeader("Accept", "application/json").
-				SetAuthToken(defaultQuerypieServer.AccessToken).
-				SetResult(&list).
-				Get(defaultQuerypieServer.BaseURL + "/api/external/v2/dac/connections")
-			logrus.Debugf("Response: %v", resp)
-			if err != nil {
-				logrus.Fatalf("Failed to fetch dac connections: %v", err)
-			}
-			printConnectionV2List(list, page == 0, !list.Page.HasNext())
-			saveConnectionV2List(list.List)
-
-			if !list.Page.HasNext() {
-				break
-			}
-			page++
-		}
-	},
-}
 
 func saveConnectionV2List(list []models.SummarizedConnectionV2) {
 	for _, conn := range list {

@@ -22,10 +22,59 @@ var fetchAllCmd = &cobra.Command{
 			return
 		}
 		resource := validate(args[0])
-		uri := getUri(resource)
-		logrus.Debugf("URI: %s", uri)
-		fetchPrintSave(resource, uri)
+		switch resource {
+		case "dac":
+			fetchDACPrintAndSave()
+		case "users":
+			fetchUserPrintAndSave()
+		case "users-v1":
+			fetchUserV1PrintAndSave()
+		default:
+			logrus.Fatalf("Unknown resource: %s", resource)
+		}
 	},
+}
+
+func fetchDACPrintAndSave() {
+	fetchPrintAndSave(
+		"/api/external/v2/dac/connections",
+		&models.PagedConnectionV2List{},
+		func(result *models.PagedConnectionV2List, first bool, last bool) {
+			printConnectionV2List(*result, first, last)
+		},
+		func(result *models.PagedConnectionV2List) bool {
+			saveConnectionV2List(result.List)
+			return !result.Page.HasNext()
+		},
+	)
+}
+
+func fetchUserPrintAndSave() {
+	fetchPrintAndSave(
+		"/api/external/v2/users",
+		&user.PagedUserList{},
+		func(result *user.PagedUserList, first bool, last bool) {
+			result.Print()
+		},
+		func(result *user.PagedUserList) bool {
+			result.Save()
+			return !result.Page.HasNext()
+		},
+	)
+}
+
+func fetchUserV1PrintAndSave() {
+	fetchPrintAndSave(
+		"/api/external/users",
+		&models.PagedUserV1List{},
+		func(result *models.PagedUserV1List, first bool, last bool) {
+			printUserListV1(*result, first, last)
+		},
+		func(result *models.PagedUserV1List) bool {
+			saveUserListV1(result.GetList())
+			return !result.Page.HasNext()
+		},
+	)
 }
 
 func validate(resource string) string {
@@ -38,41 +87,16 @@ func validate(resource string) string {
 	}
 }
 
-func getUri(resource string) string {
-	switch resource {
-	case "dac":
-		return "/api/external/v2/dac/connections"
-	case "sac":
-		return "/api/external/v2/sac/servers"
-	case "users":
-		return "/api/external/v2/users"
-	case "users-v1":
-		return "/api/external/users"
-	default:
-		logrus.Fatalf("Unknown resource: %s", resource)
-		return ""
-	}
-}
-
-func fetchPrintSave(resource string, uri string) {
+func fetchPrintAndSave[T any, P models.PagedList[T]](
+	uri string,
+	result P,
+	printFunc func(object P, first bool, last bool),
+	saveFunc func(object P) bool,
+) {
 	page := 0
 	size := 40 // Set the desired page size
 	restClient := resty.New()
 
-	var result interface{}
-	switch resource {
-	case "dac":
-		result = &models.PagedConnectionV2List{}
-	case "sac":
-		result = nil
-	case "users":
-		result = &user.PagedUserList{}
-	case "users-v1":
-		result = &models.PagedUserV1List{}
-	default:
-		logrus.Fatalf("Unknown resource: %s", resource)
-		return
-	}
 	logrus.Debugf("Type of result: %T", result)
 
 	for {
@@ -92,38 +116,8 @@ func fetchPrintSave(resource string, uri string) {
 			logrus.Fatalf("Failed to fetch resources: %v", err)
 		}
 
-		switch v := result.(type) {
-		case *models.PagedConnectionV2List:
-			printConnectionV2List(*v, page == 0, !v.Page.HasNext())
-		case *user.PagedUserList:
-			v.Print()
-		case *models.PagedUserV1List:
-			printUserListV1(*v, page == 0, !v.Page.HasNext())
-		default:
-			logrus.Fatalf("printPagedList() Unknown type: %T", v)
-		}
-
-		shouldBreak := false
-		switch v := result.(type) {
-		case *models.PagedConnectionV2List:
-			saveConnectionV2List(v.List)
-			if !v.Page.HasNext() {
-				shouldBreak = true
-			}
-		case *user.PagedUserList:
-			v.Save()
-			if !v.Page.HasNext() {
-				shouldBreak = true
-			}
-		case *models.PagedUserV1List:
-			saveUserListV1(v.List)
-			if !v.Page.HasNext() {
-				shouldBreak = true
-			}
-		default:
-			logrus.Fatalf("savePagedList() Unknown type: %T", v)
-		}
-
+		printFunc(result, page == 0, !result.GetPage().HasNext())
+		shouldBreak := saveFunc(result)
 		if shouldBreak {
 			break
 		}

@@ -21,7 +21,7 @@ func (p Page) NextPageQuery() string {
 	}
 }
 
-type PagedList[T any] struct {
-	List []T  `json:"list"`
-	Page Page `json:"page"`
+type PagedList[T any] interface {
+	GetPage() Page
+	GetList() []T
 }

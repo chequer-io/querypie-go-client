@@ -77,5 +77,14 @@ func (r AdminRole) String() string {
 }
 
 type PagedUserList struct {
-	models.PagedList[User]
+	List []User      `json:"list"`
+	Page models.Page `json:"page"`
+}
+
+func (pul PagedUserList) GetPage() models.Page {
+	return pul.Page
+}
+
+func (pul PagedUserList) GetList() []User {
+	return pul.List
 }

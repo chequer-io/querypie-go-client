@@ -84,7 +84,16 @@ func (i SummarizedAdditionalInfo) String() string {
 }
 
 type PagedConnectionV2List struct {
-	PagedList[SummarizedConnectionV2]
+	List []SummarizedConnectionV2 `json:"list"`
+	Page Page                     `json:"page"`
+}
+
+func (p PagedConnectionV2List) GetPage() Page {
+	return p.Page
+}
+
+func (p PagedConnectionV2List) GetList() []SummarizedConnectionV2 {
+	return p.List
 }
 
 type ConnectionV2 struct {

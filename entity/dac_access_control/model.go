@@ -40,7 +40,16 @@ func (sac SummarizedAccessControl) String() string {
 }
 
 type SummarizedAccessControlPagedList struct {
-	models.PagedList[SummarizedAccessControl]
+	List []SummarizedAccessControl `json:"list"`
+	Page models.Page               `json:"page"`
+}
+
+func (acl SummarizedAccessControlPagedList) GetPage() models.Page {
+	return acl.Page
+}
+
+func (acl SummarizedAccessControlPagedList) GetList() []SummarizedAccessControl {
+	return acl.List
 }
 
 type Privilege struct {
@@ -87,5 +96,14 @@ func (ac AccessControl) String() string {
 }
 
 type AccessControlPagedList struct {
-	models.PagedList[AccessControl]
+	List []AccessControl `json:"list"`
+	Page models.Page     `json:"page"`
+}
+
+func (acl AccessControlPagedList) GetPage() models.Page {
+	return acl.Page
+}
+
+func (acl AccessControlPagedList) GetList() []AccessControl {
+	return acl.List
 }

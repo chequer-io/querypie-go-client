@@ -58,7 +58,16 @@ func (u UserV1) String() string {
 }
 
 type PagedUserV1List struct {
-	PagedList[UserV1]
+	List []UserV1 `json:"list"`
+	Page Page     `json:"page"`
+}
+
+func (pul PagedUserV1List) GetPage() Page {
+	return pul.Page
+}
+
+func (pul PagedUserV1List) GetList() []UserV1 {
+	return pul.List
 }
 
 type UserRole struct {
