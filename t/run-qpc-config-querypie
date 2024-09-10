@@ -20,21 +20,23 @@ function test_qpc_config_querypie() {
   like "${actual_header}" "^NAME * BASE_URL * ACCESS_TOKEN * STATUS$" \
     "It should print a header line of NAME, BASE_URL, ACCESS_TOKEN, STATUS."
 
-  actual_output=$(qpc config querypie 2>/dev/null | grep internal)
+  actual_output=$(qpc config querypie 2>/dev/null | grep internal | sed 's/   */\t/g' || true)
+  IFS=$'\t'
+  read -r NAME BASE_URL ACCESS_TOKEN STATUS<<< "${actual_output}"
 
   # internal.querypie.io[*]
-  like "${actual_output}" "^internal.querypie.io\[\*\] " \
+  is "${NAME}" "internal.querypie.io[*]" \
     "It should print an output of internal.querypie.io which name is marked as default."
 
   # https://internal.querypie.io
-  like "${actual_output}" " * https://internal.querypie.io *" \
+  is "${BASE_URL}" "https://internal.querypie.io" \
     "It should print an output of internal.querypie.io which url has no trailing /."
 
   # ap5bbb2a2f-****-****-****-************
-  like "${actual_output}" " * ap5bbb2a2f\-[\*\-]{27} *" \
+  like "${ACCESS_TOKEN}" "^[0-9a-z]{10}-\*{4}-\*{4}-\*{4}-\*{12}$" \
     "It should print an output of internal.querypie.io which access token is masked."
 
-  like "${actual_output}" " * (OK|FAIL) *$" \
+  like "${STATUS}" "^(OK|FAIL)$" \
     "It should print an output of internal.querypie.io which status is OK or FAIL."
 }
 

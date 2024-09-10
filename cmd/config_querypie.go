@@ -31,7 +31,8 @@ var configQuerypieCmd = &cobra.Command{
 }
 
 func listQuerypieServers() {
-	fmt.Printf("%-30s %-40s %-40s %-5s\n",
+	const format = "%-30s  %-36s  %-38s  %-4s\n"
+	fmt.Printf(format, // Two spaces as delimiter
 		"NAME",
 		"BASE_URL",
 		"ACCESS_TOKEN",
@@ -47,7 +48,7 @@ func listQuerypieServers() {
 		if server.Default {
 			defaultFlag = "[*]"
 		}
-		fmt.Printf("%-30s %-40s %-40s %-5s\n",
+		fmt.Printf(format,
 			server.Name+defaultFlag,
 			server.BaseURL,
 			utils.MaskAccessToken(server.AccessToken),
