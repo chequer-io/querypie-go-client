@@ -1,0 +1,29 @@
+{
+  "adminRole": "NONE",
+  "authType": "QueryPie",
+  "linked": true,
+  "linkedCount": 1,
+  "mappedConnections": [
+    {
+      "cloudProvider": {
+        "name": "string",
+        "uuid": "string"
+      },
+      "clusterUuid": "string",
+      "databaseType": "MYSQL",
+      "ledger": true,
+      "name": "string",
+      "privilege": {
+        "name": "string",
+        "uuid": "string"
+      },
+      "status": "ACTIVE"
+    }
+  ],
+  "members": [
+    "string"
+  ],
+  "name": "string",
+  "userType": "USER",
+  "uuid": "string"
+}

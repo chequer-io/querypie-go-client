@@ -1,0 +1,22 @@
+{
+  "list": [
+    {
+      "adminRole": "NONE",
+      "authType": "QueryPie",
+      "linked": true,
+      "linkedCount": 0,
+      "members": [
+        "string"
+      ],
+      "name": "string",
+      "userType": "USER",
+      "uuid": "string"
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 1,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}
