@@ -21,7 +21,7 @@ var fetchAllCmd = &cobra.Command{
 			_ = cmd.Help()
 			return
 		}
-		resource := validate(args[0])
+		resource := args[0]
 		switch resource {
 		case "dac":
 			fetchDACPrintAndSave()
@@ -33,20 +33,6 @@ var fetchAllCmd = &cobra.Command{
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}
 	},
-}
-
-func fetchDACPrintAndSave() {
-	fetchPrintAndSave(
-		"/api/external/v2/dac/connections",
-		&models.PagedConnectionV2List{},
-		func(result *models.PagedConnectionV2List, first bool, last bool) {
-			printConnectionV2List(*result, first, last)
-		},
-		func(result *models.PagedConnectionV2List) bool {
-			saveConnectionV2List(result.List)
-			return !result.Page.HasNext()
-		},
-	)
 }
 
 func fetchUserPrintAndSave() {
@@ -75,16 +61,6 @@ func fetchUserV1PrintAndSave() {
 			return !result.Page.HasNext()
 		},
 	)
-}
-
-func validate(resource string) string {
-	switch resource {
-	case "dac", "sac", "users", "users-v1":
-		return resource
-	default:
-		logrus.Fatalf("Unknown resource: %s", resource)
-		return ""
-	}
 }
 
 func fetchPrintAndSave[T any, P models.PagedList[T]](

@@ -39,6 +39,18 @@ func (sac SummarizedAccessControl) String() string {
 	)
 }
 
+func (sac SummarizedAccessControl) MembersString() string {
+	if sac.Members == nil {
+		return "-"
+	} else if len(sac.Members) == 0 {
+		return "[]"
+	} else if len(sac.Members) == 1 {
+		return fmt.Sprintf("[%v]", sac.Members)
+	} else {
+		return fmt.Sprintf("[%v, +%d]", sac.Members[0], len(sac.Members)-1)
+	}
+}
+
 type SummarizedAccessControlPagedList struct {
 	List []SummarizedAccessControl `json:"list"`
 	Page models.Page               `json:"page"`
