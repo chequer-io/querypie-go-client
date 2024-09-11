@@ -1,7 +1,9 @@
 package dac_access_control
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/sirupsen/logrus"
 	"qpc/models"
 )
 
@@ -10,36 +12,64 @@ type SummarizedAccessControl struct {
 	UserType    string   `json:"userType"`
 	AuthType    string   `json:"authType"`
 	Name        string   `json:"name"`
-	Members     []string `json:"members"`
+	Members     []string `json:"members" gorm:"-"`
+	MembersStr  string   `json:"-"`
 	AdminRole   string   `json:"adminRole"`
 	LinkedCount int      `json:"linkedCount"`
 	Linked      bool     `json:"linked"`
 }
 
-func (sac SummarizedAccessControl) Status() string {
+func (sac *SummarizedAccessControl) Status() string {
 	if sac.Linked {
 		return "linked"
 	}
 	return "-"
 }
 
-func (sac SummarizedAccessControl) ShortID() string {
+func (sac *SummarizedAccessControl) ShortID() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, Type=%s, Name=%s }",
 		sac.Uuid, sac.UserType, sac.Name,
 	)
 }
 
-func (sac SummarizedAccessControl) String() string {
+func (sac *SummarizedAccessControl) String() string {
 	return fmt.Sprintf(
-		"{ Uuid=%s, UserType=%s, AuthType=%s, Name=%s, Members=%v, "+
+		"{ Uuid=%s, UserType=%s, AuthType=%s, Name=%s, Members=%v, MembersStr=%v "+
 			"AdminRole=%s, LinkedCount=%d, Linked=%t }",
-		sac.Uuid, sac.UserType, sac.AuthType, sac.Name, sac.Members,
+		sac.Uuid, sac.UserType, sac.AuthType, sac.Name, sac.Members, sac.MembersStr,
 		sac.AdminRole, sac.LinkedCount, sac.Linked,
 	)
 }
 
-func (sac SummarizedAccessControl) MembersString() string {
+func (sac *SummarizedAccessControl) PopulateMemberStr() {
+	if sac.Members == nil || len(sac.Members) == 0 {
+		sac.MembersStr = "[]"
+	} else {
+		jsonBytes, err := json.Marshal(sac.Members)
+		if err != nil {
+			logrus.Fatalf("Failed to marshal Members: %v", err)
+		}
+		sac.MembersStr = string(jsonBytes)
+	}
+	logrus.Debugf("Populated MembersStr: %v from Members: %v", sac.MembersStr, sac.Members)
+	return
+}
+
+func (sac *SummarizedAccessControl) PopulateMembers() {
+	if sac.MembersStr == "" {
+		sac.Members = nil
+	} else {
+		err := json.Unmarshal([]byte(sac.MembersStr), &sac.Members)
+		if err != nil {
+			logrus.Fatalf("Failed to unmarshal JSON data: %v", err)
+		}
+	}
+	logrus.Debugf("Populated Members: %v from MembersStr: %v", sac.Members, sac.MembersStr)
+	return
+}
+
+func (sac *SummarizedAccessControl) MembersString() string {
 	if sac.Members == nil {
 		return "-"
 	} else if len(sac.Members) == 0 {
@@ -56,11 +86,11 @@ type SummarizedAccessControlPagedList struct {
 	Page models.Page               `json:"page"`
 }
 
-func (acl SummarizedAccessControlPagedList) GetPage() models.Page {
+func (acl *SummarizedAccessControlPagedList) GetPage() models.Page {
 	return acl.Page
 }
 
-func (acl SummarizedAccessControlPagedList) GetList() []SummarizedAccessControl {
+func (acl *SummarizedAccessControlPagedList) GetList() []SummarizedAccessControl {
 	return acl.List
 }
 
@@ -91,14 +121,14 @@ type AccessControl struct {
 	Linked            bool               `json:"linked"`
 }
 
-func (ac AccessControl) ShortID() string {
+func (ac *AccessControl) ShortID() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, Type=%s, Name=%s }",
 		ac.Uuid, ac.UserType, ac.Name,
 	)
 }
 
-func (ac AccessControl) String() string {
+func (ac *AccessControl) String() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, UserType=%s, AuthType=%s, Name=%s, Members=%v, "+
 			"AdminRole=%s, LinkedCount=%d, Linked=%t }",
@@ -112,10 +142,10 @@ type AccessControlPagedList struct {
 	Page models.Page     `json:"page"`
 }
 
-func (acl AccessControlPagedList) GetPage() models.Page {
+func (acl *AccessControlPagedList) GetPage() models.Page {
 	return acl.Page
 }
 
-func (acl AccessControlPagedList) GetList() []AccessControl {
+func (acl *AccessControlPagedList) GetList() []AccessControl {
 	return acl.List
 }

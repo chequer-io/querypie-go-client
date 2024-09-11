@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"qpc/config"
+	"qpc/entity/dac_access_control"
 	"qpc/entity/user"
 	"qpc/models"
 )
@@ -84,6 +85,7 @@ func initConfig() {
 		&models.UserRole{},
 		&models.Role{},
 		&models.SummarizedConnectionV2{},
+		&dac_access_control.SummarizedAccessControl{},
 	)
 	if err1 != nil {
 		logrus.Fatal(err)

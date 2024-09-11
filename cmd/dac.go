@@ -38,34 +38,22 @@ var dacFetchAllConnectionsCmd = &cobra.Command{
 var dacListCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List DAC connections in local sqlite database",
+	Example: `  ls connections # from local sqlite database
+  ls access-controls # from local sqlite database`,
 	Run: func(cmd *cobra.Command, args []string) {
-		var total, fetched int64 = 0, 0
-		result := config.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Count(&total)
-		if result.Error != nil {
-			logrus.Fatalf("Failed to count dac connections: %v", result.Error)
+		if len(args) == 0 {
+			_ = cmd.Help()
+			return
 		}
-		logrus.Debugf("Found %d dac connections", total)
-
-		page := 0
-		size := 30 // Set the desired page size
-
-		for {
-			list, err := selectPagedConnectionV2List(page, size, int(total))
-			if err != nil {
-				logrus.Fatalf("Failed to fetch dac connections: %v", err)
-			}
-			logrus.Debugf("Fetched %d, page %d, size %d, total %d",
-				len(list.List), page, size, total)
-			fetched += int64(len(list.List))
-			printConnectionV2List(list, page == 0, !list.Page.HasNext())
-
-			if !list.Page.HasNext() {
-				break
-			}
-			page++
+		resource := args[0]
+		switch resource {
+		case "connections":
+			selectFromDatabaseAndPrintConnectionV2List()
+		case "access-controls":
+			selectFromDatabaseAndPrintSummarizedAccessControlPagedList()
+		default:
+			logrus.Fatalf("Unknown resource: %s", resource)
 		}
-		logrus.Debugf("Fetched %d, whereas total count was %d, difference: %d",
-			fetched, total, total-fetched)
 	},
 }
 
@@ -83,18 +71,35 @@ func fetchDACPrintAndSave() {
 	)
 }
 
-func fetchDACAccessControlPrintAndSave() {
-	fetchPrintAndSave(
-		"/api/external/v2/dac/access-controls",
-		&dac_access_control.SummarizedAccessControlPagedList{},
-		func(result *dac_access_control.SummarizedAccessControlPagedList, first bool, last bool) {
-			result.Print()
-		},
-		func(result *dac_access_control.SummarizedAccessControlPagedList) bool {
-			// result.Save()
-			return !result.Page.HasNext()
-		},
-	)
+func selectFromDatabaseAndPrintConnectionV2List() {
+	var total, fetched int64 = 0, 0
+	result := config.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Count(&total)
+	if result.Error != nil {
+		logrus.Fatalf("Failed to count dac connections: %v", result.Error)
+	}
+	logrus.Debugf("Found %d dac connections", total)
+
+	page := 0
+	size := 30 // Set the desired page size
+
+	for {
+		list, err := selectPagedConnectionV2List(page, size, int(total))
+		if err != nil {
+			logrus.Fatalf("Failed to select data from local database: %v", err)
+		}
+		logrus.Debugf("Selected %d, page %d, size %d, total %d",
+			len(list.List), page, size, total)
+		fetched += int64(len(list.List))
+		printConnectionV2List(list, page == 0, !list.Page.HasNext())
+
+		if !list.Page.HasNext() {
+			break
+		}
+		page++
+	}
+	logrus.Debugf("Selected %d, whereas total count was %d, difference: %d",
+		fetched, total, total-fetched)
+
 }
 
 func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (models.PagedConnectionV2List, error) {
@@ -116,6 +121,78 @@ func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (mode
 	pagedConnectionV2List.List = connections
 	pagedConnectionV2List.Page = page
 	return pagedConnectionV2List, nil
+}
+
+func fetchDACAccessControlPrintAndSave() {
+	fetchPrintAndSave(
+		"/api/external/v2/dac/access-controls",
+		&dac_access_control.SummarizedAccessControlPagedList{},
+		func(result *dac_access_control.SummarizedAccessControlPagedList, first bool, last bool) {
+			result.Print()
+		},
+		func(result *dac_access_control.SummarizedAccessControlPagedList) bool {
+			result.Save()
+			return !result.Page.HasNext()
+		},
+	)
+}
+
+func selectFromDatabaseAndPrintSummarizedAccessControlPagedList() {
+	var total, fetched int64 = 0, 0
+	result := config.LocalDatabase.Model(&dac_access_control.SummarizedAccessControl{}).Count(&total)
+	if result.Error != nil {
+		logrus.Fatalf("Failed to count dac connections: %v", result.Error)
+	}
+	logrus.Debugf("Found %d dac connections", total)
+
+	page := 0
+	size := 30 // Set the desired page size
+
+	for {
+		list, err := selectSummarizedAccessControlPagedList(page, size, int(total))
+		if err != nil {
+			logrus.Fatalf("Failed to select data from local database: %v", err)
+		}
+		logrus.Debugf("Selected %d, page %d, size %d, total %d",
+			len(list.List), page, size, total)
+		fetched += int64(len(list.List))
+		list.Print()
+		if !list.Page.HasNext() {
+			break
+		}
+		page++
+	}
+	logrus.Debugf("Selected %d, whereas total count was %d, difference: %d",
+		fetched, total, total-fetched)
+
+}
+
+func selectSummarizedAccessControlPagedList(
+	currentPage, pageSize, totalElements int,
+) (dac_access_control.SummarizedAccessControlPagedList, error) {
+	var acl dac_access_control.SummarizedAccessControlPagedList
+	var page models.Page
+	var sac []dac_access_control.SummarizedAccessControl
+	offset := currentPage * pageSize
+	result := config.LocalDatabase.
+		Offset(offset).
+		Limit(pageSize).
+		Find(&sac)
+	if result.Error != nil {
+		return dac_access_control.SummarizedAccessControlPagedList{}, result.Error
+	}
+	for i := range sac {
+		sac[i].PopulateMembers()
+		logrus.Debugf("Populated Members[%d]: %v from MembersStr: %v", i, sac[i].Members, sac[i].MembersStr)
+	}
+
+	page.CurrentPage = currentPage
+	page.PageSize = pageSize
+	page.TotalElements = totalElements
+	page.TotalPages = (totalElements + pageSize - 1) / pageSize
+	acl.List = sac
+	acl.Page = page
+	return acl, nil
 }
 
 func init() {

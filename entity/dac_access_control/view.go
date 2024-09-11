@@ -5,7 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (acl SummarizedAccessControlPagedList) Print() {
+func (acl *SummarizedAccessControlPagedList) Print() {
 	first := acl.GetPage().CurrentPage == 0
 	last := !acl.GetPage().HasNext()
 

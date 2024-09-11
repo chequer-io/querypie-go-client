@@ -32,19 +32,19 @@ Flags:"
   is "${actual}" "${expected}" "It should print available commands."
 }
 
-function test_qpc_dac_fetch_all() {
+function test_qpc_dac_fetch_all_connections() {
   local actual_header actual_output
   echo "# ##########"
-  echo "# test_qpc_dac_fetch_all"
+  echo "# test_qpc_dac_fetch_all_connections"
   echo "# "
 
-  actual_header=$(qpc dac fetch-all | head -1 || true)
+  actual_header=$(qpc dac fetch-all connections | head -1 || true)
   like "${actual_header}" "^UUID * DB_TYPE * CLOUD * NAME * STATUS * CREATED * UPDATED *$" \
     "It should print a header line of UUID, DB_TYPE, CLOUD, NAME, STATUS, CREATED, UPDATED."
 
-  actual_output=$(qpc dac fetch-all | grep mysql.querypie.io | sed 's/   */\t/g' || true)
+  actual_output=$(qpc dac fetch-all connections | grep mysql.querypie.io | sed 's/   */\t/g' || true)
   IFS=$'\t'
-  read -r UUID DB_TYPE CLOUD NAME STATUS CREATED UPDATED <<< "${actual_output}"
+  read -r UUID DB_TYPE CLOUD NAME STATUS CREATED UPDATED <<<"${actual_output}"
 
   like "${UUID}" "^[0-9a-f\-]{36}$" \
     "It should print output of mysql which UUID is an unspecified value."
@@ -57,24 +57,24 @@ function test_qpc_dac_fetch_all() {
   is "${STATUS}" "ledger" \
     "It should print output of mysql which STATUS is ledger."
   like "${CREATED}" "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$" \
-    "It should print output of brant which CREATED is yyyy-mm-dd HH:MM."
+    "It should print output of mysql which CREATED is yyyy-mm-dd HH:MM."
   like "${UPDATED}" "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$" \
-    "It should print output of brant which UPDATED is yyyy-mm-dd HH:MM."
+    "It should print output of mysql which UPDATED is yyyy-mm-dd HH:MM."
 }
 
-function test_qpc_dac_ls() {
+function test_qpc_dac_ls_connections() {
   local actual_header actual_output
   echo "# ##########"
-  echo "# test_qpc_dac_ls"
+  echo "# test_qpc_dac_ls_connections"
   echo "# "
 
-  actual_header=$(qpc dac ls | head -1 || true)
+  actual_header=$(qpc dac ls connections | head -1 || true)
   like "${actual_header}" "^UUID * DB_TYPE * CLOUD * NAME * STATUS * CREATED * UPDATED *$" \
     "It should print a header line of UUID, DB_TYPE, CLOUD, NAME, STATUS, CREATED, UPDATED."
 
-  actual_output=$(qpc dac ls | grep mysql.querypie.io | sed 's/   */\t/g' || true)
+  actual_output=$(qpc dac ls connections | grep mysql.querypie.io | sed 's/   */\t/g' || true)
   IFS=$'\t'
-  read -r UUID DB_TYPE CLOUD NAME STATUS CREATED UPDATED <<< "${actual_output}"
+  read -r UUID DB_TYPE CLOUD NAME STATUS CREATED UPDATED <<<"${actual_output}"
 
   like "${UUID}" "^[0-9a-f\-]{36}$" \
     "It should print output of mysql which UUID is an unspecified value."
@@ -87,24 +87,25 @@ function test_qpc_dac_ls() {
   is "${STATUS}" "ledger" \
     "It should print output of mysql which STATUS is ledger."
   like "${CREATED}" "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$" \
-    "It should print output of brant which CREATED is yyyy-mm-dd HH:MM."
+    "It should print output of mysql which CREATED is yyyy-mm-dd HH:MM."
   like "${UPDATED}" "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$" \
-    "It should print output of brant which UPDATED is yyyy-mm-dd HH:MM."
+    "It should print output of mysql which UPDATED is yyyy-mm-dd HH:MM."
 }
 
-function compare_qpc_dac_fetch_all_and_qpc_dac_ls() {
+function compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections() {
   echo "# ##########"
-  echo "# compare_qpc_dac_fetch_all_and_qpc_dac_ls"
+  echo "# compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections"
   echo "# "
-  qpc dac fetch-all >/tmp/qpc_dac_fetch_all.$$ 2>&1
-  qpc dac ls >/tmp/qpc_dac_ls.$$ 2>&1
-  if diff /tmp/qpc_dac_fetch_all.$$ /tmp/qpc_dac_ls.$$ | sed 's/^/# /'; then
-    ok 1 "qpc dac fetch-all and qpc dac ls are the same."
+  qpc dac fetch-all connections >/tmp/qpc_dac_fetch_all_connections.$$ 2>&1
+  qpc dac ls connections >/tmp/qpc_dac_ls_connections.$$ 2>&1
+  if diff /tmp/qpc_dac_fetch_all_connections.$$ /tmp/qpc_dac_ls_connections.$$ |
+    sed 's/^/# /'; then
+    ok 1 "qpc dac fetch-all connections and qpc dac ls connections are the same."
   else
-    ok 0 "qpc dac fetch-all and qpc dac ls are different."
+    ok 0 "qpc dac fetch-all connections and qpc dac ls connections are different."
   fi
   # Clean up temporary files
-  rm -f /tmp/qpc_dac_fetch_all.$$ /tmp/qpc_dac_ls.$$
+  rm -f /tmp/qpc_dac_fetch_all_connections.$$ /tmp/qpc_dac_ls_connections.$$
 }
 
 function main() {
@@ -124,9 +125,9 @@ function main() {
   export PATH=.:${PATH}
   test_qpc_exists
   test_qpc_dac
-  test_qpc_dac_fetch_all
-  test_qpc_dac_ls
-  compare_qpc_dac_fetch_all_and_qpc_dac_ls
+  test_qpc_dac_fetch_all_connections
+  test_qpc_dac_ls_connections
+  compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections
 
   popd &>/dev/null
 

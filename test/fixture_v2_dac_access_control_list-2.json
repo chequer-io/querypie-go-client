@@ -1,0 +1,1379 @@
+{
+  "list": [
+    {
+      "uuid": "240edd83-5704-4d10-9870-c83fe9940c07",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-10T05:10:12.537Z",
+      "createdBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T05:12:15.269Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "jane mongodb shard 6",
+      "deleted": false,
+      "databaseType": "MONGODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": true,
+        "proxyAuthType": "MANUAL"
+      }
+    },
+    {
+      "uuid": "14b7e4a6-fa5c-440f-93c2-0fad2a2a2738",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-10T04:44:56.850Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-10T04:44:56.886Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Irwin] Redshift",
+      "deleted": false,
+      "databaseType": "REDSHIFT",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "6edd57fa-95c4-4932-a6e1-057361c35997",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-03T04:51:56.260Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-03T04:51:56.282Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "hive-kerberos",
+      "deleted": false,
+      "databaseType": "HIVE",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "11baecb7-0eb6-4a7f-b6f1-f9656be4f049",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-02T09:20:39.340Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "9a16cfa9-a8d8-478a-9a6b-cd6dc211599a",
+        "loginId": "Keira Yoon",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-09T09:07:38.287Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "Podcast Vault",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": true,
+        "proxyAuthType": "MANUAL"
+      }
+    },
+    {
+      "uuid": "b5f4dcd5-c04c-4ad5-8136-60f9a6b5c67f",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-02T06:21:35.969Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+        "loginId": "Ella Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-05T10:00:31.262Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+        "loginId": "Ella Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "mysql-qp-aurora",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "4c57eaea-cc79-45cc-abc1-c280cf966d9b",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-29T10:16:14.613Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "9860d2fd-61a9-4643-871c-3aff16ef0d00",
+        "loginId": "Zino Lim",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-29T10:16:14.629Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "9860d2fd-61a9-4643-871c-3aff16ef0d00",
+        "loginId": "Zino Lim",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "morris-oracle",
+      "deleted": false,
+      "databaseType": "ORACLE",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "506b15af-bad6-4a47-979d-b1a7affb46df",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-27T04:48:37.215Z",
+      "createdBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-01T16:18:13.444Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "jane connection",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "fabb4945-8fd1-4d20-87f8-d72eb0327a0c",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-27T04:48:36.247Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "e38e5cfc-6327-44e9-93b7-bb45b1a7064c",
+        "loginId": "Akira Hamano",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-27T05:07:47.796Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "e38e5cfc-6327-44e9-93b7-bb45b1a7064c",
+        "loginId": "Akira Hamano",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "Akira Connection",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "a71eee9e-bca1-4b92-beac-6d218234ed01",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-27T04:48:35.970Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "c666db49-fa39-4eb6-b9c5-4d3ce049c9bf",
+        "loginId": "Maretomo Fukushima",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-27T05:07:45.253Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "c666db49-fa39-4eb6-b9c5-4d3ce049c9bf",
+        "loginId": "Maretomo Fukushima",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "MF_Connection_1",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "5900f88f-74ec-4061-b105-f90819546c4d",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-23T08:37:40.210Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-23T08:37:40.224Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Irwin] Impala",
+      "deleted": false,
+      "databaseType": "IMPALA",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "2947edad-18f3-429c-9244-3763fb5b9b99",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-23T08:36:39.673Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-23T08:36:39.723Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Irwin] Hive 3",
+      "deleted": false,
+      "databaseType": "HIVE",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "3b426b42-a02e-49bf-9b05-1fa7365c804d",
+      "cloudProviderUuid": "6893b65d-d8fa-4d70-bd2a-a9e20fb11de6",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-08-21T15:01:01.427Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:01:02.629Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "dynamodb.ap-northeast-2.amazonaws.com",
+      "deleted": false,
+      "databaseType": "DYNAMODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "512087af-4864-40b0-ad49-2c58e7ae84c2",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-21T08:51:16.647Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "d9207c90-15ae-45bd-983b-794d9e4bcbfa",
+        "loginId": "Jk KIm",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-21T08:54:54.687Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "d9207c90-15ae-45bd-983b-794d9e4bcbfa",
+        "loginId": "Jk KIm",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "GCP Spanner Trial",
+      "deleted": false,
+      "databaseType": "POSTGRESQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "c8459238-d611-4027-acd7-6757911fbb15",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-20T12:33:12.910Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "567f8787-c2b0-4426-8d55-d302dea77449",
+        "loginId": "Mocha Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-20T12:36:09.672Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "567f8787-c2b0-4426-8d55-d302dea77449",
+        "loginId": "Mocha Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "Trino (no SSL)",
+      "deleted": false,
+      "databaseType": "TRINO",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "b42146c9-0d05-44fa-bb4c-42b343973578",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-18T00:33:25.483Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "e1403d9c-abf4-43f3-a146-43b9b98ad82c",
+        "loginId": "Mason Oh",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-30T08:04:59.506Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "c243a10b-0c93-4bb8-b92c-659ccc028f8d",
+        "loginId": "Robin Park",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Mason] MySQL 8.0",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": true,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "2bf3f937-3aa4-4fcf-a63e-aed7dd99c6b0",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-10T09:47:17.611Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "6b715343-aa9d-4c97-a44c-14a678df9fd8",
+        "loginId": "Brant Hwang",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-10T09:54:39.515Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "6b715343-aa9d-4c97-a44c-14a678df9fd8",
+        "loginId": "Brant Hwang",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "QueryPie-Alpha-Perf-Test",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": true,
+        "proxyAuthType": "QUERYPIE"
+      }
+    },
+    {
+      "uuid": "b15f069b-83ad-450b-8778-7994491dbff8",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-09T08:24:11.786Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "87b4b897-c9c6-4db9-b54f-7a88ca722da2",
+        "loginId": "Mosty Kim",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-05T10:52:14.610Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "mosty-mongo",
+      "deleted": false,
+      "databaseType": "MONGODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": true,
+        "proxyAuthType": "MANUAL"
+      }
+    },
+    {
+      "uuid": "c2fcd066-f4ed-494c-a6af-aa1ea785003b",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-08-09T06:33:46.143Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "6547fee6-c1e5-4c86-8875-74606ab47cf8",
+        "loginId": "Timo Kim",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-09T08:34:28.732Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "6547fee6-c1e5-4c86-8875-74606ab47cf8",
+        "loginId": "Timo Kim",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "mongodb-replicaset-passive",
+      "deleted": false,
+      "databaseType": "MONGODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "2375b42a-bce3-4386-b93b-9a6e491807e0",
+      "cloudProviderUuid": "6893b65d-d8fa-4d70-bd2a-a9e20fb11de6",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-08-07T15:01:01.369Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:01:02.428Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "qa-querypie-metastore",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "f0f18d9f-b519-45fa-b9da-d97da262c9fa",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-07-30T06:08:46.628Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "6b715343-aa9d-4c97-a44c-14a678df9fd8",
+        "loginId": "Brant Hwang",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-07-30T06:08:46.656Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "6b715343-aa9d-4c97-a44c-14a678df9fd8",
+        "loginId": "Brant Hwang",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "beeaab79-93a1-42cb-8437-b74a145e7c6d",
+          "name": "GlobalProtect Zone"
+        }
+      ],
+      "name": "SQLGate Alpha",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "14796ecd-abfc-44b8-bab5-abc10a8eaa3e",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-07-24T03:51:13.575Z",
+      "createdBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-07-24T03:51:13.599Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "lucas test",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "8b256444-dbbd-4b2e-a6ef-1b3fe90904c2",
+      "cloudProviderUuid": "c651bef2-09fb-430c-bc1f-8e793b398367",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-07-23T08:25:28.273Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-07-23T11:03:27.645Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "qa-test-docdb",
+      "deleted": false,
+      "databaseType": "DOCUMENTDB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "29a84c95-19ca-4674-9d4a-a86d3c588ca8",
+      "cloudProviderUuid": "c651bef2-09fb-430c-bc1f-8e793b398367",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-07-23T08:25:27.305Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:00:03.770Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "qa-querypie-metastore-cluster",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "72974144-c52c-4830-bad9-bf187e528bae",
+      "cloudProviderUuid": "c651bef2-09fb-430c-bc1f-8e793b398367",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-07-23T08:25:27.163Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:00:03.647Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "qa-default-cloudsync-pg",
+      "deleted": false,
+      "databaseType": "POSTGRESQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "fea646fd-e468-414a-bb85-60455c30ae89",
+      "cloudProviderUuid": "c651bef2-09fb-430c-bc1f-8e793b398367",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-07-23T08:25:27.141Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:00:03.647Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "106139835800:dynamodb.ap-northeast-2.amazonaws.com",
+      "deleted": false,
+      "databaseType": "DYNAMODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "adb888c0-8dc6-412b-a53d-fdd65d3bcd99",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-07-16T15:12:39.993Z",
+      "createdBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-07-17T08:58:42.760Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "jane",
+      "deleted": false,
+      "databaseType": "MONGODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "307beb5d-02a2-48cf-ac28-f17b9aa50fcb",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-07-16T01:59:30.755Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "21bf85f9-5a0c-45c5-9b02-8a8c714b18bb",
+        "loginId": "Loopy Kim",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-07-16T10:09:36.570Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "21bf85f9-5a0c-45c5-9b02-8a8c714b18bb",
+        "loginId": "Loopy Kim",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "beeaab79-93a1-42cb-8437-b74a145e7c6d",
+          "name": "GlobalProtect Zone"
+        },
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "Scylla",
+      "deleted": false,
+      "databaseType": "SCYLLADB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "69ead6ed-1e74-4347-a3ae-70a222622ec5",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-26T05:37:34.369Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "b50fdec6-8610-411e-85cb-a484535f1f12",
+        "loginId": "Robb Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-26T05:37:34.369Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "b50fdec6-8610-411e-85cb-a484535f1f12",
+        "loginId": "Robb Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Robb] Single Store",
+      "deleted": false,
+      "databaseType": "SINGLESTORE",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "d741e280-626e-4dc6-a9d8-52e6fa888fd8",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-25T08:30:43.685Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "9b7f776d-1e1f-4d49-b87e-0eea9724bcd6",
+        "loginId": "Wein Cho",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-25T08:30:43.685Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "9b7f776d-1e1f-4d49-b87e-0eea9724bcd6",
+        "loginId": "Wein Cho",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Wein] MongoDB",
+      "deleted": false,
+      "databaseType": "MONGODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "14eeadd0-931e-42a8-9c51-5bbaed02cd6a",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-25T06:55:09.143Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-25T06:55:09.143Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "irwin-oracle",
+      "deleted": false,
+      "databaseType": "ORACLE",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "a02066cc-ce22-4b58-b21d-d55d5b720bff",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-25T06:47:56.444Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-25T06:47:56.444Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "irwin-tibero",
+      "deleted": false,
+      "databaseType": "TIBERO",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "a78d9a9c-dddc-46df-9ccb-513806eaa279",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-24T02:36:53.998Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-24T02:36:53.998Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "irwin-impala",
+      "deleted": false,
+      "databaseType": "IMPALA",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "59db4f83-d3c8-4836-9de7-d691b105c9ba",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-18T06:24:01.609Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+        "loginId": "Ella Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-05T08:22:16.936Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "4afff027-35d0-4fca-8e67-85f757d9c44c",
+        "loginId": "Daniel Son",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "mysql.querypie.io",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": true,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "bd1ca0a5-6fdf-4186-b4da-38f4b19ea6ce",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-17T13:03:14.440Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "cf137246-fd2e-4dbe-8422-0c93f969d430",
+        "loginId": "Yvette Jung",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-18T02:17:28.918Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+        "loginId": "Ella Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "internal-redis",
+      "deleted": false,
+      "databaseType": "REDIS",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "81521487-5dd7-44ba-b56f-da26e98aca25",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-17T09:58:00.282Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "95d990aa-451d-4386-8d0d-13c66b7bbb4a",
+        "loginId": "Yoon Park",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-08-08T04:02:09.745Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "c243a10b-0c93-4bb8-b92c-659ccc028f8d",
+        "loginId": "Robin Park",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "qa-metastore",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": true,
+        "proxyEnabled": true,
+        "proxyAuthType": "QUERYPIE"
+      }
+    },
+    {
+      "uuid": "ef78287a-1e9d-4f07-af58-f1c3dfc56d6c",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-06-17T09:34:42.071Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-06-17T09:34:42.071Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "irwin-mysql",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "10777a13-dd48-4491-a6d7-dd6cee900fad",
+      "cloudProviderUuid": "6893b65d-d8fa-4d70-bd2a-a9e20fb11de6",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-05-13T10:42:28.806Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:01:02.265Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "sec-querypie-metastore",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "f374b8e6-a818-4190-98c8-86845d017eef",
+      "cloudProviderUuid": "6893b65d-d8fa-4d70-bd2a-a9e20fb11de6",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-05-13T10:42:28.344Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:01:02.134Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "dev-querypie-aurora-cluster",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    },
+    {
+      "uuid": "308fb242-cabc-4452-88fb-1abde45e519a",
+      "cloudProviderUuid": "6893b65d-d8fa-4d70-bd2a-a9e20fb11de6",
+      "cloudProviderType": "AWS",
+      "createdAt": "2024-05-13T10:42:27.599Z",
+      "createdBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T15:01:01.963Z",
+      "updatedBy": {
+        "uuid": "system",
+        "name": "d5e3a9e5-8080-11eb-a305-0a789f7c7580",
+        "loginId": "System",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "alpha-querypie-aurora-cluster",
+      "deleted": false,
+      "databaseType": "MYSQL",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": true,
+        "proxyAuthType": "QUERYPIE"
+      }
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 40,
+    "totalPages": 1,
+    "totalElements": 39
+  }
+}

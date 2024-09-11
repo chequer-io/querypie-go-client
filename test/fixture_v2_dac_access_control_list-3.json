@@ -1,0 +1,80 @@
+{
+  "list": [
+    {
+      "uuid": "240edd83-5704-4d10-9870-c83fe9940c07",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-10T05:10:12.537Z",
+      "createdBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "updatedAt": "2024-09-10T05:12:15.269Z",
+      "updatedBy": {
+        "uuid": "qp-admin",
+        "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "loginId": "Admin",
+        "email": "user.masked@querypie.com"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "jane mongodb shard 6",
+      "deleted": false,
+      "databaseType": "MONGODB",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": true,
+        "proxyAuthType": "MANUAL"
+      }
+    },
+    {
+      "uuid": "14b7e4a6-fa5c-440f-93c2-0fad2a2a2738",
+      "cloudProviderUuid": null,
+      "cloudProviderType": null,
+      "createdAt": "2024-09-10T04:44:56.850Z",
+      "createdBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "updatedAt": "2024-09-10T04:44:56.886Z",
+      "updatedBy": {
+        "uuid": "user.masked@chequer.io",
+        "name": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "loginId": "Irwin Lee",
+        "email": "user.masked@chequer.io"
+      },
+      "zones": [
+        {
+          "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+          "name": "All Allowed (Any)"
+        }
+      ],
+      "name": "[Irwin] Redshift",
+      "deleted": false,
+      "databaseType": "REDSHIFT",
+      "ledger": false,
+      "additionalInfo": {
+        "auditEnabled": true,
+        "dmlSnapshotEnabled": false,
+        "proxyEnabled": false,
+        "proxyAuthType": null
+      }
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 2,
+    "totalPages": 20,
+    "totalElements": 39
+  }
+}
