@@ -8,6 +8,7 @@ import (
 	"os"
 	"qpc/config"
 	"qpc/entity/dac_access_control"
+	"qpc/entity/dac_connection"
 	"qpc/entity/user"
 	"qpc/models"
 )
@@ -84,7 +85,7 @@ func initConfig() {
 		&models.UserV1{},
 		&models.UserRole{},
 		&models.Role{},
-		&models.SummarizedConnectionV2{},
+		&dac_connection.SummarizedConnectionV2{},
 		&dac_access_control.SummarizedAccessControl{},
 	)
 	if err1 != nil {

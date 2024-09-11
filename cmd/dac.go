@@ -5,6 +5,7 @@ import (
 	"github.com/spf13/cobra"
 	"qpc/config"
 	"qpc/entity/dac_access_control"
+	"qpc/entity/dac_connection"
 	"qpc/models"
 )
 
@@ -60,12 +61,12 @@ var dacListCmd = &cobra.Command{
 func fetchDACPrintAndSave() {
 	fetchPrintAndSave(
 		"/api/external/v2/dac/connections",
-		&models.PagedConnectionV2List{},
-		func(result *models.PagedConnectionV2List, first bool, last bool) {
-			printConnectionV2List(*result, first, last)
+		&dac_connection.PagedConnectionV2List{},
+		func(result *dac_connection.PagedConnectionV2List, first bool, last bool) {
+			result.Print()
 		},
-		func(result *models.PagedConnectionV2List) bool {
-			saveConnectionV2List(result.List)
+		func(result *dac_connection.PagedConnectionV2List) bool {
+			result.Save()
 			return !result.Page.HasNext()
 		},
 	)
@@ -73,7 +74,7 @@ func fetchDACPrintAndSave() {
 
 func selectFromDatabaseAndPrintConnectionV2List() {
 	var total, fetched int64 = 0, 0
-	result := config.LocalDatabase.Model(&models.SummarizedConnectionV2{}).Count(&total)
+	result := config.LocalDatabase.Model(&dac_connection.SummarizedConnectionV2{}).Count(&total)
 	if result.Error != nil {
 		logrus.Fatalf("Failed to count dac connections: %v", result.Error)
 	}
@@ -90,7 +91,7 @@ func selectFromDatabaseAndPrintConnectionV2List() {
 		logrus.Debugf("Selected %d, page %d, size %d, total %d",
 			len(list.List), page, size, total)
 		fetched += int64(len(list.List))
-		printConnectionV2List(list, page == 0, !list.Page.HasNext())
+		list.Print()
 
 		if !list.Page.HasNext() {
 			break
@@ -102,17 +103,17 @@ func selectFromDatabaseAndPrintConnectionV2List() {
 
 }
 
-func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (models.PagedConnectionV2List, error) {
-	var pagedConnectionV2List models.PagedConnectionV2List
+func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (dac_connection.PagedConnectionV2List, error) {
+	var pagedConnectionV2List dac_connection.PagedConnectionV2List
 	var page models.Page
-	var connections []models.SummarizedConnectionV2
+	var connections []dac_connection.SummarizedConnectionV2
 	offset := currentPage * pageSize
 	result := config.LocalDatabase.
 		Offset(offset).
 		Limit(pageSize).
 		Find(&connections)
 	if result.Error != nil {
-		return models.PagedConnectionV2List{}, result.Error
+		return dac_connection.PagedConnectionV2List{}, result.Error
 	}
 	page.CurrentPage = currentPage
 	page.PageSize = pageSize

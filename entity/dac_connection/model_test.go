@@ -1,4 +1,4 @@
-package models
+package dac_connection
 
 import (
 	"encoding/json"
@@ -11,7 +11,7 @@ import (
 
 func TestParseFixtureV2DacConnectionList(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../test/fixture_v2_dac_connection_list.json")
+	data, err := os.ReadFile("../../test/fixture_v2_dac_connection_list.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestParseFixtureV2DacConnectionList(t *testing.T) {
 
 func TestParseAndMarshalV2DacConnectionList(t *testing.T) {
 	// Read the JSON file
-	json1, err := os.ReadFile("../test/fixture_v2_dac_connection_list.json")
+	json1, err := os.ReadFile("../../test/fixture_v2_dac_connection_list.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -74,7 +74,7 @@ func TestParseAndMarshalV2DacConnectionList(t *testing.T) {
 
 func TestParseFixtureAndValidateV2DacConnectionDetail(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../test/fixture_v2_dac_connection_detail.json")
+	data, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -122,7 +122,7 @@ func TestParseFixtureAndValidateV2DacConnectionDetail(t *testing.T) {
 
 func TestParseAndMarshalV2DacConnectionDetail(t *testing.T) {
 	// Read the JSON file
-	json1, err := os.ReadFile("../test/fixture_v2_dac_connection_detail.json")
+	json1, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
