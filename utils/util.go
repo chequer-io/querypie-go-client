@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"encoding/json"
+	"github.com/sirupsen/logrus"
 	"os"
 	"time"
 	"unicode"
@@ -19,6 +21,29 @@ func MaskAccessToken(token string) string {
 		}
 	}
 	return string(masked)
+}
+
+func JsonFromStringArray(source []string) string {
+	if source == nil || len(source) == 0 {
+		return "[]"
+	} else {
+		jsonBytes, err := json.Marshal(source)
+		if err != nil {
+			logrus.Fatalf("Failed to marshal string array: %v", err)
+		}
+		return string(jsonBytes)
+	}
+}
+
+func StringArrayFromJson(source string) []string {
+	if source == "" {
+		return []string{}
+	}
+	var result []string
+	if err := json.Unmarshal([]byte(source), &result); err != nil {
+		logrus.Fatalf("Failed to unmarshal string array: %v", err)
+	}
+	return result
 }
 
 var timezone *time.Location

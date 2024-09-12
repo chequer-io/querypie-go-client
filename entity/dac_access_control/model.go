@@ -1,10 +1,10 @@
 package dac_access_control
 
 import (
-	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"qpc/model"
+	"qpc/utils"
 )
 
 type SummarizedAccessControl struct {
@@ -43,28 +43,13 @@ func (sac *SummarizedAccessControl) String() string {
 }
 
 func (sac *SummarizedAccessControl) PopulateMemberStr() {
-	if sac.Members == nil || len(sac.Members) == 0 {
-		sac.MembersStr = "[]"
-	} else {
-		jsonBytes, err := json.Marshal(sac.Members)
-		if err != nil {
-			logrus.Fatalf("Failed to marshal Members: %v", err)
-		}
-		sac.MembersStr = string(jsonBytes)
-	}
+	sac.MembersStr = utils.JsonFromStringArray(sac.Members)
 	logrus.Debugf("Populated MembersStr: %v from Members: %v", sac.MembersStr, sac.Members)
 	return
 }
 
 func (sac *SummarizedAccessControl) PopulateMembers() {
-	if sac.MembersStr == "" {
-		sac.Members = nil
-	} else {
-		err := json.Unmarshal([]byte(sac.MembersStr), &sac.Members)
-		if err != nil {
-			logrus.Fatalf("Failed to unmarshal JSON data: %v", err)
-		}
-	}
+	sac.Members = utils.StringArrayFromJson(sac.MembersStr)
 	logrus.Debugf("Populated Members: %v from MembersStr: %v", sac.Members, sac.MembersStr)
 	return
 }

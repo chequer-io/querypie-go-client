@@ -6,6 +6,7 @@ import (
 	"qpc/config"
 	"qpc/entity/dac_access_control"
 	"qpc/entity/dac_connection"
+	"qpc/entity/dac_privilege"
 	"qpc/model"
 	"qpc/utils"
 	"strconv"
@@ -20,7 +21,20 @@ var dacFetchAllConnectionsCmd = &cobra.Command{
 	Use:   "fetch-all <resource>",
 	Short: "Fetch all DAC connections from QueryPie server and save them to local sqlite database",
 	Example: `  fetch-all connections # from QueryPie API v2
+  fetch-all privileges # from QueryPie API v2,
   fetch-all access-controls # from QueryPie API v2`,
+	Args: cobra.ExactArgs(1),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		if !config.LocalDatabase.Migrator().HasTable(&dac_connection.SummarizedConnectionV2{}) {
+			logrus.Fatalf("Table dac_connections_v2 does not exist in local database")
+		}
+		if !config.LocalDatabase.Migrator().HasTable(&dac_access_control.SummarizedAccessControl{}) {
+			logrus.Fatalf("Table dac_access_controls does not exist in local database")
+		}
+		if !config.LocalDatabase.Migrator().HasTable(&dac_privilege.Privilege{}) {
+			dac_privilege.RunAutoMigrate()
+		}
+	},
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			_ = cmd.Help()
@@ -34,6 +48,9 @@ var dacFetchAllConnectionsCmd = &cobra.Command{
 		case "access-controls":
 			var acl dac_access_control.SummarizedAccessControlPagedList
 			acl.FetchAllAndPrintAndSave()
+		case "privileges":
+			var pl dac_privilege.PrivilegePagedList
+			pl.FetchAllAndPrintAndSave()
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}

@@ -16,7 +16,11 @@ type Modifier struct {
 }
 
 func (m Modifier) String() string {
-	return fmt.Sprint(m.LoginId)
+	return fmt.Sprintf(
+		"{ Uuid=%.9s, LoginId=%s }",
+		m.Uuid,
+		m.LoginId,
+	)
 }
 
 type SummarizedZone struct {

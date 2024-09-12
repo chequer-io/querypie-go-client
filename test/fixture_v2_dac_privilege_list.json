@@ -1,0 +1,37 @@
+{
+  "list": [
+    {
+      "canCopyClipboard": true,
+      "canExport": true,
+      "canImport": true,
+      "createdAt": "2019-08-24T14:15:22Z",
+      "createdBy": {
+        "email": "string",
+        "loginId": "string",
+        "name": "string",
+        "uuid": "string"
+      },
+      "description": "string",
+      "name": "string",
+      "privilegeTypes": [
+        "string"
+      ],
+      "privilegeVendor": "SQL",
+      "status": "ACTIVE",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "updatedBy": {
+        "email": "string",
+        "loginId": "string",
+        "name": "string",
+        "uuid": "string"
+      },
+      "uuid": "string"
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 1,
+    "totalElements": 1,
+    "totalPages": 1
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "canCopyClipboard": true,
+  "canExport": true,
+  "canImport": true,
+  "createdAt": "2019-08-24T14:15:22Z",
+  "createdBy": {
+    "email": "string",
+    "loginId": "string",
+    "name": "string",
+    "uuid": "string"
+  },
+  "description": "string",
+  "mappedConnections": [
+    {
+      "assignedTo": {
+        "name": "string",
+        "userType": "USER",
+        "uuid": "string"
+      },
+      "clusterUuid": "string",
+      "dbHost": "string",
+      "name": "string",
+      "replicationType": "PRIMARY"
+    }
+  ],
+  "name": "string",
+  "privilegeTypes": [
+    "string"
+  ],
+  "privilegeVendor": "SQL",
+  "status": "ACTIVE",
+  "updatedAt": "2019-08-24T14:15:22Z",
+  "updatedBy": {
+    "email": "string",
+    "loginId": "string",
+    "name": "string",
+    "uuid": "string"
+  },
+  "uuid": "string"
+}
