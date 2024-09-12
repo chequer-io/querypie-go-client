@@ -27,14 +27,26 @@ func (pl *PrivilegePagedList) FetchAllAndPrintAndSave() {
 }
 
 func (p *Privilege) Save() {
-	p.PrivilegeTypesStr = utils.JsonFromStringArray(p.PrivilegeTypes)
 	p.CreatedByUuid = p.CreatedBy.Uuid
 	p.UpdatedByUuid = p.UpdatedBy.Uuid
 
-	// Attempt to update the user
-	result := config.LocalDatabase.Model(&Privilege{}).Where("uuid = ?", p.Uuid).Updates(&p)
+	// Attempt to update the privilege
+	result := config.LocalDatabase.Model(&Privilege{}).Where("uuid = ?", p.Uuid).Updates(map[string]interface{}{
+		"Name":             p.Name,
+		"PrivilegeTypes":   p.PrivilegeTypes,
+		"Description":      p.Description,
+		"CanImport":        p.CanImport,
+		"CanExport":        p.CanExport,
+		"CanCopyClipboard": p.CanCopyClipboard,
+		"PrivilegeVendor":  p.PrivilegeVendor,
+		"Status":           p.Status,
+		"CreatedAt":        p.CreatedAt,
+		"CreatedByUuid":    p.CreatedByUuid,
+		"UpdatedAt":        p.UpdatedAt,
+		"UpdatedByUuid":    p.UpdatedByUuid,
+	})
 
-	// If no rows were affected, create a new user
+	// If no rows were affected, create a new privilege
 	if result.RowsAffected == 0 {
 		if err := config.LocalDatabase.Create(&p).Error; err != nil {
 			logrus.Errorf("Failed to save privilege %s: %v", p.ShortID(), err)

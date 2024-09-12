@@ -10,8 +10,8 @@ func (pl *PrivilegePagedList) Print() {
 	first := pl.GetPage().CurrentPage == 0
 	last := !pl.GetPage().HasNext()
 
-	headerFmt := "%-36s  %-20s  %-28s  %-16s  %-12s  %-10s\n"
-	rowFmt := "%-36s  %-20s  %-28s  %-16s  %-12s  %-10s\n"
+	headerFmt := "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
+	rowFmt := "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
 	if first {
 		logrus.Debugf("Page: %v", pl.GetPage())
 		fmt.Printf(headerFmt,
@@ -19,19 +19,18 @@ func (pl *PrivilegePagedList) Print() {
 			"NAME",
 			"PRIVILEGE_TYPES",
 			"DESCRIPTION",
-			"PRIVILEGE_VENDOR",
+			"VENDOR",
 			"STATUS",
 		)
 	}
 
 	for _, p := range pl.GetList() {
-		p.PrivilegeTypesStr = utils.JsonFromStringArray(p.PrivilegeTypes)
 		logrus.Debug(p)
 		fmt.Printf(rowFmt,
 			p.Uuid,
 			p.Name,
-			p.PrivilegeTypesStr,
-			p.Description,
+			p.PrivilegeTypes.Ellipsis(),
+			utils.Optional(p.Description),
 			p.PrivilegeVendor,
 			p.Status,
 		)
