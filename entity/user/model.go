@@ -2,24 +2,24 @@ package user
 
 import (
 	"fmt"
-	"qpc/models"
+	"qpc/model"
 	"qpc/utils"
 )
 
 type User struct {
-	Uuid            string        `json:"uuid" gorm:"primaryKey"`
-	LoginId         string        `json:"loginId"`
-	Email           string        `json:"email"`
-	Name            string        `json:"name"`
-	AdminRoles      []AdminRole   `json:"adminRoles" gorm:"foreignKey:UserV2Uuid"`
-	Status          string        `json:"status"`
-	Factor          models.Factor `json:"factor" gorm:"-"`
-	PasswordExpired bool          `json:"passwordExpired"`
-	Locked          bool          `json:"locked"`
-	Expired         bool          `json:"expired"`
-	Deleted         bool          `json:"deleted"`
-	CreatedAt       string        `json:"createdAt"`
-	UpdatedAt       string        `json:"updatedAt"`
+	Uuid            string       `json:"uuid" gorm:"primaryKey"`
+	LoginId         string       `json:"loginId"`
+	Email           string       `json:"email"`
+	Name            string       `json:"name"`
+	AdminRoles      []AdminRole  `json:"adminRoles" gorm:"foreignKey:UserV2Uuid"`
+	Status          string       `json:"status"`
+	Factor          model.Factor `json:"factor" gorm:"-"`
+	PasswordExpired bool         `json:"passwordExpired"`
+	Locked          bool         `json:"locked"`
+	Expired         bool         `json:"expired"`
+	Deleted         bool         `json:"deleted"`
+	CreatedAt       string       `json:"createdAt"`
+	UpdatedAt       string       `json:"updatedAt"`
 }
 
 func (u User) StatusMore() string {
@@ -77,11 +77,11 @@ func (r AdminRole) String() string {
 }
 
 type PagedUserList struct {
-	List []User      `json:"list"`
-	Page models.Page `json:"page"`
+	List []User     `json:"list"`
+	Page model.Page `json:"page"`
 }
 
-func (pul PagedUserList) GetPage() models.Page {
+func (pul PagedUserList) GetPage() model.Page {
 	return pul.Page
 }
 

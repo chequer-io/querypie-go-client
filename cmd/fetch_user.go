@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"qpc/config"
-	"qpc/models"
+	"qpc/model"
 )
 
-func saveUserListV1(list []models.UserV1) {
+func saveUserListV1(list []model.UserV1) {
 	for _, userV1 := range list {
 		// Attempt to update the user
-		result := config.LocalDatabase.Model(&models.UserV1{}).Where("uuid = ?", userV1.Uuid).Updates(&userV1)
+		result := config.LocalDatabase.Model(&model.UserV1{}).Where("uuid = ?", userV1.Uuid).Updates(&userV1)
 
 		// If no rows were affected, create a new user
 		if result.RowsAffected == 0 {
@@ -23,7 +23,7 @@ func saveUserListV1(list []models.UserV1) {
 	}
 }
 
-func printUserListV1(list models.PagedUserV1List, first bool, last bool) {
+func printUserListV1(list model.PagedUserV1List, first bool, last bool) {
 	format := "%-36s  %-24s  %-24s  %-20s  %-8s  %-16s  %-16s\n"
 	if first {
 		logrus.Debugf("Page: %v", list.GetPage())

@@ -1,4 +1,4 @@
-package models
+package model
 
 type Server struct {
 	Host    string `json:"host"`

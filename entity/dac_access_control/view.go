@@ -43,3 +43,34 @@ func (acl *SummarizedAccessControlPagedList) Print() {
 		logrus.Infof("TotalElements: %v", acl.GetPage().TotalElements)
 	}
 }
+
+func (r *GrantResponse) Print() {
+	fmt.Printf("%s %s\n\n",
+		r.HttpResponse.RawResponse.Proto,
+		r.HttpResponse.Status(),
+	)
+	if r.HttpResponse.StatusCode() != 200 {
+		fmt.Printf("%s\n", string(r.HttpResponse.Body()))
+		return
+	}
+	format := "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %-16s\n"
+	fmt.Printf(format,
+		"UUID",
+		"USER_TYPE",
+		"NAME",
+		"CLOUD_PROVIDER",
+		"CLUSTER_UUID",
+		"DB_TYPE",
+		"STATUS",
+	)
+	// Print TODO(JK): Print more on MappedConnection
+	fmt.Printf(format,
+		r.Uuid,
+		r.UserType,
+		r.Name,
+		r.MappedConnection.CloudProvider.Name,
+		r.MappedConnection.ClusterUuid,
+		r.MappedConnection.DatabaseType,
+		r.MappedConnection.Status,
+	)
+}

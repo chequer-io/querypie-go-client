@@ -1,4 +1,4 @@
-package models
+package model
 
 type SecurityV2 struct {
 	AccountLockoutPolicy         AccountLockoutPolicy         `json:"accountLockoutPolicy"`

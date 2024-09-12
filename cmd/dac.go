@@ -6,7 +6,8 @@ import (
 	"qpc/config"
 	"qpc/entity/dac_access_control"
 	"qpc/entity/dac_connection"
-	"qpc/models"
+	"qpc/model"
+	"strconv"
 )
 
 var dacCmd = &cobra.Command{
@@ -105,7 +106,7 @@ func selectFromDatabaseAndPrintConnectionV2List() {
 
 func selectPagedConnectionV2List(currentPage, pageSize, totalElements int) (dac_connection.PagedConnectionV2List, error) {
 	var pagedConnectionV2List dac_connection.PagedConnectionV2List
-	var page models.Page
+	var page model.Page
 	var connections []dac_connection.SummarizedConnectionV2
 	offset := currentPage * pageSize
 	result := config.LocalDatabase.
@@ -172,7 +173,7 @@ func selectSummarizedAccessControlPagedList(
 	currentPage, pageSize, totalElements int,
 ) (dac_access_control.SummarizedAccessControlPagedList, error) {
 	var acl dac_access_control.SummarizedAccessControlPagedList
-	var page models.Page
+	var page model.Page
 	var sac []dac_access_control.SummarizedAccessControl
 	offset := currentPage * pageSize
 	result := config.LocalDatabase.
@@ -196,10 +197,35 @@ func selectSummarizedAccessControlPagedList(
 	return acl, nil
 }
 
+var grantByUuidCmd = &cobra.Command{
+	Use:     "grant-by-uuid",
+	Short:   "Grant access to a DAC connection using UUIDs as argument",
+	Example: `  grant-directly <user-uuid> <connection-uuid> <privilege-uuid> [<force>]`,
+	Args:    cobra.RangeArgs(3, 4),
+	Run: func(cmd *cobra.Command, args []string) {
+		userUuid := args[0]
+		clusterUuid := args[1]
+		privilegeUuid := args[2]
+		force := false
+		if len(args) > 3 {
+			force, _ = strconv.ParseBool(args[3])
+		}
+		(&dac_access_control.GrantRequest{
+			UserUuid:      userUuid,
+			ClusterUuid:   clusterUuid,
+			PrivilegeUuid: privilegeUuid,
+			Force:         force,
+		}).
+			Post(defaultQuerypieServer).
+			Print()
+	},
+}
+
 func init() {
 	// Add dacListCmd subcommands to dacCmd
 	dacCmd.AddCommand(dacListCmd)
 	dacCmd.AddCommand(dacFetchAllConnectionsCmd)
+	dacCmd.AddCommand(grantByUuidCmd)
 
 	// dacCmd is added rootCmd in init() of root.go
 }

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
-	"qpc/models"
+	"qpc/model"
 )
 
 type SummarizedAccessControl struct {
@@ -83,10 +83,10 @@ func (sac *SummarizedAccessControl) MembersString() string {
 
 type SummarizedAccessControlPagedList struct {
 	List []SummarizedAccessControl `json:"list"`
-	Page models.Page               `json:"page"`
+	Page model.Page                `json:"page"`
 }
 
-func (acl *SummarizedAccessControlPagedList) GetPage() models.Page {
+func (acl *SummarizedAccessControlPagedList) GetPage() model.Page {
 	return acl.Page
 }
 
@@ -100,13 +100,13 @@ type Privilege struct {
 }
 
 type MappedConnection struct {
-	Name          string               `json:"name"`
-	ClusterUuid   string               `json:"clusterUuid"`
-	DatabaseType  string               `json:"databaseType"`
-	CloudProvider models.CloudProvider `json:"cloudProvider"`
-	Privilege     Privilege            `json:"privilege"`
-	Status        string               `json:"status"`
-	Ledger        bool                 `json:"ledger"`
+	Name          string              `json:"name"`
+	ClusterUuid   string              `json:"clusterUuid"`
+	DatabaseType  string              `json:"databaseType"`
+	CloudProvider model.CloudProvider `json:"cloudProvider"`
+	Privilege     Privilege           `json:"privilege"`
+	Status        string              `json:"status"`
+	Ledger        bool                `json:"ledger"`
 }
 
 type AccessControl struct {
@@ -139,10 +139,10 @@ func (ac *AccessControl) String() string {
 
 type AccessControlPagedList struct {
 	List []AccessControl `json:"list"`
-	Page models.Page     `json:"page"`
+	Page model.Page      `json:"page"`
 }
 
-func (acl *AccessControlPagedList) GetPage() models.Page {
+func (acl *AccessControlPagedList) GetPage() model.Page {
 	return acl.Page
 }
 

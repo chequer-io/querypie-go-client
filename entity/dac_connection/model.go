@@ -2,7 +2,7 @@ package dac_connection
 
 import (
 	"fmt"
-	"qpc/models"
+	"qpc/model"
 	"qpc/utils"
 )
 
@@ -16,16 +16,16 @@ type SummarizedConnectionV2 struct {
 
 	AdditionalInfo SummarizedAdditionalInfo `json:"additionalInfo" gorm:"-"`
 
-	Zones   []models.SummarizedZone `json:"zones" gorm:"-"`
-	Ledger  bool                    `json:"ledger"`
-	Deleted bool                    `json:"deleted"`
+	Zones   []model.SummarizedZone `json:"zones" gorm:"-"`
+	Ledger  bool                   `json:"ledger"`
+	Deleted bool                   `json:"deleted"`
 
-	CreatedAt     string          `json:"createdAt"`
-	CreatedBy     models.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid"`
-	CreatedByUuid string          `json:"-"`
-	UpdatedAt     string          `json:"updatedAt"`
-	UpdatedBy     models.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid"`
-	UpdatedByUuid string          `json:"-"`
+	CreatedAt     string         `json:"createdAt"`
+	CreatedBy     model.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid"`
+	CreatedByUuid string         `json:"-"`
+	UpdatedAt     string         `json:"updatedAt"`
+	UpdatedBy     model.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid"`
+	UpdatedByUuid string         `json:"-"`
 }
 
 func (sc *SummarizedConnectionV2) String() string {
@@ -86,10 +86,10 @@ func (i SummarizedAdditionalInfo) String() string {
 
 type PagedConnectionV2List struct {
 	List []SummarizedConnectionV2 `json:"list"`
-	Page models.Page              `json:"page"`
+	Page model.Page               `json:"page"`
 }
 
-func (cl *PagedConnectionV2List) GetPage() models.Page {
+func (cl *PagedConnectionV2List) GetPage() model.Page {
 	return cl.Page
 }
 
@@ -120,14 +120,14 @@ type ConnectionV2 struct {
 
 	AdvancedPrivilegeSetting []AdvancedPrivilegeSetting `json:"advancedPrivilegeSetting"`
 
-	Zones        []models.Zone `json:"zones"`
-	Ledger       bool          `json:"ledger"`
-	VendorDetail VendorDetail  `json:"vendorDetail"`
+	Zones        []model.Zone `json:"zones"`
+	Ledger       bool         `json:"ledger"`
+	VendorDetail VendorDetail `json:"vendorDetail"`
 
-	CreatedAt string          `json:"createdAt"`
-	CreatedBy models.Modifier `json:"createdBy"`
-	UpdatedAt string          `json:"updatedAt"`
-	UpdatedBy models.Modifier `json:"updatedBy"`
+	CreatedAt string         `json:"createdAt"`
+	CreatedBy model.Modifier `json:"createdBy"`
+	UpdatedAt string         `json:"updatedAt"`
+	UpdatedBy model.Modifier `json:"updatedBy"`
 }
 
 type AdditionalInfo struct {
@@ -173,11 +173,11 @@ type KerberosProtocol struct {
 }
 
 type ConnectionAccount struct {
-	DbAccountName      string             `json:"dbAccountName"`
-	KerberosProtocol   KerberosProtocol   `json:"kerberosProtocol"`
-	SecretStore        models.SecretStore `json:"secretStore"`
-	SecretStoreEnabled bool               `json:"secretStoreEnabled"`
-	Type               string             `json:"type"`
+	DbAccountName      string            `json:"dbAccountName"`
+	KerberosProtocol   KerberosProtocol  `json:"kerberosProtocol"`
+	SecretStore        model.SecretStore `json:"secretStore"`
+	SecretStoreEnabled bool              `json:"secretStoreEnabled"`
+	Type               string            `json:"type"`
 }
 
 type OwnedBy struct {
@@ -191,10 +191,10 @@ type OwnedBy struct {
 }
 
 type ConnectionOwner struct {
-	ObjectUuid string      `json:"objectUuid"`
-	OwnedBy    OwnedBy     `json:"ownedBy"`
-	Role       models.Role `json:"role"`
-	Uuid       string      `json:"uuid"`
+	ObjectUuid string     `json:"objectUuid"`
+	OwnedBy    OwnedBy    `json:"ownedBy"`
+	Role       model.Role `json:"role"`
+	Uuid       string     `json:"uuid"`
 }
 
 type JustificationSettings struct {

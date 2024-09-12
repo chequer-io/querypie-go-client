@@ -6,7 +6,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"qpc/entity/user"
-	"qpc/models"
+	"qpc/model"
 )
 
 var fetchAllCmd = &cobra.Command{
@@ -52,18 +52,18 @@ func fetchUserPrintAndSave() {
 func fetchUserV1PrintAndSave() {
 	fetchPrintAndSave(
 		"/api/external/users",
-		&models.PagedUserV1List{},
-		func(result *models.PagedUserV1List, first bool, last bool) {
+		&model.PagedUserV1List{},
+		func(result *model.PagedUserV1List, first bool, last bool) {
 			printUserListV1(*result, first, last)
 		},
-		func(result *models.PagedUserV1List) bool {
+		func(result *model.PagedUserV1List) bool {
 			saveUserListV1(result.GetList())
 			return !result.Page.HasNext()
 		},
 	)
 }
 
-func fetchPrintAndSave[T any, P models.PagedList[T]](
+func fetchPrintAndSave[T any, P model.PagedList[T]](
 	uri string,
 	result P,
 	printFunc func(object P, first bool, last bool),

@@ -1,0 +1,20 @@
+{
+  "mappedConnection": {
+    "cloudProvider": {
+      "name": "string",
+      "uuid": "string"
+    },
+    "clusterUuid": "string",
+    "databaseType": "MYSQL",
+    "ledger": true,
+    "name": "string",
+    "privilege": {
+      "name": "string",
+      "uuid": "string"
+    },
+    "status": "ACTIVE"
+  },
+  "name": "string",
+  "userType": "USER",
+  "uuid": "string"
+}
