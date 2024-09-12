@@ -26,10 +26,10 @@ var dacFetchAllConnectionsCmd = &cobra.Command{
 	Args: cobra.ExactArgs(1),
 	PreRun: func(cmd *cobra.Command, args []string) {
 		if !config.LocalDatabase.Migrator().HasTable(&dac_connection.SummarizedConnectionV2{}) {
-			logrus.Fatalf("Table dac_connections_v2 does not exist in local database")
+			dac_connection.RunAutoMigrate()
 		}
 		if !config.LocalDatabase.Migrator().HasTable(&dac_access_control.SummarizedAccessControl{}) {
-			logrus.Fatalf("Table dac_access_controls does not exist in local database")
+			dac_access_control.RunAutoMigrate()
 		}
 		if !config.LocalDatabase.Migrator().HasTable(&dac_privilege.Privilege{}) {
 			dac_privilege.RunAutoMigrate()

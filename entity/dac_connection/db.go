@@ -107,6 +107,7 @@ func RunAutoMigrate() {
 	db := config.LocalDatabase
 	err := db.AutoMigrate(
 		&SummarizedConnectionV2{},
+		&model.Role{},
 	)
 	if err != nil {
 		logrus.Fatal(err)

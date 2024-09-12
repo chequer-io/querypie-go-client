@@ -7,11 +7,6 @@ import (
 	"github.com/spf13/viper"
 	"os"
 	"qpc/config"
-	"qpc/entity/dac_access_control"
-	"qpc/entity/dac_connection"
-	"qpc/entity/user"
-	"qpc/entity/user_v1"
-	"qpc/model"
 )
 
 var (
@@ -78,20 +73,4 @@ func initConfig() {
 
 	initConfigForQueryPieServer(v)
 	config.InitConfigForLocalDatabase(v)
-
-	db := config.LocalDatabase
-	err1 := db.AutoMigrate(
-		&user.User{},
-		&user.AdminRole{},
-		&user_v1.UserV1{},
-		&user_v1.UserRole{},
-		&model.Role{},
-		&dac_connection.SummarizedConnectionV2{},
-		&dac_access_control.SummarizedAccessControl{},
-	)
-	if err1 != nil {
-		logrus.Fatal(err)
-	}
-
-	logrus.Infof("AutoMigrate has done successfully!")
 }

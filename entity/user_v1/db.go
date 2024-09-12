@@ -3,6 +3,7 @@ package user_v1
 import (
 	"github.com/sirupsen/logrus"
 	"qpc/config"
+	"qpc/model"
 	"qpc/utils"
 )
 
@@ -45,6 +46,7 @@ func RunAutoMigrate() {
 	err := db.AutoMigrate(
 		&UserV1{},
 		&UserRole{},
+		&model.Role{},
 	)
 	if err != nil {
 		logrus.Fatal(err)
