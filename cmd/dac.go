@@ -198,10 +198,12 @@ func selectSummarizedAccessControlPagedList(
 }
 
 var grantByUuidCmd = &cobra.Command{
-	Use:     "grant-by-uuid",
-	Short:   "Grant access to a DAC connection using UUIDs as argument",
-	Example: `  grant-directly <user-uuid> <connection-uuid> <privilege-uuid> [<force>]`,
-	Args:    cobra.RangeArgs(3, 4),
+	Use:   "grant-by-uuid <user-uuid> <connection-uuid> <privilege-uuid> [<force>]",
+	Short: "Grant access to a DAC connection using UUIDs as argument",
+	Example: `  grant-by-uuid <uuid> <uuid> <uuid>
+  grant-by-uuid <uuid> <uuid> <uuid> false
+  grant-by-uuid <uuid> <uuid> <uuid> true`,
+	Args: cobra.RangeArgs(3, 4),
 	Run: func(cmd *cobra.Command, args []string) {
 		userUuid := args[0]
 		clusterUuid := args[1]

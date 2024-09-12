@@ -7,31 +7,6 @@ SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SCRIPT_DIR}"/../../../scripts/lib/bash-tap
 TODO= # Define here to prevent unbound variable error from bash-tap.
 
-function test_qpc_exists() {
-  local qpc
-  qpc=$(command -v qpc || true)
-  like "${qpc}" "/qpc$" "It should find \`qpc\` at \`${qpc}\`."
-}
-
-function test_qpc_dac() {
-  local actual_header expected actual
-  echo "# ##########"
-  echo "# test_qpc_dac"
-  echo "# "
-
-  actual_header=$(qpc dac | head -1 || true)
-  is "${actual_header}" "Manage DAC resources" \
-    "It should print a header line, Manage DAC resources."
-
-  expected="Available Commands:
-  ls          List DAC connections in local sqlite database
-  fetch-all   Fetch all DAC connections from QueryPie server and save them to local sqlite database
-
-Flags:"
-  actual=$(qpc dac | grep --after-context=4 "Available Command")
-  is "${actual}" "${expected}" "It should print available commands."
-}
-
 function test_qpc_dac_fetch_all_connections() {
   local actual_header actual_output
   echo "# ##########"
@@ -109,7 +84,7 @@ function compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections() {
 }
 
 function main() {
-  local num_of_tests=23
+  local num_of_tests=20
   plan tests ${num_of_tests}
 
   local top_dir basename
@@ -123,8 +98,6 @@ function main() {
   is "$(pwd)" "${top_dir}" "I just changed the current working directory to ${top_dir}."
 
   export PATH=.:${PATH}
-  test_qpc_exists
-  test_qpc_dac
   test_qpc_dac_fetch_all_connections
   test_qpc_dac_ls_connections
   compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections

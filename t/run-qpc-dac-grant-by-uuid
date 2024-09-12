@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+set -o nounset -o errexit -o errtrace -o pipefail
+
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+
+# shellcheck source=../../../scripts/lib/bash-tap
+source "${SCRIPT_DIR}"/../../../scripts/lib/bash-tap
+TODO= # Define here to prevent unbound variable error from bash-tap.
+
+function test_qpc_dac_grant_by_uuid() {
+  local actual expected
+  echo "# ##########"
+  echo "# test_qpc_dac_grant_by_uuid"
+  echo "# "
+
+  actual=$(qpc dac grant-by-uuid 2>&1 | head -10 || true)
+  expected="Error: accepts between 3 and 4 arg(s), received 0
+Usage:
+  qpc dac grant-by-uuid <user-uuid> <connection-uuid> <privilege-uuid> [<force>] [flags]
+
+Examples:
+  grant-by-uuid <uuid> <uuid> <uuid>
+  grant-by-uuid <uuid> <uuid> <uuid> false
+  grant-by-uuid <uuid> <uuid> <uuid> true
+
+Flags:"
+  is "${actual}" "${expected}" "It should print help and usage."
+}
+
+function test_qpc_dac_grant_by_uuid_400_bad_request() {
+  local actual expected
+  echo "# ##########"
+  echo "# test_qpc_dac_grant_by_uuid_400_bad_request"
+  echo "# "
+
+  actual=$(qpc dac grant-by-uuid a b c)
+  expected=$(cat <<'END_OF_EXPECTED'
+HTTP/2.0 400 Bad Request
+
+{
+  "error": {
+    "code": "QPS-10004",
+    "path": "POST /api/external/v2/dac/access-controls/a/grant",
+    "message": "User Not Found (a)",
+    "status": 400
+  }
+}
+END_OF_EXPECTED
+)
+  is "${actual}" "${expected}" "It should print 400 Bad Request."
+}
+
+
+function main() {
+  local num_of_tests=5
+  plan tests ${num_of_tests}
+
+  local top_dir basename
+  top_dir=$(realpath "${SCRIPT_DIR}"/../)
+  ok 1 "Detected top_dir=${top_dir}"
+
+  basename=$(basename "${top_dir}")
+  ok 1 "Detected basename=${basename}"
+
+  pushd "${top_dir}" &>/dev/null
+  is "$(pwd)" "${top_dir}" "I just changed the current working directory to ${top_dir}."
+
+  export PATH=.:${PATH}
+  test_qpc_dac_grant_by_uuid
+  test_qpc_dac_grant_by_uuid_400_bad_request
+
+  popd &>/dev/null
+
+  done_testing ${num_of_tests}
+}
+
+main "$@"

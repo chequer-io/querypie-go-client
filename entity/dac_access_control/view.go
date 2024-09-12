@@ -3,6 +3,7 @@ package dac_access_control
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/tidwall/pretty"
 )
 
 func (acl *SummarizedAccessControlPagedList) Print() {
@@ -50,7 +51,9 @@ func (r *GrantResponse) Print() {
 		r.HttpResponse.Status(),
 	)
 	if r.HttpResponse.StatusCode() != 200 {
-		fmt.Printf("%s\n", string(r.HttpResponse.Body()))
+		fmt.Printf("%s\n",
+			pretty.Pretty(r.HttpResponse.Body()),
+		)
 		return
 	}
 	format := "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %-16s\n"

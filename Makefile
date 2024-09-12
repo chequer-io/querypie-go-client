@@ -23,5 +23,5 @@ config:
 .PHONY: test
 test:
 	go test ./cmd/... ./config/... ./entity/... ./model/... ./utils/...
-	prove -v t/run-qpc t/run-qpc-config-querypie t/run-qpc-user
+	prove -v t/run-*
 

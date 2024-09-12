@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+set -o nounset -o errexit -o errtrace -o pipefail
+
+SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
+
+# shellcheck source=../../../scripts/lib/bash-tap
+source "${SCRIPT_DIR}"/../../../scripts/lib/bash-tap
+TODO= # Define here to prevent unbound variable error from bash-tap.
+
+function test_qpc_exists() {
+  local qpc
+  qpc=$(command -v qpc || true)
+  like "${qpc}" "/qpc$" "It should find \`qpc\` at \`${qpc}\`."
+}
+
+function test_qpc_dac() {
+  local actual_header expected actual
+  echo "# ##########"
+  echo "# test_qpc_dac"
+  echo "# "
+
+  actual_header=$(qpc dac | head -1 || true)
+  is "${actual_header}" "Manage DAC resources" \
+    "It should print a header line, Manage DAC resources."
+
+  expected="Available Commands:
+  ls            List DAC connections in local sqlite database
+  fetch-all     Fetch all DAC connections from QueryPie server and save them to local sqlite database
+  grant-by-uuid Grant access to a DAC connection using UUIDs as argument
+
+Flags:"
+  actual=$(qpc dac | grep --after-context=5 "Available Command")
+  is "${actual}" "${expected}" "It should print available commands."
+}
+
+function main() {
+  local num_of_tests=6
+  plan tests ${num_of_tests}
+
+  local top_dir basename
+  top_dir=$(realpath "${SCRIPT_DIR}"/../)
+  ok 1 "Detected top_dir=${top_dir}"
+
+  basename=$(basename "${top_dir}")
+  ok 1 "Detected basename=${basename}"
+
+  pushd "${top_dir}" &>/dev/null
+  is "$(pwd)" "${top_dir}" "I just changed the current working directory to ${top_dir}."
+
+  export PATH=.:${PATH}
+  test_qpc_exists
+  test_qpc_dac
+
+  popd &>/dev/null
+
+  done_testing ${num_of_tests}
+}
+
+main "$@"
