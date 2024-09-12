@@ -1,12 +1,11 @@
 package cmd
 
 import (
-	"fmt"
-	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"qpc/entity/dac_connection"
 	"qpc/entity/user"
-	"qpc/model"
+	"qpc/entity/user_v1"
 )
 
 var fetchAllCmd = &cobra.Command{
@@ -24,82 +23,18 @@ var fetchAllCmd = &cobra.Command{
 		resource := args[0]
 		switch resource {
 		case "dac":
-			fetchDACPrintAndSave()
+			var pcl dac_connection.PagedConnectionV2List
+			pcl.FetchAllAndPrintAndSave()
 		case "users":
-			fetchUserPrintAndSave()
+			var pul user.PagedUserList
+			pul.FetchAllAndPrintAndSave()
 		case "users-v1":
-			fetchUserV1PrintAndSave()
+			var pul user_v1.PagedUserV1List
+			pul.FetchAllAndPrintAndSave()
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}
 	},
-}
-
-func fetchUserPrintAndSave() {
-	fetchPrintAndSave(
-		"/api/external/v2/users",
-		&user.PagedUserList{},
-		func(result *user.PagedUserList, first bool, last bool) {
-			result.Print()
-		},
-		func(result *user.PagedUserList) bool {
-			result.Save()
-			return !result.Page.HasNext()
-		},
-	)
-}
-
-func fetchUserV1PrintAndSave() {
-	fetchPrintAndSave(
-		"/api/external/users",
-		&model.PagedUserV1List{},
-		func(result *model.PagedUserV1List, first bool, last bool) {
-			printUserListV1(*result, first, last)
-		},
-		func(result *model.PagedUserV1List) bool {
-			saveUserListV1(result.GetList())
-			return !result.Page.HasNext()
-		},
-	)
-}
-
-func fetchPrintAndSave[T any, P model.PagedList[T]](
-	uri string,
-	result P,
-	printFunc func(object P, first bool, last bool),
-	saveFunc func(object P) bool,
-) {
-	page := 0
-	size := 40 // Set the desired page size
-	restClient := resty.New()
-
-	logrus.Debugf("Type of result: %T", result)
-
-	for {
-		resp, err := restClient.R().
-			SetQueryParams(
-				map[string]string{
-					"pageSize":   fmt.Sprintf("%d", size),
-					"pageNumber": fmt.Sprintf("%d", page),
-				},
-			).
-			SetHeader("Accept", "application/json").
-			SetAuthToken(defaultQuerypieServer.AccessToken).
-			SetResult(&result).
-			Get(defaultQuerypieServer.BaseURL + uri)
-		logrus.Debugf("Response: %v", resp)
-		if err != nil {
-			logrus.Fatalf("Failed to fetch resources: %v", err)
-		}
-
-		printFunc(result, page == 0, !result.GetPage().HasNext())
-		shouldBreak := saveFunc(result)
-		if shouldBreak {
-			break
-		}
-
-		page++
-	}
 }
 
 func init() {

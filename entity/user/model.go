@@ -81,10 +81,10 @@ type PagedUserList struct {
 	Page model.Page `json:"page"`
 }
 
-func (pul PagedUserList) GetPage() model.Page {
+func (pul *PagedUserList) GetPage() model.Page {
 	return pul.Page
 }
 
-func (pul PagedUserList) GetList() []User {
+func (pul *PagedUserList) GetList() []User {
 	return pul.List
 }

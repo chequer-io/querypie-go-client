@@ -11,9 +11,6 @@ import (
 	"qpc/utils"
 )
 
-var querypieServerConfigs []utils.QueryPieServerConfig
-var defaultQuerypieServer utils.QueryPieServerConfig
-
 var configQuerypieCmd = &cobra.Command{
 	Use:     "config <key-name>",
 	Short:   "Show detailed configuration for a specific key",
@@ -39,7 +36,7 @@ func listQuerypieServers() {
 		"STATUS",
 	)
 	// Iterate over querypieServerConfigs and print each server's configuration
-	for _, server := range querypieServerConfigs {
+	for _, server := range utils.QuerypieServerConfigs {
 		defaultFlag := ""
 		status := "FAIL"
 		if checkEndpoint(server, "/api/external/v2/security") {
@@ -79,13 +76,13 @@ func checkEndpoint(server utils.QueryPieServerConfig, uri string) bool {
 }
 
 func initConfigForQueryPieServer(viper *viper.Viper) {
-	if err := viper.UnmarshalKey("querypie-servers", &querypieServerConfigs); err != nil {
+	if err := viper.UnmarshalKey("querypie-servers", &utils.QuerypieServerConfigs); err != nil {
 		fmt.Println("Unable to decode into struct:", err)
 		os.Exit(1)
 	}
 
-	for i := range querypieServerConfigs {
-		server := &querypieServerConfigs[i]
+	for i := range utils.QuerypieServerConfigs {
+		server := &utils.QuerypieServerConfigs[i]
 		if !isValidURL(server.BaseURL) {
 			logrus.Fatalf("Invalid URL for server %s: %s\n", server.Name, server.BaseURL)
 			os.Exit(1)
@@ -102,8 +99,8 @@ func initConfigForQueryPieServer(viper *viper.Viper) {
 
 		// Check if the server is the default server
 		if server.Default {
-			if defaultQuerypieServer == (utils.QueryPieServerConfig{}) {
-				defaultQuerypieServer = *server
+			if utils.DefaultQuerypieServer == (utils.QueryPieServerConfig{}) {
+				utils.DefaultQuerypieServer = *server
 			} else {
 				logrus.Fatalf("Configuration error: Multiple default querypie-server configurations found. Name: %s, URL: %s\n", server.Name, server.BaseURL)
 				os.Exit(1)
@@ -111,7 +108,7 @@ func initConfigForQueryPieServer(viper *viper.Viper) {
 		}
 	}
 
-	if defaultQuerypieServer == (utils.QueryPieServerConfig{}) {
+	if utils.DefaultQuerypieServer == (utils.QueryPieServerConfig{}) {
 		logrus.Fatalf("Configuration error: No default querypie-server configuration found.\n")
 		os.Exit(1)
 	}

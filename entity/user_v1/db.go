@@ -1,4 +1,4 @@
-package user
+package user_v1
 
 import (
 	"github.com/sirupsen/logrus"
@@ -6,29 +6,29 @@ import (
 	"qpc/utils"
 )
 
-func (pul *PagedUserList) Save() {
+func (pul *PagedUserV1List) Save() {
 	for _, user := range pul.GetList() {
 		user.Save()
 	}
 }
 
-func (pul *PagedUserList) FetchAllAndPrintAndSave() {
+func (pul *PagedUserV1List) FetchAllAndPrintAndSave() {
 	utils.FetchPrintAndSave(
-		"/api/external/v2/users",
-		&PagedUserList{},
-		func(result *PagedUserList, first bool, last bool) {
+		"/api/external/users",
+		&PagedUserV1List{},
+		func(result *PagedUserV1List, first bool, last bool) {
 			result.Print()
 		},
-		func(result *PagedUserList) bool {
+		func(result *PagedUserV1List) bool {
 			result.Save()
 			return !result.Page.HasNext()
 		},
 	)
 }
 
-func (u User) Save() {
+func (u *UserV1) Save() {
 	// Attempt to update the user
-	result := config.LocalDatabase.Model(&User{}).Where("uuid = ?", u.Uuid).Updates(&u)
+	result := config.LocalDatabase.Model(&UserV1{}).Where("uuid = ?", u.Uuid).Updates(&u)
 
 	// If no rows were affected, create a new user
 	if result.RowsAffected == 0 {
@@ -43,8 +43,8 @@ func (u User) Save() {
 func RunAutoMigrate() {
 	db := config.LocalDatabase
 	err := db.AutoMigrate(
-		&User{},
-		&AdminRole{},
+		&UserV1{},
+		&UserRole{},
 	)
 	if err != nil {
 		logrus.Fatal(err)

@@ -10,6 +10,7 @@ import (
 	"qpc/entity/dac_access_control"
 	"qpc/entity/dac_connection"
 	"qpc/entity/user"
+	"qpc/entity/user_v1"
 	"qpc/model"
 )
 
@@ -82,8 +83,8 @@ func initConfig() {
 	err1 := db.AutoMigrate(
 		&user.User{},
 		&user.AdminRole{},
-		&model.UserV1{},
-		&model.UserRole{},
+		&user_v1.UserV1{},
+		&user_v1.UserRole{},
 		&model.Role{},
 		&dac_connection.SummarizedConnectionV2{},
 		&dac_access_control.SummarizedAccessControl{},

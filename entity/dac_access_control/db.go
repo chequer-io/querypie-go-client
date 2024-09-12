@@ -3,12 +3,27 @@ package dac_access_control
 import (
 	"github.com/sirupsen/logrus"
 	"qpc/config"
+	"qpc/utils"
 )
 
 func (acl *SummarizedAccessControlPagedList) Save() {
 	for _, sac := range acl.GetList() {
 		sac.Save()
 	}
+}
+
+func (acl *SummarizedAccessControlPagedList) FetchAllAndPrintAndSave() {
+	utils.FetchPrintAndSave(
+		"/api/external/v2/dac/access-controls",
+		&SummarizedAccessControlPagedList{},
+		func(result *SummarizedAccessControlPagedList, first bool, last bool) {
+			result.Print()
+		},
+		func(result *SummarizedAccessControlPagedList) bool {
+			result.Save()
+			return !result.Page.HasNext()
+		},
+	)
 }
 
 func (sac *SummarizedAccessControl) Save() {

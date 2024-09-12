@@ -1,7 +1,8 @@
-package model
+package user_v1
 
 import (
 	"fmt"
+	"qpc/model"
 	"qpc/utils"
 )
 
@@ -19,7 +20,7 @@ type UserV1 struct {
 	UpdatedAt   string     `json:"updatedAt"`
 }
 
-func (u UserV1) Status() string {
+func (u *UserV1) Status() string {
 	if u.Deleted {
 		return "deleted"
 	}
@@ -32,22 +33,22 @@ func (u UserV1) Status() string {
 	return "active"
 }
 
-func (u UserV1) ShortCreatedAt() string {
+func (u *UserV1) ShortCreatedAt() string {
 	return utils.ShortDatetimeWithTZ(u.CreatedAt)
 }
 
-func (u UserV1) ShortUpdatedAt() string {
+func (u *UserV1) ShortUpdatedAt() string {
 	return utils.ShortDatetimeWithTZ(u.UpdatedAt)
 }
 
-func (u UserV1) ShortID() string {
+func (u *UserV1) ShortID() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s }",
 		u.Uuid, u.LoginId,
 	)
 }
 
-func (u UserV1) String() string {
+func (u *UserV1) String() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s, Email=%s, Name=%s, UserRoles=%v, "+
 			"LastLoginAt=%s, Locked=%t, Expired=%t, Deleted=%t, "+
@@ -58,28 +59,28 @@ func (u UserV1) String() string {
 }
 
 type PagedUserV1List struct {
-	List []UserV1 `json:"list"`
-	Page Page     `json:"page"`
+	List []UserV1   `json:"list"`
+	Page model.Page `json:"page"`
 }
 
-func (pul PagedUserV1List) GetPage() Page {
+func (pul *PagedUserV1List) GetPage() model.Page {
 	return pul.Page
 }
 
-func (pul PagedUserV1List) GetList() []UserV1 {
+func (pul *PagedUserV1List) GetList() []UserV1 {
 	return pul.List
 }
 
 type UserRole struct {
-	Uuid       string `json:"uuid" gorm:"primaryKey"`
-	UserV1Uuid string `gorm:"index"`
-	RoleUuid   string `json:"-"`
-	Role       Role   `json:"role" gorm:"foreignKey:RoleUuid"`
-	ObjectUuid string `json:"objectUuid"`
-	ObjectType string `json:"objectType"`
+	Uuid       string     `json:"uuid" gorm:"primaryKey"`
+	UserV1Uuid string     `gorm:"index"`
+	RoleUuid   string     `json:"-"`
+	Role       model.Role `json:"role" gorm:"foreignKey:RoleUuid"`
+	ObjectUuid string     `json:"objectUuid"`
+	ObjectType string     `json:"objectType"`
 }
 
-func (r UserRole) String() string {
+func (r *UserRole) String() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, Role=%s, "+
 			"ObjectUuid=%s, ObjectType=%s }",

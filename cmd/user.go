@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
+	"qpc/entity/user"
+	"qpc/entity/user_v1"
 )
 
 var userCmd = &cobra.Command{
@@ -13,7 +15,8 @@ var userFetchAllCmd = &cobra.Command{
 	Use:   "fetch-all",
 	Short: "Fetch all users from QueryPie server and save them to local sqlite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		fetchUserPrintAndSave()
+		var pul user.PagedUserList
+		pul.FetchAllAndPrintAndSave()
 	},
 }
 
@@ -26,7 +29,8 @@ var userV1FetchAllCmd = &cobra.Command{
 	Use:   "fetch-all",
 	Short: "Fetch all users from QueryPie server and save them to local sqlite database",
 	Run: func(cmd *cobra.Command, args []string) {
-		fetchUserV1PrintAndSave()
+		var pul user_v1.PagedUserV1List
+		pul.FetchAllAndPrintAndSave()
 	},
 }
 
