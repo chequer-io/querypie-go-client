@@ -1,0 +1,93 @@
+{
+  "uuid": "59db4f83-d3c8-4836-9de7-d691b105c9ba",
+  "cloudProviderUuid": null,
+  "cloudProviderType": null,
+  "createdAt": "2024-06-18T06:24:01.609Z",
+  "createdBy": {
+    "uuid": "ella@chequer.io",
+    "name": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+    "loginId": "Ella Lee",
+    "email": "user.masked@chequer.io"
+  },
+  "updatedAt": "2024-09-05T08:22:16.936Z",
+  "updatedBy": {
+    "uuid": "user.masked@chequer.io",
+    "name": "4afff027-35d0-4fca-8e67-85f757d9c44c",
+    "loginId": "Daniel Son",
+    "email": "user.masked@chequer.io"
+  },
+  "zones": [
+    {
+      "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+      "name": "All Allowed (Any)",
+      "ipBands": [
+        "0.0.0.0/0"
+      ],
+      "createdAt": "2024-04-30T11:34:30.000Z",
+      "updatedAt": "2024-05-28T10:03:33.806Z"
+    }
+  ],
+  "name": "mysql.querypie.io",
+  "clusters": [
+    {
+      "uuid": "4156920f-b536-4fc6-b1f7-bcf93aec4bd9",
+      "cloudIdentifier": null,
+      "replicationType": "SINGLE",
+      "host": "mysql.querypie.io",
+      "port": "3306",
+      "deleted": false
+    }
+  ],
+  "connectionAccount": {
+    "type": "UIDPWD",
+    "secretStoreEnabled": false,
+    "secretStore": null,
+    "kerberosProtocol": null,
+    "dbAccountName": "querypie"
+  },
+  "connectionOwners": [],
+  "hideCredential": false,
+  "ledger": true,
+  "additionalInfo": {
+    "maxDisplayRows": 1000,
+    "maxExportRows": 1000,
+    "accessStartTime": null,
+    "accessEndTime": null,
+    "weekdayAccessDenied": [],
+    "loginRules": {
+      "maxLoginFailures": 5,
+      "interval": "10MIN"
+    },
+    "databaseVersion": null,
+    "auditEnabled": true,
+    "dmlSnapshotEnabled": true,
+    "proxyEnabled": false,
+    "proxyAuthType": null,
+    "networkId": null,
+    "description": ""
+  },
+  "justificationSettings": {
+    "requireExportSchemaReason": true,
+    "requireExportDataReason": true,
+    "requireExecuteReason": false,
+    "requireImportSchemaReason": false,
+    "requireImportDataReason": false
+  },
+  "sslSetting": {
+    "useSsl": false,
+    "sslConfigName": null,
+    "sslConfigUuid": null
+  },
+  "sshSetting": {
+    "useSsh": false,
+    "sshConfigName": null,
+    "sshConfigUuid": null
+  },
+  "advancedPrivilegeSetting": [],
+  "databaseType": "MYSQL",
+  "vendorDetail": {
+    "databaseName": "",
+    "charset": null,
+    "collation": null
+  }
+}

@@ -17,9 +17,9 @@ var dacCmd = &cobra.Command{
 	Short: "Manage DAC resources",
 }
 
-var dacFetchAllConnectionsCmd = &cobra.Command{
+var dacFetchAllCmd = &cobra.Command{
 	Use:   "fetch-all <resource>",
-	Short: "Fetch all DAC connections from QueryPie server and save them to local sqlite database",
+	Short: "Fetch all DAC resources from QueryPie server and save them to local sqlite database",
 	Example: `  fetch-all connections # from QueryPie API v2
   fetch-all privileges # from QueryPie API v2,
   fetch-all access-controls # from QueryPie API v2`,
@@ -36,10 +36,6 @@ var dacFetchAllConnectionsCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		if len(args) == 0 {
-			_ = cmd.Help()
-			return
-		}
 		resource := args[0]
 		switch resource {
 		case "connections":
@@ -138,6 +134,26 @@ func selectSummarizedAccessControlPagedList(
 	return acl, nil
 }
 
+var dacFetchByUuidCmd = &cobra.Command{
+	Use:     "fetch-by-uuid <resource> <uuid>",
+	Short:   "Fetch a DAC resource specified as UUID, and save it to local sqlite database",
+	Example: `  fetch-by-uuid connection <connection-uuid> # from QueryPie API v2`,
+	Args:    cobra.ExactArgs(2),
+	PreRun: func(cmd *cobra.Command, args []string) {
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		resource := args[0]
+		uuid := args[1]
+		switch resource {
+		case "connection":
+			var c dac_connection.ConnectionV2
+			c.FetchAndPrintByUuid(uuid)
+		default:
+			logrus.Fatalf("Unknown resource: %s", resource)
+		}
+	},
+}
+
 var grantByUuidCmd = &cobra.Command{
 	Use:   "grant-by-uuid <user-uuid> <connection-uuid> <privilege-uuid> [<force>]",
 	Short: "Grant access to a DAC connection using UUIDs as argument",
@@ -167,7 +183,8 @@ var grantByUuidCmd = &cobra.Command{
 func init() {
 	// Add dacListCmd subcommands to dacCmd
 	dacCmd.AddCommand(dacListCmd)
-	dacCmd.AddCommand(dacFetchAllConnectionsCmd)
+	dacCmd.AddCommand(dacFetchAllCmd)
+	dacCmd.AddCommand(dacFetchByUuidCmd)
 	dacCmd.AddCommand(grantByUuidCmd)
 
 	// dacCmd is added rootCmd in init() of root.go

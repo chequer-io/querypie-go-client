@@ -1,125 +1,143 @@
 {
-  "additionalInfo": {
-    "accessEndTime": "string",
-    "accessStartTime": "string",
-    "auditEnabled": true,
-    "databaseVersion": "string",
-    "description": "string",
-    "dmlSnapshotEnabled": true,
-    "loginRules": {
-      "interval": "DISABLED",
-      "maxLoginFailures": -1
-    },
-    "maxDisplayRows": -1,
-    "maxExportRows": -1,
-    "networkId": "string",
-    "proxyAuthType": "QUERYPIE",
-    "proxyEnabled": true,
-    "weekdayAccessDenied": "Monday"
-  },
-  "advancedPrivilegeSetting": [
-    {
-      "dbAccountName": "string",
-      "privilegeName": "string",
-      "privilegeUuid": "string"
-    }
-  ],
-  "cloudProviderType": "NONE",
-  "cloudProviderUuid": "string",
-  "clusters": [
-    {
-      "cloudIdentifier": "string",
-      "deleted": true,
-      "host": "string",
-      "port": "string",
-      "replicationType": "string",
-      "uuid": "string"
-    }
-  ],
-  "connectionAccount": {
-    "dbAccountName": "string",
-    "kerberosProtocol": {
-      "principal": "string",
-      "realm": "string",
-      "serviceName": "string"
-    },
-    "secretStore": {
-      "account": "string",
-      "name": "string",
-      "uuid": "string"
-    },
-    "secretStoreEnabled": true,
-    "type": "UIDPWD"
-  },
-  "connectionOwners": [
-    {
-      "objectUuid": "string",
-      "ownedBy": {
-        "active": true,
-        "authType": "QueryPie",
-        "email": "string",
-        "loginId": "string",
-        "name": "string",
-        "userType": "USER",
-        "uuid": "string"
-      },
-      "role": {
-        "name": "string",
-        "uuid": "string"
-      },
-      "uuid": "string"
-    }
-  ],
-  "createdAt": "2019-08-24T14:15:22Z",
+  "uuid": "14796ecd-abfc-44b8-bab5-abc10a8eaa3e",
+  "cloudProviderUuid": "null",
+  "cloudProviderType": null,
+  "createdAt": "2024-07-24T03:51:13.575Z",
   "createdBy": {
-    "email": "string",
-    "loginId": "string",
-    "name": "string",
-    "uuid": "string"
+    "uuid": "qp-admin",
+    "name": "d8665fba-8080-11eb-a305-0a789f7c7580",
+    "loginId": "Admin",
+    "email": "user.masked@querypie.com"
   },
-  "databaseType": "ATHENA",
-  "hideCredential": true,
-  "justificationSettings": {
-    "requireExecuteReason": true,
-    "requireExportDataReason": true,
-    "requireExportSchemaReason": true,
-    "requireImportDataReason": true,
-    "requireImportSchemaReason": true
-  },
-  "ledger": true,
-  "name": "string",
-  "sshSetting": {
-    "sshConfigName": "string",
-    "sshConfigUuid": "string",
-    "useSsh": true
-  },
-  "sslSetting": {
-    "sslConfigName": "string",
-    "sslConfigUuid": "string",
-    "useSsl": true
-  },
-  "updatedAt": "2019-08-24T14:15:22Z",
+  "updatedAt": "2024-09-12T16:40:06.708Z",
   "updatedBy": {
-    "email": "string",
-    "loginId": "string",
-    "name": "string",
-    "uuid": "string"
-  },
-  "uuid": "string",
-  "vendorDetail": {
-    "cloudRegion": "string",
-    "databaseName": "string",
-    "workGroupName": "string"
+    "uuid": "user.masked@chequer.io",
+    "name": "d9207c90-15ae-45bd-983b-794d9e4bcbfa",
+    "loginId": "Jk KIm",
+    "email": "user.masked@chequer.io"
   },
   "zones": [
     {
-      "createdAt": "2019-08-24T14:15:22Z",
+      "uuid": "b21abaaa-bbf2-11ed-9e22-0242ac110002",
+      "name": "All Allowed (Any)",
       "ipBands": [
-        "string"
+        "0.0.0.0/0"
       ],
-      "name": "string",
-      "updatedAt": "2019-08-24T14:15:22Z",
-      "uuid": "string"
+      "createdAt": "2024-04-30T11:34:30.000Z",
+      "updatedAt": "2024-05-28T10:03:33.806Z"
     }
-  ]
+  ],
+  "name": "lucas test",
+  "clusters": [
+    {
+      "uuid": "08476195-2ccd-4fc9-bb32-b857c7ced30f",
+      "cloudIdentifier": null,
+      "replicationType": "SINGLE",
+      "host": "mysql.querypie.io",
+      "port": "3306",
+      "deleted": false
+    }
+  ],
+  "connectionAccount": {
+    "type": "UIDPWD",
+    "secretStoreEnabled": false,
+    "secretStore": null,
+    "kerberosProtocol": null,
+    "dbAccountName": "querypie"
+  },
+  "connectionOwners": [
+    {
+      "uuid": "d9207c90-15ae-45bd-983b-794d9e4bcbfa",
+      "objectUuid": "14796ecd-abfc-44b8-bab5-abc10a8eaa3e",
+      "ownedBy": {
+        "uuid": "d9207c90-15ae-45bd-983b-794d9e4bcbfa",
+        "loginId": "user.masked@chequer.io",
+        "email": "user.masked@chequer.io",
+        "name": "Jk KIm",
+        "userType": "USER",
+        "authType": "Okta",
+        "active": true
+      },
+      "role": {
+        "uuid": "c3594b76-5d4e-11ec-b114-0ab3e84d3368",
+        "name": "Connection Owner"
+      }
+    },
+    {
+      "uuid": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+      "objectUuid": "14796ecd-abfc-44b8-bab5-abc10a8eaa3e",
+      "ownedBy": {
+        "uuid": "97bb817d-1fa0-4d8b-9df3-492605655d7f",
+        "loginId": "user.masked@chequer.io",
+        "email": "user.masked@chequer.io",
+        "name": "Ella Lee",
+        "userType": "USER",
+        "authType": "Okta",
+        "active": true
+      },
+      "role": {
+        "uuid": "c3594b76-5d4e-11ec-b114-0ab3e84d3368",
+        "name": "Connection Owner"
+      }
+    }
+  ],
+  "hideCredential": false,
+  "ledger": false,
+  "additionalInfo": {
+    "maxDisplayRows": 3000,
+    "maxExportRows": 1000,
+    "accessStartTime": "01:00",
+    "accessEndTime": "19:15",
+    "weekdayAccessDenied": [
+      "MONDAY",
+      "WEDNESDAY",
+      "SUNDAY"
+    ],
+    "loginRules": {
+      "maxLoginFailures": 10,
+      "interval": "10MIN"
+    },
+    "databaseVersion": "10.0",
+    "auditEnabled": true,
+    "dmlSnapshotEnabled": true,
+    "proxyEnabled": true,
+    "proxyAuthType": "QUERYPIE",
+    "networkId": null,
+    "description": "Updated by JK"
+  },
+  "justificationSettings": {
+    "requireExportSchemaReason": true,
+    "requireExportDataReason": true,
+    "requireExecuteReason": false,
+    "requireImportSchemaReason": false,
+    "requireImportDataReason": true
+  },
+  "sslSetting": {
+    "useSsl": true,
+    "sslConfigName": "Brendon Test",
+    "sslConfigUuid": "3de08526-a9dc-47eb-b4d8-1db243605b6b"
+  },
+  "sshSetting": {
+    "useSsh": true,
+    "sshConfigName": "teo-test",
+    "sshConfigUuid": "4a5c4665-0cec-4e42-8fd5-2445fbc36f81"
+  },
+  "advancedPrivilegeSetting": [
+    {
+      "privilegeName": "Read/Write",
+      "privilegeUuid": "ad5a17d1-bbf2-11ed-9e22-0242ac110002",
+      "dbAccountName": "querypie"
+    },
+    {
+      "privilegeName": "Read-Only",
+      "privilegeUuid": "ad5a2e6a-bbf2-11ed-9e22-0242ac110002",
+      "dbAccountName": "querypie"
+    }
+  ],
+  "databaseType": "MYSQL",
+  "vendorDetail": {
+    "databaseName": "sakila",
+    "charset": "utf8mb4",
+    "collation": "utf8mb4_general_ci"
+  }
 }

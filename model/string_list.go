@@ -7,27 +7,27 @@ import (
 )
 
 type StringList struct {
-	values []string
+	Values []string
 }
 
 func (s StringList) Ellipsis() string {
-	if len(s.values) < 4 {
+	if len(s.Values) < 4 {
 		return s.String()
 	}
 	var extractedList StringList
-	extractedList.values = s.values[:3]
+	extractedList.Values = s.Values[:3]
 	extracted := extractedList.String()
 	extracted = extracted[:len(extracted)-1]
-	return fmt.Sprintf("%s,+%d]", extracted, len(s.values)-3)
+	return fmt.Sprintf("%s,+%d]", extracted, len(s.Values)-3)
 }
 
 // MarshalJSON implements the json.Marshaller interface
 func (s StringList) MarshalJSON() ([]byte, error) {
-	return json.Marshal(s.values)
+	return json.Marshal(s.Values)
 }
 
 func (s *StringList) UnmarshalJSON(data []byte) error {
-	if err := json.Unmarshal(data, &s.values); err != nil {
+	if err := json.Unmarshal(data, &s.Values); err != nil {
 		return err
 	}
 	return nil
@@ -35,7 +35,7 @@ func (s *StringList) UnmarshalJSON(data []byte) error {
 
 // Value Implement the Valuer interface for "database/sql/driver"
 func (s StringList) Value() (driver.Value, error) {
-	return json.Marshal(s.values)
+	return json.Marshal(s.Values)
 }
 
 // Scan Implement the Scanner interface for "database/sql/driver"
@@ -44,13 +44,13 @@ func (s *StringList) Scan(value interface{}) error {
 	if !ok {
 		return fmt.Errorf("type assertion to []byte failed")
 	}
-	return json.Unmarshal(b, &s.values)
+	return json.Unmarshal(b, &s.Values)
 }
 
 // String implements the fmt.Stringer interface
 // NOTE(JK): It should be a pointer receiver method, or
 // it does not work on fmt.Printf("%s", s).
 func (s StringList) String() string {
-	_json, _ := json.Marshal(s.values)
+	_json, _ := json.Marshal(s.Values)
 	return string(_json)
 }

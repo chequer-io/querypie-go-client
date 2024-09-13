@@ -58,7 +58,7 @@ func TestParseFixtureAndValidateV2DacPrivilegeDetail(t *testing.T) {
 	if privilege.Name == "" {
 		t.Errorf("Expected privilege name to be non-empty")
 	}
-	if len(privilege.PrivilegeTypes) == 0 {
+	if len(privilege.PrivilegeTypes.Values) == 0 {
 		t.Errorf("Expected non-empty list of privilege types")
 	}
 	if privilege.PrivilegeVendor == "" {

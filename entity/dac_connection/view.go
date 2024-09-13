@@ -3,6 +3,7 @@ package dac_connection
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"github.com/tidwall/pretty"
 )
 
 func (cl *PagedConnectionV2List) Print() {
@@ -42,4 +43,15 @@ func (cl *PagedConnectionV2List) Print() {
 	if last {
 		logrus.Infof("TotalElements: %v", cl.Page.TotalElements)
 	}
+}
+
+func (c *ConnectionV2) Print() {
+	req := c.HttpResponse.Request.RawRequest
+	res := c.HttpResponse.RawResponse
+	fmt.Printf("%s %s %s\n", req.Method, req.URL.RequestURI(), req.Proto)
+	fmt.Printf("%s %s\n\n", res.Proto, res.Status)
+	fmt.Printf("%s\n",
+		pretty.Pretty(c.HttpResponse.Body()),
+	)
+	return
 }

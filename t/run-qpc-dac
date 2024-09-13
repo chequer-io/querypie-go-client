@@ -25,7 +25,7 @@ function test_qpc_dac() {
 
   expected="Available Commands:
   ls            List DAC connections in local sqlite database
-  fetch-all     Fetch all DAC connections from QueryPie server and save them to local sqlite database
+  fetch-all     Fetch all DAC resources from QueryPie server and save them to local sqlite database
   grant-by-uuid Grant access to a DAC connection using UUIDs as argument
 
 Flags:"

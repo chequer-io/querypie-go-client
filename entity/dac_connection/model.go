@@ -2,6 +2,7 @@ package dac_connection
 
 import (
 	"fmt"
+	"github.com/go-resty/resty/v2"
 	"qpc/model"
 	"qpc/utils"
 )
@@ -98,10 +99,10 @@ func (cl *PagedConnectionV2List) GetList() []SummarizedConnectionV2 {
 }
 
 type ConnectionV2 struct {
-	Uuid              string `json:"uuid"`
-	DatabaseType      string `json:"databaseType"`
-	CloudProviderType string `json:"cloudProviderType"`
-	CloudProviderUuid string `json:"cloudProviderUuid"`
+	Uuid              string  `json:"uuid"`
+	DatabaseType      string  `json:"databaseType"`
+	CloudProviderType *string `json:"cloudProviderType"`
+	CloudProviderUuid *string `json:"cloudProviderUuid"`
 
 	Name string `json:"name"`
 
@@ -120,30 +121,44 @@ type ConnectionV2 struct {
 
 	AdvancedPrivilegeSetting []AdvancedPrivilegeSetting `json:"advancedPrivilegeSetting"`
 
-	Zones        []model.Zone `json:"zones"`
-	Ledger       bool         `json:"ledger"`
-	VendorDetail VendorDetail `json:"vendorDetail"`
+	Zones        []model.Zone           `json:"zones"`
+	Ledger       bool                   `json:"ledger"`
+	VendorDetail map[string]interface{} `json:"vendorDetail"`
 
 	CreatedAt string         `json:"createdAt"`
 	CreatedBy model.Modifier `json:"createdBy"`
 	UpdatedAt string         `json:"updatedAt"`
 	UpdatedBy model.Modifier `json:"updatedBy"`
+
+	// Internal: HTTP response
+	HttpResponse *resty.Response `json:"-" gorm:"-"`
 }
 
+func (c *ConnectionV2) SetHttpResponse(response *resty.Response) {
+	c.HttpResponse = response
+}
+
+func (c *ConnectionV2) GetHttpResponse() *resty.Response {
+	return c.HttpResponse
+}
+
+// Ensure ConnectionV2 implements RestResponse
+var _ model.RestResponse = (*ConnectionV2)(nil)
+
 type AdditionalInfo struct {
-	AccessEndTime       string     `json:"accessEndTime"`
-	AccessStartTime     string     `json:"accessStartTime"`
-	AuditEnabled        bool       `json:"auditEnabled"`
-	DatabaseVersion     string     `json:"databaseVersion"`
-	Description         string     `json:"description"`
-	DmlSnapshotEnabled  bool       `json:"dmlSnapshotEnabled"`
-	LoginRules          LoginRules `json:"loginRules"`
-	MaxDisplayRows      int        `json:"maxDisplayRows"`
-	MaxExportRows       int        `json:"maxExportRows"`
-	NetworkId           string     `json:"networkId"`
-	ProxyAuthType       string     `json:"proxyAuthType"`
-	ProxyEnabled        bool       `json:"proxyEnabled"`
-	WeekdayAccessDenied string     `json:"weekdayAccessDenied"`
+	AccessEndTime       *string          `json:"accessEndTime"`
+	AccessStartTime     *string          `json:"accessStartTime"`
+	AuditEnabled        bool             `json:"auditEnabled"`
+	DatabaseVersion     *string          `json:"databaseVersion"`
+	Description         string           `json:"description"`
+	DmlSnapshotEnabled  bool             `json:"dmlSnapshotEnabled"`
+	LoginRules          LoginRules       `json:"loginRules"`
+	MaxDisplayRows      int              `json:"maxDisplayRows"`
+	MaxExportRows       int              `json:"maxExportRows"`
+	NetworkId           *string          `json:"networkId"`
+	ProxyAuthType       *string          `json:"proxyAuthType"`
+	ProxyEnabled        bool             `json:"proxyEnabled"`
+	WeekdayAccessDenied model.StringList `json:"weekdayAccessDenied"`
 }
 
 type LoginRules struct {
@@ -152,18 +167,18 @@ type LoginRules struct {
 }
 
 type AdvancedPrivilegeSetting struct {
-	DbAccountName string `json:"dbAccountName"`
-	PrivilegeName string `json:"privilegeName"`
 	PrivilegeUuid string `json:"privilegeUuid"`
+	PrivilegeName string `json:"privilegeName"`
+	DbAccountName string `json:"dbAccountName"`
 }
 
 type Cluster struct {
-	CloudIdentifier string `json:"cloudIdentifier"`
-	Deleted         bool   `json:"deleted"`
-	Host            string `json:"host"`
-	Port            string `json:"port"`
-	ReplicationType string `json:"replicationType"`
-	Uuid            string `json:"uuid"`
+	Uuid            string  `json:"uuid"`
+	CloudIdentifier *string `json:"cloudIdentifier"`
+	Host            string  `json:"host"`
+	Port            string  `json:"port"`
+	ReplicationType string  `json:"replicationType"`
+	Deleted         bool    `json:"deleted"`
 }
 
 type KerberosProtocol struct {
@@ -173,11 +188,11 @@ type KerberosProtocol struct {
 }
 
 type ConnectionAccount struct {
-	DbAccountName      string            `json:"dbAccountName"`
-	KerberosProtocol   KerberosProtocol  `json:"kerberosProtocol"`
-	SecretStore        model.SecretStore `json:"secretStore"`
-	SecretStoreEnabled bool              `json:"secretStoreEnabled"`
-	Type               string            `json:"type"`
+	DbAccountName      *string            `json:"dbAccountName"`
+	KerberosProtocol   *KerberosProtocol  `json:"kerberosProtocol"`
+	SecretStore        *model.SecretStore `json:"secretStore"`
+	SecretStoreEnabled bool               `json:"secretStoreEnabled"`
+	Type               string             `json:"type"`
 }
 
 type OwnedBy struct {
@@ -206,19 +221,21 @@ type JustificationSettings struct {
 }
 
 type SshSetting struct {
-	SshConfigName string `json:"sshConfigName"`
-	SshConfigUuid string `json:"sshConfigUuid"`
-	UseSsh        bool   `json:"useSsh"`
+	SshConfigName *string `json:"sshConfigName"`
+	SshConfigUuid *string `json:"sshConfigUuid"`
+	UseSsh        bool    `json:"useSsh"`
 }
 
 type SslSetting struct {
-	SslConfigName string `json:"sslConfigName"`
-	SslConfigUuid string `json:"sslConfigUuid"`
-	UseSsl        bool   `json:"useSsl"`
+	SslConfigName *string `json:"sslConfigName"`
+	SslConfigUuid *string `json:"sslConfigUuid"`
+	UseSsl        bool    `json:"useSsl"`
 }
 
 type VendorDetail struct {
-	CloudRegion   string `json:"cloudRegion"`
-	DatabaseName  string `json:"databaseName"`
-	WorkGroupName string `json:"workGroupName"`
+	DatabaseName  string  `json:"databaseName"`
+	Charset       *string `json:"charset"`
+	Collation     *string `json:"collation"`
+	CloudRegion   *string `json:"cloudRegion"`
+	WorkGroupName *string `json:"workGroupName"`
 }

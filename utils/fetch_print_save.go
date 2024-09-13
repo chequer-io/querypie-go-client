@@ -45,3 +45,23 @@ func FetchPrintAndSave[T any, P model.PagedList[T]](
 		page++
 	}
 }
+
+func FetchAndPrint[T model.RestResponse](
+	uri string,
+	result T,
+	printFunc func(object T),
+) *T {
+	restClient := resty.New()
+	response, err := restClient.R().
+		SetHeader("Accept", "application/json").
+		SetAuthToken(DefaultQuerypieServer.AccessToken).
+		SetResult(&result).
+		Get(DefaultQuerypieServer.BaseURL + uri)
+	logrus.Debugf("Response: %v", response)
+	if err != nil {
+		logrus.Fatalf("Failed to fetch a resource: %v", err)
+	}
+	result.SetHttpResponse(response)
+	printFunc(result)
+	return &result
+}

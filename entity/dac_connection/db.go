@@ -1,10 +1,11 @@
 package dac_connection
 
 import (
-	"github.com/sirupsen/logrus"
 	"qpc/config"
 	"qpc/model"
 	"qpc/utils"
+
+	"github.com/sirupsen/logrus"
 )
 
 func (cl *PagedConnectionV2List) Save() {
@@ -101,6 +102,16 @@ func (sc *SummarizedConnectionV2) Save() {
 	} else if result.Error != nil {
 		logrus.Errorf("Failed to update connection %s: %v", sc.ShortID(), result.Error)
 	}
+}
+
+func (c *ConnectionV2) FetchAndPrintByUuid(uuid string) {
+	utils.FetchAndPrint(
+		"/api/external/v2/dac/connections/"+uuid,
+		&ConnectionV2{},
+		func(result *ConnectionV2) {
+			result.Print()
+		},
+	)
 }
 
 func RunAutoMigrate() {
