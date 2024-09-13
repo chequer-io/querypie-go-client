@@ -29,11 +29,11 @@ type SummarizedZone struct {
 }
 
 type Zone struct {
-	Uuid      string   `json:"uuid"`
-	Name      string   `json:"name"`
-	IpBands   []string `json:"ipBands"`
-	CreatedAt string   `json:"createdAt"`
-	UpdatedAt string   `json:"updatedAt"`
+	Uuid      string     `json:"uuid"`
+	Name      string     `json:"name"`
+	IpBands   StringList `json:"ipBands"`
+	CreatedAt string     `json:"createdAt"`
+	UpdatedAt string     `json:"updatedAt"`
 }
 
 type Tag struct {

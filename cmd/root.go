@@ -44,7 +44,6 @@ func init() {
 	rootCmd.AddCommand(dacCmd)
 	rootCmd.AddCommand(userCmd)
 	rootCmd.AddCommand(userV1Cmd)
-	rootCmd.AddCommand(fetchAllCmd)
 	rootCmd.AddCommand(configQuerypieCmd)
 	rootCmd.AddCommand(versionCmd)
 }
@@ -72,5 +71,5 @@ func initConfig() {
 	logrus.SetLevel(level)
 
 	initConfigForQueryPieServer(v)
-	config.InitConfigForLocalDatabase(v)
+	config.InitConfigForLocalDatabase(v, logLevel)
 }

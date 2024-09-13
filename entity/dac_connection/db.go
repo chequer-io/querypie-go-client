@@ -1,6 +1,8 @@
 package dac_connection
 
 import (
+	"errors"
+	"gorm.io/gorm"
 	"qpc/config"
 	"qpc/model"
 	"qpc/utils"
@@ -104,14 +106,76 @@ func (sc *SummarizedConnectionV2) Save() {
 	}
 }
 
-func (c *ConnectionV2) FetchAndPrintByUuid(uuid string) {
-	utils.FetchAndPrint(
+func (c *ConnectionV2) Save() *ConnectionV2 {
+	// Attempt to update the detailed connection
+	result := config.LocalDatabase.
+		Session(&gorm.Session{FullSaveAssociations: true}).
+		Updates(c)
+	logrus.Debugf("Updated detailed connection %s: %v", c.ShortID(), result)
+
+	// If no rows were affected, create a new detailed connection
+	if result.RowsAffected == 0 {
+		logrus.Debugf("RowsAffected == 0")
+		if err := config.LocalDatabase.Create(c).Error; err != nil {
+			logrus.Errorf("Failed to save detailed connection %s: %v", c.ShortID(), err)
+		}
+	} else if result.Error != nil {
+		logrus.Errorf("Failed to update detailed connection %s: %v", c.ShortID(), result.Error)
+	} else {
+		logrus.Debugf("RowsAffected: %d", result.RowsAffected)
+	}
+	config.LocalDatabase.Save(c)
+	logrus.Debugf("Saved detailed connection %s: %v", c.ShortID(), result)
+	return c
+}
+
+func (c *ConnectionV2) FetchByUuid(uuid string) *ConnectionV2 {
+	conn, err := utils.Fetch(
 		"/api/external/v2/dac/connections/"+uuid,
 		&ConnectionV2{},
-		func(result *ConnectionV2) {
-			result.Print()
-		},
 	)
+	if err != nil {
+		logrus.Fatalf("Failed to fetch a resource: %v", err)
+	} else {
+		logrus.Debugf("Fetched connection: %v", *conn)
+	}
+	return conn
+}
+
+func (c *ConnectionV2) AndSave() *ConnectionV2 {
+	if c.HttpResponse == nil {
+		logrus.Debugf("No HttpResponse found, save detailed connection")
+		c.Save()
+	} else if c.HttpResponse.StatusCode() == 200 {
+		logrus.Debugf("Got 200 OK, save detailed connection")
+		c.Save()
+	} else {
+		logrus.Debugf("None-200 http status code: %d, skip saving", c.HttpResponse.StatusCode())
+	}
+	logrus.Debugf("Done saving detailed connection: %v", c.ShortID())
+	return c
+}
+
+func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {
+	var connection ConnectionV2
+	result := config.LocalDatabase.
+		Model(&ConnectionV2{}).
+		Where("uuid = ?", uuid).
+		Preload("Clusters").
+		Preload("ConnectionOwners").
+		Preload("ConnectionOwners.Role").
+		Preload("ConnectionOwners.OwnedBy").
+		First(&connection)
+	if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			logrus.Errorf("Connection not found: %s", uuid)
+		} else {
+			logrus.Fatalf("Failed to find a connection: %s", uuid)
+		}
+		return nil
+	}
+	logrus.Debugf("Found: %v", connection)
+	return &connection
 }
 
 func RunAutoMigrate() {
@@ -119,6 +183,10 @@ func RunAutoMigrate() {
 	err := db.AutoMigrate(
 		&SummarizedConnectionV2{},
 		&model.Role{},
+		&OwnedBy{},
+		&ConnectionOwner{},
+		&Cluster{},
+		&ConnectionV2{},
 	)
 	if err != nil {
 		logrus.Fatal(err)

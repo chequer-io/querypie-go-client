@@ -140,6 +140,9 @@ var dacFetchByUuidCmd = &cobra.Command{
 	Example: `  fetch-by-uuid connection <connection-uuid> # from QueryPie API v2`,
 	Args:    cobra.ExactArgs(2),
 	PreRun: func(cmd *cobra.Command, args []string) {
+		if !config.LocalDatabase.Migrator().HasTable(&dac_connection.ConnectionV2{}) {
+			dac_connection.RunAutoMigrate()
+		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		resource := args[0]
@@ -147,7 +150,30 @@ var dacFetchByUuidCmd = &cobra.Command{
 		switch resource {
 		case "connection":
 			var c dac_connection.ConnectionV2
-			c.FetchAndPrintByUuid(uuid)
+			c.FetchByUuid(uuid).Print().AndSave()
+		default:
+			logrus.Fatalf("Unknown resource: %s", resource)
+		}
+	},
+}
+
+var dacFindByUuidCmd = &cobra.Command{
+	Use:     "find-by-uuid <resource> <uuid>",
+	Short:   "Find a DAC resource specified as UUID from local sqlite database",
+	Example: `  find-by-uuid connection <connection-uuid>`,
+	Args:    cobra.ExactArgs(2),
+	PreRun: func(cmd *cobra.Command, args []string) {
+		if !config.LocalDatabase.Migrator().HasTable(&dac_connection.ConnectionV2{}) {
+			dac_connection.RunAutoMigrate()
+		}
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		resource := args[0]
+		uuid := args[1]
+		switch resource {
+		case "connection":
+			var c dac_connection.ConnectionV2
+			c.FindByUuid(uuid).Print()
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}
@@ -185,6 +211,7 @@ func init() {
 	dacCmd.AddCommand(dacListCmd)
 	dacCmd.AddCommand(dacFetchAllCmd)
 	dacCmd.AddCommand(dacFetchByUuidCmd)
+	dacCmd.AddCommand(dacFindByUuidCmd)
 	dacCmd.AddCommand(grantByUuidCmd)
 
 	// dacCmd is added rootCmd in init() of root.go

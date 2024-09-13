@@ -15,6 +15,7 @@ $(BINARY_NAME): $(shell find cmd config entity model utils -name '*.go')
 clean:
 	@echo "Cleaning up..."
 	if [[ -f $(BINARY_NAME) ]]; then rm $(BINARY_NAME); fi
+	if [[ -f var/resources.db ]]; then rm var/resources.db; fi
 
 config:
 	@echo "Copying a configuration file..."

@@ -46,11 +46,29 @@ func FetchPrintAndSave[T any, P model.PagedList[T]](
 	}
 }
 
+func Fetch[T model.RestResponse](
+	uri string,
+	result T,
+) (T, error) {
+	restClient := resty.New()
+	response, err := restClient.R().
+		SetHeader("Accept", "application/json").
+		SetAuthToken(DefaultQuerypieServer.AccessToken).
+		SetResult(&result).
+		Get(DefaultQuerypieServer.BaseURL + uri)
+	logrus.Debugf("Response: %v", response)
+	if err != nil {
+		return result, err
+	}
+	result.SetHttpResponse(response)
+	return result, nil
+}
+
 func FetchAndPrint[T model.RestResponse](
 	uri string,
 	result T,
 	printFunc func(object T),
-) *T {
+) (T, error) {
 	restClient := resty.New()
 	response, err := restClient.R().
 		SetHeader("Accept", "application/json").
@@ -60,8 +78,9 @@ func FetchAndPrint[T model.RestResponse](
 	logrus.Debugf("Response: %v", response)
 	if err != nil {
 		logrus.Fatalf("Failed to fetch a resource: %v", err)
+		return result, err
 	}
 	result.SetHttpResponse(response)
 	printFunc(result)
-	return &result
+	return result, nil
 }

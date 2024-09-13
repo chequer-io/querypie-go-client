@@ -9,6 +9,7 @@ import (
 	"os"
 	"qpc/model"
 	"testing"
+	"time"
 )
 
 func TestParseFixtureV2DacConnectionList(t *testing.T) {
@@ -97,13 +98,13 @@ func TestParseFixtureAndValidateV2DacConnectionDetail(t *testing.T) {
 	if connection.DatabaseType == "" {
 		t.Errorf("Expected database type to be non-empty")
 	}
-	if connection.CreatedAt == "" {
+	if connection.CreatedAt.IsZero() {
 		t.Errorf("Expected created at to be non-empty")
 	}
 	if connection.CreatedBy.Uuid == "" {
 		t.Errorf("Expected created by UUID to be non-empty")
 	}
-	if connection.UpdatedAt == "" {
+	if connection.UpdatedAt.IsZero() {
 		t.Errorf("Expected updated at to be non-empty")
 	}
 	if connection.UpdatedBy.Uuid == "" {
@@ -171,8 +172,8 @@ func TestParseConnectionV2FromFixture2(t *testing.T) {
 	assert.Empty(t, connection.CloudProviderType, "CloudProviderType should be empty")
 
 	// Validate time fields
-	assert.Equal(t, "2024-06-18T06:24:01.609Z", connection.CreatedAt, "CreatedAt mismatch")
-	assert.Equal(t, "2024-09-05T08:22:16.936Z", connection.UpdatedAt, "UpdatedAt mismatch")
+	assert.Equal(t, "2024-06-18T06:24:01.609Z", connection.CreatedAt.Format(time.RFC3339Nano), "CreatedAt mismatch")
+	assert.Equal(t, "2024-09-05T08:22:16.936Z", connection.UpdatedAt.Format(time.RFC3339Nano), "UpdatedAt mismatch")
 
 	// Validate CreatedBy
 	assert.Equal(t, "ella@chequer.io", connection.CreatedBy.Uuid, "CreatedBy UUID mismatch")
@@ -190,7 +191,7 @@ func TestParseConnectionV2FromFixture2(t *testing.T) {
 	assert.Len(t, connection.Zones, 1, "Zones length mismatch")
 	assert.Equal(t, "b21abaaa-bbf2-11ed-9e22-0242ac110002", connection.Zones[0].Uuid, "Zone UUID mismatch")
 	assert.Equal(t, "All Allowed (Any)", connection.Zones[0].Name, "Zone Name mismatch")
-	assert.Equal(t, []string{"0.0.0.0/0"}, connection.Zones[0].IpBands, "Zone IpBands mismatch")
+	assert.Equal(t, model.StringList{Values: []string{"0.0.0.0/0"}}, connection.Zones[0].IpBands, "Zone IpBands mismatch")
 	assert.Equal(t, "2024-04-30T11:34:30.000Z", connection.Zones[0].CreatedAt, "Zone CreatedAt mismatch")
 	assert.Equal(t, "2024-05-28T10:03:33.806Z", connection.Zones[0].UpdatedAt, "Zone UpdatedAt mismatch")
 
@@ -248,7 +249,7 @@ func TestParseConnectionV2FromFixture2(t *testing.T) {
 	assert.Empty(t, connection.AdvancedPrivilegeSetting, "AdvancedPrivilegeSetting should be empty")
 
 	// Validate VendorDetail
-	assert.Equal(t, "", connection.VendorDetail["databaseName"], "VendorDetail DatabaseName mismatch")
-	assert.Nil(t, connection.VendorDetail["charset"], "VendorDetail Charset should be nil")
-	assert.Nil(t, connection.VendorDetail["collation"], "VendorDetail Collation should be nil")
+	assert.Equal(t, "", connection.VendorDetail.DatabaseName, "VendorDetail DatabaseName mismatch")
+	assert.Nil(t, connection.VendorDetail.Charset, "VendorDetail Charset should be nil")
+	assert.Nil(t, connection.VendorDetail.Collation, "VendorDetail Collation should be nil")
 }

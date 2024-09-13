@@ -33,14 +33,13 @@ function test_qpc_shows_help() {
   dac         Manage DAC resources
   user        Manage user accounts with QueryPie API v2
   user-v1     Manage user accounts with QueryPie API v0.9
-  fetch-all   Fetch various resources from QueryPie server, and save them to local sqlite database
   config      Show detailed configuration for a specific key
   version     Print the version of QueryPie Client for Operation
   help        Help about any command
   completion  Generate the autocompletion script for the specified shell
 
 Flags:"
-  actual=$(qpc | grep --after-context=10 "Available Command")
+  actual=$(qpc | grep --after-context=9 "Available Command")
   is "${actual}" "${expected}" "It should print available commands."
 }
 
