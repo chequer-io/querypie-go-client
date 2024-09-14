@@ -6,13 +6,6 @@ import (
 	"qpc/utils"
 )
 
-// Save @Deprecated
-func (pul *PagedUserList) Save() {
-	for _, user := range pul.GetList() {
-		user.Save()
-	}
-}
-
 func (u *User) FetchAllAndForEach(
 	forEachFunc func(fetched *User) bool,
 ) {
@@ -35,7 +28,7 @@ func (u *User) Save() *User {
 	// If no rows were affected, create a new user
 	if result.RowsAffected == 0 {
 		if err := config.LocalDatabase.Create(&u).Error; err != nil {
-			logrus.Fatalf("Failed to save user %s: %v", u.ShortID(), err)
+			logrus.Fatalf("Failed to create user %s: %v", u.ShortID(), err)
 		}
 	} else if result.Error != nil {
 		logrus.Fatalf("Failed to update user %s: %v", u.ShortID(), result.Error)

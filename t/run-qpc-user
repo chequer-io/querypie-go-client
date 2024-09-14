@@ -25,9 +25,10 @@ function test_qpc_user() {
 
   expected="Available Commands:
   fetch-all   Fetch all users from QueryPie server and save them to local sqlite database
+  ls          List all users in local sqlite database
 
 Flags:"
-  actual=$(qpc user | grep --after-context=3 "Available Command")
+  actual=$(qpc user | grep --after-context=4 "Available Command")
   is "${actual}" "${expected}" "It should print available commands."
 }
 
@@ -63,8 +64,56 @@ function test_qpc_user_fetch_all() {
     "It should print output of brant which UPDATED is yyyy-mm-dd HH:MM."
 }
 
+function test_qpc_user_ls() {
+  local actual_header actual_output
+  echo "# ##########"
+  echo "# test_qpc_user_ls"
+  echo "# "
+
+  actual_header=$(qpc user ls | head -1 || true)
+  like "${actual_header}" "^UUID * LOGIN_ID * EMAIL * NAME * STATUS * MORE * CREATED * UPDATED *$" \
+    "It should print a header line of UUID, LOGIN_ID, EMAIL, NAME, STATUS, MORE, CREATED, UPDATED."
+
+  actual_output=$(qpc user ls | grep brant | sed 's/   */\t/g' || true)
+  IFS=$'\t'
+  read -r UUID LOGIN_ID EMAIL NAME STATUS MORE CREATED UPDATED <<< "${actual_output}"
+
+  like "${UUID}" "^[0-9a-f\-]{36}$" \
+    "It should print output of brant which UUID is an unspecified value."
+  is "${LOGIN_ID}" "brant@chequer.io" \
+    "It should print output of brant which LOGIN_ID is an email address."
+  is "${EMAIL}" "brant@chequer.io" \
+    "It should print output of brant which EMAIL is an email address."
+  is "${NAME}" "Brant Hwang" \
+    "It should print output of brant which NAME is Brant Hwang."
+  is "${STATUS}" "ACTIVE" \
+    "It should print output of brant which STATUS is ACTIVE."
+  is "${MORE}" "-" \
+    "It should print output of brant which MORE is -."
+  like "${CREATED}" "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$" \
+    "It should print output of brant which CREATED is yyyy-mm-dd HH:MM."
+  like "${UPDATED}" "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}$" \
+    "It should print output of brant which UPDATED is yyyy-mm-dd HH:MM."
+}
+
+function compare_qpc_user_fetch_all_and_qpc_user_ls() {
+  echo "# ##########"
+  echo "# compare_qpc_user_fetch_all_and_qpc_user_ls"
+  echo "# "
+  qpc user fetch-all >/tmp/qpc_user_fetch_all.$$ 2>&1
+  qpc user ls >/tmp/qpc_user_ls.$$ 2>&1
+  if diff /tmp/qpc_user_fetch_all.$$ /tmp/qpc_user_ls.$$ |
+    sed 's/^/# /'; then
+    ok 1 "\`qpc user fetch-all\` and \`qpc user ls\` are the same."
+  else
+    ok 0 "\`qpc user fetch-all\` and \`qpc user ls\` are different."
+  fi
+  # Clean up temporary files
+  rm -f /tmp/qpc_user_fetch_all.$$ /tmp/qpc_user_ls.$$
+}
+
 function main() {
-  local num_of_tests=15
+  local num_of_tests=25
   plan tests ${num_of_tests}
 
   local top_dir basename
@@ -81,6 +130,8 @@ function main() {
   test_qpc_exists
   test_qpc_user
   test_qpc_user_fetch_all
+  test_qpc_user_ls
+  compare_qpc_user_fetch_all_and_qpc_user_ls
 
   popd &>/dev/null
 
