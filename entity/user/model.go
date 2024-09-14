@@ -22,7 +22,7 @@ type User struct {
 	UpdatedAt       string       `json:"updatedAt"`
 }
 
-func (u User) StatusMore() string {
+func (u *User) StatusMore() string {
 	if u.Deleted {
 		return "deleted"
 	}
@@ -38,22 +38,22 @@ func (u User) StatusMore() string {
 	return "-"
 }
 
-func (u User) ShortCreatedAt() string {
+func (u *User) ShortCreatedAt() string {
 	return utils.ShortDatetimeWithTZ(u.CreatedAt)
 }
 
-func (u User) ShortUpdatedAt() string {
+func (u *User) ShortUpdatedAt() string {
 	return utils.ShortDatetimeWithTZ(u.UpdatedAt)
 }
 
-func (u User) ShortID() string {
+func (u *User) ShortID() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s }",
 		u.Uuid, u.LoginId,
 	)
 }
 
-func (u User) String() string {
+func (u *User) String() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, LoginId=%s, Email=%s, Name=%s, AdminRoles=%v, "+
 			"Status=%s, Factor=%v, PasswordExpired=%t, Locked=%t, "+

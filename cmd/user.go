@@ -21,8 +21,12 @@ var userFetchAllCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		var pul user.PagedUserList
-		pul.FetchAllAndPrintAndSave()
+		var u user.User
+		u.PrintHeader()
+		u.FetchAllAndForEach(func(fetched *user.User) bool {
+			fetched.Print().Save()
+			return true // OK to continue fetching
+		})
 	},
 }
 

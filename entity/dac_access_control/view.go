@@ -6,43 +6,36 @@ import (
 	"github.com/tidwall/pretty"
 )
 
-func (acl *SummarizedAccessControlPagedList) Print() {
-	first := acl.GetPage().CurrentPage == 0
-	last := !acl.GetPage().HasNext()
+const sacHeaderFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3s  %-5s\n"
+const sacRowFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3d  %-5t\n"
 
-	headerFmt := "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3s  %-5s\n"
-	rowFmt := "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3d  %-5t\n"
-	if first {
-		logrus.Debugf("Page: %v", acl.GetPage())
-		fmt.Printf(headerFmt,
-			"UUID",
-			"USER_TYPE",
-			"AUTH_TYPE",
-			"NAME",
-			"MEMBERS",
-			"ADMIN_ROLE",
-			"CNT",
-			"LINKED",
-		)
-	}
+func (sac *SummarizedAccessControl) PrintHeader() *SummarizedAccessControl {
+	fmt.Printf(sacHeaderFmt,
+		"UUID",
+		"USER_TYPE",
+		"AUTH_TYPE",
+		"NAME",
+		"MEMBERS",
+		"ADMIN_ROLE",
+		"CNT",
+		"LINKED",
+	)
+	return sac
+}
 
-	for _, ac := range acl.GetList() {
-		logrus.Debug(ac)
-		fmt.Printf(rowFmt,
-			ac.Uuid,
-			ac.UserType,
-			ac.AuthType,
-			ac.Name,
-			ac.MembersString(),
-			ac.AdminRole,
-			ac.LinkedCount,
-			ac.Linked,
-		)
-	}
-
-	if last {
-		logrus.Infof("TotalElements: %v", acl.GetPage().TotalElements)
-	}
+func (sac *SummarizedAccessControl) Print() *SummarizedAccessControl {
+	logrus.Debug(sac)
+	fmt.Printf(sacRowFmt,
+		sac.Uuid,
+		sac.UserType,
+		sac.AuthType,
+		sac.Name,
+		sac.MembersString(),
+		sac.AdminRole,
+		sac.LinkedCount,
+		sac.Linked,
+	)
+	return sac
 }
 
 func (r *GrantResponse) Print() {

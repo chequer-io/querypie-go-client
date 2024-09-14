@@ -6,25 +6,22 @@ import (
 	"qpc/utils"
 )
 
-func (acl *SummarizedAccessControlPagedList) Save() {
-	for _, sac := range acl.GetList() {
-		sac.Save()
-	}
-}
-
-func (acl *SummarizedAccessControlPagedList) FetchAllAndPrintAndSave() {
+func (sac *SummarizedAccessControl) FetchAllAndForEach(
+	forEachFunc func(fetched *SummarizedAccessControl) bool,
+) {
 	utils.FetchPagedListAndForEach(
 		"/api/external/v2/dac/access-controls",
 		&SummarizedAccessControlPagedList{},
-		func(result *SummarizedAccessControlPagedList) bool {
-			result.Print()
-			result.Save()
-			return true // OK to continue fetching
+		func(page *SummarizedAccessControlPagedList) bool {
+			for _, it := range page.List {
+				forEachFunc(&it)
+			}
+			return true
 		},
 	)
 }
 
-func (sac *SummarizedAccessControl) Save() {
+func (sac *SummarizedAccessControl) Save() *SummarizedAccessControl {
 	sac.PopulateMemberStr()
 
 	// Attempt to update the user
@@ -33,11 +30,12 @@ func (sac *SummarizedAccessControl) Save() {
 	// If no rows were affected, create a new user
 	if result.RowsAffected == 0 {
 		if err := config.LocalDatabase.Create(&sac).Error; err != nil {
-			logrus.Errorf("Failed to save access control %s: %v", sac.ShortID(), err)
+			logrus.Fatalf("Failed to save access control %s: %v", sac.ShortID(), err)
 		}
 	} else if result.Error != nil {
-		logrus.Errorf("Failed to update access control %s: %v", sac.ShortID(), result.Error)
+		logrus.Fatalf("Failed to update access control %s: %v", sac.ShortID(), result.Error)
 	}
+	return sac
 }
 
 func RunAutoMigrate() {

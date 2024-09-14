@@ -49,8 +49,12 @@ var dacFetchAllCmd = &cobra.Command{
 			// TODO(JK): Implement this feature in the future
 			logrus.Errorf("Not implemented yet")
 		case "access-controls":
-			var acl dac_access_control.SummarizedAccessControlPagedList
-			acl.FetchAllAndPrintAndSave()
+			var sac dac_access_control.SummarizedAccessControl
+			sac.PrintHeader()
+			sac.FetchAllAndForEach(func(c *dac_access_control.SummarizedAccessControl) bool {
+				c.Print().Save()
+				return true // OK to continue fetching
+			})
 		case "privileges":
 			var pl dac_privilege.PrivilegePagedList
 			pl.FetchAllAndPrintAndSave()
@@ -98,6 +102,8 @@ func selectFromDatabaseAndPrintSummarizedAccessControlPagedList() {
 	page := 0
 	size := 30 // Set the desired page size
 
+	var sc dac_access_control.SummarizedAccessControl
+	sc.PrintHeader()
 	for {
 		list, err := selectSummarizedAccessControlPagedList(page, size, int(total))
 		if err != nil {
@@ -106,7 +112,9 @@ func selectFromDatabaseAndPrintSummarizedAccessControlPagedList() {
 		logrus.Debugf("Selected %d, page %d, size %d, total %d",
 			len(list.List), page, size, total)
 		fetched += int64(len(list.List))
-		list.Print()
+		for _, sc := range list.List {
+			sc.Print()
+		}
 		if !list.Page.HasNext() {
 			break
 		}

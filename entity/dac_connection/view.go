@@ -15,33 +15,11 @@ func (cl *PagedConnectionV2List) Print() *PagedConnectionV2List {
 	last := !cl.GetPage().HasNext()
 
 	if first {
-		logrus.Debugf("Page of the first: %v", cl.Page)
-		fmt.Printf(scFmt,
-			"UUID",
-			"DB_TYPE",
-			"CLOUD",
-			"NAME",
-			"STATUS",
-			"CREATED",
-			"UPDATED",
-		)
-
+		sc := &SummarizedConnectionV2{}
+		sc.PrintHeader()
 	}
 	for _, conn := range cl.List {
-		logrus.Debug(conn)
-		cloudProviderType := conn.CloudProviderType
-		if cloudProviderType == "" {
-			cloudProviderType = "-"
-		}
-		fmt.Printf(scFmt,
-			conn.Uuid,
-			conn.DatabaseType,
-			cloudProviderType,
-			conn.Name,
-			conn.Status(),
-			conn.ShortCreatedAt(),
-			conn.ShortUpdatedAt(),
-		)
+		conn.Print()
 	}
 	if last {
 		logrus.Infof("TotalElements: %v", cl.Page.TotalElements)

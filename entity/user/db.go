@@ -6,36 +6,41 @@ import (
 	"qpc/utils"
 )
 
+// Save @Deprecated
 func (pul *PagedUserList) Save() {
 	for _, user := range pul.GetList() {
 		user.Save()
 	}
 }
 
-func (pul *PagedUserList) FetchAllAndPrintAndSave() {
+func (u *User) FetchAllAndForEach(
+	forEachFunc func(fetched *User) bool,
+) {
 	utils.FetchPagedListAndForEach(
 		"/api/external/v2/users",
 		&PagedUserList{},
-		func(result *PagedUserList) bool {
-			result.Print()
-			result.Save()
-			return true // OK to continue fetching
+		func(page *PagedUserList) bool {
+			for _, it := range page.List {
+				forEachFunc(&it)
+			}
+			return true
 		},
 	)
 }
 
-func (u User) Save() {
+func (u *User) Save() *User {
 	// Attempt to update the user
 	result := config.LocalDatabase.Model(&User{}).Where("uuid = ?", u.Uuid).Updates(&u)
 
 	// If no rows were affected, create a new user
 	if result.RowsAffected == 0 {
 		if err := config.LocalDatabase.Create(&u).Error; err != nil {
-			logrus.Errorf("Failed to save user %s: %v", u.ShortID(), err)
+			logrus.Fatalf("Failed to save user %s: %v", u.ShortID(), err)
 		}
 	} else if result.Error != nil {
-		logrus.Errorf("Failed to update user %s: %v", u.ShortID(), result.Error)
+		logrus.Fatalf("Failed to update user %s: %v", u.ShortID(), result.Error)
 	}
+	return u
 }
 
 func RunAutoMigrate() {
