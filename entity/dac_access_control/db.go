@@ -13,15 +13,13 @@ func (acl *SummarizedAccessControlPagedList) Save() {
 }
 
 func (acl *SummarizedAccessControlPagedList) FetchAllAndPrintAndSave() {
-	utils.FetchPrintAndSave(
+	utils.FetchPagedListAndForEach(
 		"/api/external/v2/dac/access-controls",
 		&SummarizedAccessControlPagedList{},
-		func(result *SummarizedAccessControlPagedList, first bool, last bool) {
-			result.Print()
-		},
 		func(result *SummarizedAccessControlPagedList) bool {
+			result.Print()
 			result.Save()
-			return !result.Page.HasNext()
+			return true // OK to continue fetching
 		},
 	)
 }

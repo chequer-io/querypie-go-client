@@ -16,28 +16,32 @@ func (cl *PagedConnectionV2List) Save() {
 	}
 }
 
-// FetchAllAndPrintAndSave /*
-// Q: Why is this function defined as a method of PagedConnectionV2List?
+// FetchAllAndForEach /*
+// Q: Why is this function defined as a method of SummarizedConnectionV2?
 // A: Actually the receiver of this method, `cl`, is not used in the function.
-// Although FetchAllAndPrintAndSave could be defined as a static function,
-// Go does not support static functions. Therefore, it is defined as a method of PagedConnectionV2List.
-// It is implemented as a method of PagedConnectionV2List to provide a shorter function name,
+// Although FetchAllAndForEach could be defined as a static function,
+// Go does not support static functions. Therefore, it is defined as a method of SummarizedConnectionV2.
+// It is implemented as a method of SummarizedConnectionV2 to provide a shorter function name,
 // improve readability, and highlight its association with the Entity model.
-func (cl *PagedConnectionV2List) FetchAllAndPrintAndSave() {
-	utils.FetchPrintAndSave(
+func (sc *SummarizedConnectionV2) FetchAllAndForEach(
+	forEachFunc func(sc *SummarizedConnectionV2) bool,
+) {
+	utils.FetchPagedListAndForEach(
 		"/api/external/v2/dac/connections",
 		&PagedConnectionV2List{},
-		func(result *PagedConnectionV2List, first bool, last bool) {
-			result.Print()
-		},
-		func(result *PagedConnectionV2List) bool {
-			result.Save()
-			return !result.Page.HasNext()
+		func(page *PagedConnectionV2List) bool {
+			for _, sc := range page.List {
+				forEachFunc(&sc)
+			}
+			return true
 		},
 	)
 }
 
-func (cl *PagedConnectionV2List) FindAllAndPrint() {
+func (sc *SummarizedConnectionV2) FindAllAndForEach(
+	forEachFunc func(sc *SummarizedConnectionV2) bool,
+) {
+	var connections []SummarizedConnectionV2
 	var total, fetched int64 = 0, 0
 	result := config.LocalDatabase.Model(&SummarizedConnectionV2{}).Count(&total)
 	if result.Error != nil {
@@ -45,27 +49,19 @@ func (cl *PagedConnectionV2List) FindAllAndPrint() {
 	}
 	logrus.Debugf("Found %d dac connections", total)
 
-	page := 0
-	size := 30 // Set the desired page size
-
-	for {
-		list, err := cl.FindAllAsPagedList(page, size, int(total))
-		if err != nil {
-			logrus.Fatalf("Failed to select data from local database: %v", err)
-		}
-		logrus.Debugf("Selected %d, page %d, size %d, total %d",
-			len(list.List), page, size, total)
-		fetched += int64(len(list.List))
-		list.Print()
-
-		if !list.Page.HasNext() {
-			break
-		}
-		page++
+	result = config.LocalDatabase.Find(&connections)
+	if result.Error != nil {
+		logrus.Fatalf("Failed to select data from local database: %v", result.Error)
+		return
 	}
-	logrus.Debugf("Selected %d, whereas total count was %d, difference: %d",
-		fetched, total, total-fetched)
-
+	fetched = int64(len(connections))
+	for _, sc := range connections {
+		forEachFunc(&sc)
+	}
+	if fetched != total {
+		logrus.Errorf("Selected %d, whereas total count was %d, difference: %d",
+			fetched, total, total-fetched)
+	}
 }
 
 func (cl *PagedConnectionV2List) FindAllAsPagedList(currentPage, pageSize, totalElements int) (PagedConnectionV2List, error) {

@@ -7,18 +7,16 @@ import (
 	"qpc/model"
 )
 
-func FetchPrintAndSave[T any, P model.PagedList[T]](
+func FetchPagedListAndForEach[T any, P model.PagedList[T]](
 	uri string,
 	result P,
-	printFunc func(object P, first bool, last bool),
-	saveFunc func(object P) bool,
+	forEachFunc func(page P) bool,
 ) {
 	page := 0
 	size := 40 // Set the desired page size
 	restClient := resty.New()
 
 	logrus.Debugf("Type of result: %T", result)
-
 	for {
 		resp, err := restClient.R().
 			SetQueryParams(
@@ -36,12 +34,10 @@ func FetchPrintAndSave[T any, P model.PagedList[T]](
 			logrus.Fatalf("Failed to fetch resources: %v", err)
 		}
 
-		printFunc(result, page == 0, !result.GetPage().HasNext())
-		shouldBreak := saveFunc(result)
-		if shouldBreak {
+		ok := forEachFunc(result)
+		if !(ok && result.GetPage().HasNext()) {
 			break
 		}
-
 		page++
 	}
 }

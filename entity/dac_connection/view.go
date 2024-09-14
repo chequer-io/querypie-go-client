@@ -5,16 +5,18 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/pretty"
+	"qpc/utils"
 )
 
-func (cl *PagedConnectionV2List) Print() {
+const scFmt = "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %-16s\n"
+
+func (cl *PagedConnectionV2List) Print() *PagedConnectionV2List {
 	first := cl.GetPage().CurrentPage == 0
 	last := !cl.GetPage().HasNext()
 
-	format := "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %-16s\n"
 	if first {
 		logrus.Debugf("Page of the first: %v", cl.Page)
-		fmt.Printf(format,
+		fmt.Printf(scFmt,
 			"UUID",
 			"DB_TYPE",
 			"CLOUD",
@@ -31,7 +33,7 @@ func (cl *PagedConnectionV2List) Print() {
 		if cloudProviderType == "" {
 			cloudProviderType = "-"
 		}
-		fmt.Printf(format,
+		fmt.Printf(scFmt,
 			conn.Uuid,
 			conn.DatabaseType,
 			cloudProviderType,
@@ -44,6 +46,34 @@ func (cl *PagedConnectionV2List) Print() {
 	if last {
 		logrus.Infof("TotalElements: %v", cl.Page.TotalElements)
 	}
+	return cl
+}
+
+func (sc *SummarizedConnectionV2) PrintHeader() *SummarizedConnectionV2 {
+	fmt.Printf(scFmt,
+		"UUID",
+		"DB_TYPE",
+		"CLOUD",
+		"NAME",
+		"STATUS",
+		"CREATED",
+		"UPDATED",
+	)
+	return sc
+}
+
+func (sc *SummarizedConnectionV2) Print() *SummarizedConnectionV2 {
+	logrus.Debug(sc)
+	fmt.Printf(scFmt,
+		sc.Uuid,
+		sc.DatabaseType,
+		utils.Optional(sc.CloudProviderType),
+		sc.Name,
+		sc.Status(),
+		sc.ShortCreatedAt(),
+		sc.ShortUpdatedAt(),
+	)
+	return sc
 }
 
 func (c *ConnectionV2) printHttpRequestLineAndResponseStatus() {

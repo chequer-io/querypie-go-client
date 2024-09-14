@@ -39,8 +39,15 @@ var dacFetchAllCmd = &cobra.Command{
 		resource := args[0]
 		switch resource {
 		case "connections":
-			var pcl dac_connection.PagedConnectionV2List
-			pcl.FetchAllAndPrintAndSave()
+			var sc dac_connection.SummarizedConnectionV2
+			sc.PrintHeader()
+			sc.FetchAllAndForEach(func(c *dac_connection.SummarizedConnectionV2) bool {
+				c.Print().Save()
+				return true // OK to continue fetching
+			})
+		case "detailed-connections":
+			// TODO(JK): Implement this feature in the future
+			logrus.Errorf("Not implemented yet")
 		case "access-controls":
 			var acl dac_access_control.SummarizedAccessControlPagedList
 			acl.FetchAllAndPrintAndSave()
@@ -66,8 +73,12 @@ var dacListCmd = &cobra.Command{
 		resource := args[0]
 		switch resource {
 		case "connections":
-			var pcl dac_connection.PagedConnectionV2List
-			pcl.FindAllAndPrint()
+			var sc dac_connection.SummarizedConnectionV2
+			sc.PrintHeader()
+			sc.FindAllAndForEach(func(sc *dac_connection.SummarizedConnectionV2) bool {
+				sc.Print()
+				return true // OK to continue finding
+			})
 		case "access-controls":
 			selectFromDatabaseAndPrintSummarizedAccessControlPagedList()
 		default:

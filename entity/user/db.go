@@ -13,15 +13,13 @@ func (pul *PagedUserList) Save() {
 }
 
 func (pul *PagedUserList) FetchAllAndPrintAndSave() {
-	utils.FetchPrintAndSave(
+	utils.FetchPagedListAndForEach(
 		"/api/external/v2/users",
 		&PagedUserList{},
-		func(result *PagedUserList, first bool, last bool) {
-			result.Print()
-		},
 		func(result *PagedUserList) bool {
+			result.Print()
 			result.Save()
-			return !result.Page.HasNext()
+			return true // OK to continue fetching
 		},
 	)
 }

@@ -13,15 +13,13 @@ func (pl *PrivilegePagedList) Save() {
 }
 
 func (pl *PrivilegePagedList) FetchAllAndPrintAndSave() {
-	utils.FetchPrintAndSave(
+	utils.FetchPagedListAndForEach(
 		"/api/external/v2/privileges",
 		&PrivilegePagedList{},
-		func(result *PrivilegePagedList, first bool, last bool) {
-			result.Print()
-		},
 		func(result *PrivilegePagedList) bool {
+			result.Print()
 			result.Save()
-			return !result.Page.HasNext()
+			return true // OK to continue fetching
 		},
 	)
 }
