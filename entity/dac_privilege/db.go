@@ -4,6 +4,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"
 	"qpc/config"
+	"qpc/model"
 	"qpc/utils"
 )
 
@@ -37,39 +38,17 @@ func (p *Privilege) FindAllAndForEach(
 }
 
 func (p *Privilege) Save() *Privilege {
-	p.CreatedByUuid = p.CreatedBy.Uuid
-	p.UpdatedByUuid = p.UpdatedBy.Uuid
-
-	// Attempt to update the privilege
-	result := config.LocalDatabase.Model(&Privilege{}).Where("uuid = ?", p.Uuid).Updates(map[string]interface{}{
-		"Name":             p.Name,
-		"PrivilegeTypes":   p.PrivilegeTypes,
-		"Description":      p.Description,
-		"CanImport":        p.CanImport,
-		"CanExport":        p.CanExport,
-		"CanCopyClipboard": p.CanCopyClipboard,
-		"PrivilegeVendor":  p.PrivilegeVendor,
-		"Status":           p.Status,
-		"CreatedAt":        p.CreatedAt,
-		"CreatedByUuid":    p.CreatedByUuid,
-		"UpdatedAt":        p.UpdatedAt,
-		"UpdatedByUuid":    p.UpdatedByUuid,
-	})
-
-	// If no rows were affected, create a new privilege
-	if result.RowsAffected == 0 {
-		if err := config.LocalDatabase.Create(&p).Error; err != nil {
-			logrus.Fatalf("Failed to create privilege %s: %v", p.ShortID(), err)
-		}
-	} else if result.Error != nil {
-		logrus.Fatalf("Failed to update privilege %s: %v", p.ShortID(), result.Error)
-	}
+	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
+	// https://gorm.io/docs/update.html#Save
+	db := config.LocalDatabase.Save(p)
+	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
 	return p
 }
 
 func RunAutoMigrate() {
 	db := config.LocalDatabase
 	err := db.AutoMigrate(
+		&model.Modifier{},
 		&Privilege{},
 	)
 	if err != nil {

@@ -38,17 +38,10 @@ func (u *UserV1) FindAllAndForEach(
 }
 
 func (u *UserV1) Save() *UserV1 {
-	// Attempt to update the user
-	result := config.LocalDatabase.Model(&UserV1{}).Where("uuid = ?", u.Uuid).Updates(&u)
-
-	// If no rows were affected, create a new user
-	if result.RowsAffected == 0 {
-		if err := config.LocalDatabase.Create(&u).Error; err != nil {
-			logrus.Fatalf("Failed to create user %s: %v", u.ShortID(), err)
-		}
-	} else if result.Error != nil {
-		logrus.Fatalf("Failed to update user %s: %v", u.ShortID(), result.Error)
-	}
+	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
+	// https://gorm.io/docs/update.html#Save
+	db := config.LocalDatabase.Save(u)
+	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
 	return u
 }
 

@@ -24,13 +24,14 @@ var dacFetchAllCmd = &cobra.Command{
   fetch-all access-controls # from QueryPie API v2`,
 	Args: cobra.ExactArgs(1),
 	PreRun: func(cmd *cobra.Command, args []string) {
-		if !config.LocalDatabase.Migrator().HasTable(&dac_connection.SummarizedConnectionV2{}) {
+		m := config.LocalDatabase.Migrator()
+		if !m.HasTable(&dac_connection.SummarizedConnectionV2{}) {
 			dac_connection.RunAutoMigrate()
 		}
-		if !config.LocalDatabase.Migrator().HasTable(&dac_access_control.SummarizedAccessControl{}) {
+		if !m.HasTable(&dac_access_control.SummarizedAccessControl{}) {
 			dac_access_control.RunAutoMigrate()
 		}
-		if !config.LocalDatabase.Migrator().HasTable(&dac_privilege.Privilege{}) {
+		if !m.HasTable(&dac_privilege.Privilege{}) {
 			dac_privilege.RunAutoMigrate()
 		}
 	},
@@ -112,8 +113,16 @@ var dacFetchByUuidCmd = &cobra.Command{
 	Example: `  fetch-by-uuid connection <connection-uuid> # from QueryPie API v2`,
 	Args:    cobra.ExactArgs(2),
 	PreRun: func(cmd *cobra.Command, args []string) {
-		if !config.LocalDatabase.Migrator().HasTable(&dac_connection.ConnectionV2{}) {
-			dac_connection.RunAutoMigrate()
+		m := config.LocalDatabase.Migrator()
+		resource := args[0]
+		switch resource {
+		case "connection":
+			if !m.HasTable(&dac_connection.SummarizedConnectionV2{}) ||
+				!m.HasTable(&dac_connection.ConnectionV2{}) {
+				dac_connection.RunAutoMigrate()
+			}
+		default:
+			logrus.Fatalf("Unknown resource: %s", resource)
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {

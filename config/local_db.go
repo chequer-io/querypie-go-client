@@ -42,7 +42,10 @@ func initLocalDatabase(dataSourceName string, logLevel string) {
 		logrus.Fatal(err)
 	}
 
-	LocalDatabase = db
+	LocalDatabase = db.
+		// Enable full save associations by default.
+		// https://gorm.io/docs/associations.html#Updating-Associations-with-FullSaveAssociations
+		Session(&gorm.Session{FullSaveAssociations: true})
 }
 
 func InitConfigForLocalDatabase(viper *viper.Viper, logLevel string) {

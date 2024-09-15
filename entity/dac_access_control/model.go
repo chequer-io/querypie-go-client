@@ -6,7 +6,7 @@ import (
 )
 
 type SummarizedAccessControl struct {
-	Uuid        string           `json:"uuid"`
+	Uuid        string           `json:"uuid" gorm:"primaryKey"`
 	UserType    string           `json:"userType"`
 	AuthType    string           `json:"authType"`
 	Name        string           `json:"name"`

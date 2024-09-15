@@ -10,12 +10,6 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (cl *PagedConnectionV2List) Save() {
-	for _, sac := range cl.GetList() {
-		sac.Save()
-	}
-}
-
 // FetchAllAndForEach /*
 // Q: Why is this function defined as a method of SummarizedConnectionV2?
 // A: Actually the receiver of this method, `cl`, is not used in the function.
@@ -52,41 +46,19 @@ func (sc *SummarizedConnectionV2) FindAllAndForEach(
 	)
 }
 
-func (sc *SummarizedConnectionV2) Save() {
-
-	// Attempt to update the user
-	result := config.LocalDatabase.Model(&SummarizedConnectionV2{}).Where("uuid = ?", sc.Uuid).Updates(&sc)
-
-	// If no rows were affected, create a new user
-	if result.RowsAffected == 0 {
-		if err := config.LocalDatabase.Create(&sc).Error; err != nil {
-			logrus.Errorf("Failed to save connection %s: %v", sc.ShortID(), err)
-		}
-	} else if result.Error != nil {
-		logrus.Errorf("Failed to update connection %s: %v", sc.ShortID(), result.Error)
-	}
+func (sc *SummarizedConnectionV2) Save() *SummarizedConnectionV2 {
+	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
+	// https://gorm.io/docs/update.html#Save
+	db := config.LocalDatabase.Save(sc)
+	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
+	return sc
 }
 
 func (c *ConnectionV2) Save() *ConnectionV2 {
-	// Attempt to update the detailed connection
-	result := config.LocalDatabase.
-		Session(&gorm.Session{FullSaveAssociations: true}).
-		Updates(c)
-	logrus.Debugf("Updated detailed connection %s: %v", c.ShortID(), result)
-
-	// If no rows were affected, create a new detailed connection
-	if result.RowsAffected == 0 {
-		logrus.Debugf("RowsAffected == 0")
-		if err := config.LocalDatabase.Create(c).Error; err != nil {
-			logrus.Errorf("Failed to save detailed connection %s: %v", c.ShortID(), err)
-		}
-	} else if result.Error != nil {
-		logrus.Errorf("Failed to update detailed connection %s: %v", c.ShortID(), result.Error)
-	} else {
-		logrus.Debugf("RowsAffected: %d", result.RowsAffected)
-	}
-	config.LocalDatabase.Save(c)
-	logrus.Debugf("Saved detailed connection %s: %v", c.ShortID(), result)
+	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
+	// https://gorm.io/docs/update.html#Save
+	db := config.LocalDatabase.Save(c)
+	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
 	return c
 }
 
@@ -103,6 +75,9 @@ func (c *ConnectionV2) FetchByUuid(uuid string) *ConnectionV2 {
 	return conn
 }
 
+// AndSave A workaround to save detailed connection
+// to skip saving when the http status code is not 200 OK.
+// Sometimes the API may return a non-200 status code.
 func (c *ConnectionV2) AndSave() *ConnectionV2 {
 	if c.HttpResponse == nil {
 		logrus.Debugf("No HttpResponse found, save detailed connection")
@@ -151,5 +126,7 @@ func RunAutoMigrate() {
 	)
 	if err != nil {
 		logrus.Fatal(err)
+	} else {
+		logrus.Debugf("AutoMigrate for dac_connection is done")
 	}
 }

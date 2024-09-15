@@ -6,7 +6,7 @@ import (
 )
 
 type Privilege struct {
-	Uuid             string           `json:"uuid"`
+	Uuid             string           `json:"uuid" gorm:"primaryKey"`
 	Name             string           `json:"name"`
 	PrivilegeTypes   model.StringList `json:"privilegeTypes"`
 	Description      string           `json:"description"`

@@ -26,28 +26,21 @@ func (sac *SummarizedAccessControl) FindAllAndForEach(
 	forEachFunc func(sc *SummarizedAccessControl) bool,
 ) {
 	utils.FindAllAndForEach(
-		func(tx *gorm.DB, total *int64) *gorm.DB {
-			return tx.Model(&SummarizedAccessControl{}).Count(total)
+		func(db *gorm.DB, total *int64) *gorm.DB {
+			return db.Model(&SummarizedAccessControl{}).Count(total)
 		},
-		func(tx *gorm.DB, items *[]SummarizedAccessControl) *gorm.DB {
-			return tx.Model(&SummarizedAccessControl{}).Find(items)
+		func(db *gorm.DB, items *[]SummarizedAccessControl) *gorm.DB {
+			return db.Model(&SummarizedAccessControl{}).Find(items)
 		},
 		forEachFunc,
 	)
 }
 
 func (sac *SummarizedAccessControl) Save() *SummarizedAccessControl {
-	// Attempt to update the item
-	result := config.LocalDatabase.Model(&SummarizedAccessControl{}).Where("uuid = ?", sac.Uuid).Updates(&sac)
-
-	// If no rows were affected, create a new item
-	if result.RowsAffected == 0 {
-		if err := config.LocalDatabase.Create(&sac).Error; err != nil {
-			logrus.Fatalf("Failed to save access control %s: %v", sac.ShortID(), err)
-		}
-	} else if result.Error != nil {
-		logrus.Fatalf("Failed to update access control %s: %v", sac.ShortID(), result.Error)
-	}
+	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
+	// https://gorm.io/docs/update.html#Save
+	db := config.LocalDatabase.Save(sac)
+	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
 	return sac
 }
 
