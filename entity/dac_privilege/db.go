@@ -2,8 +2,8 @@ package dac_privilege
 
 import (
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"qpc/config"
-	"qpc/model"
 	"qpc/utils"
 )
 
@@ -25,50 +25,15 @@ func (p *Privilege) FetchAllAndForEach(
 func (p *Privilege) FindAllAndForEach(
 	forEachFunc func(found *Privilege) bool,
 ) {
-	var privileges []Privilege
-	var total, fetched int64 = 0, 0
-	result := config.LocalDatabase.Model(&Privilege{}).Count(&total)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to count items: %v", result.Error)
-	}
-	logrus.Debugf("Found %d items", total)
-
-	result = config.LocalDatabase.Find(&privileges)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to select data from local database: %v", result.Error)
-		return
-	}
-	fetched = int64(len(privileges))
-	for _, sc := range privileges {
-		forEachFunc(&sc)
-	}
-	if fetched != total {
-		logrus.Errorf("Selected %d, whereas total count was %d, difference: %d",
-			fetched, total, total-fetched)
-	}
-}
-
-func (pl *PrivilegePagedList) FindAllAsPagedList(currentPage, pageSize, totalElements int) (PrivilegePagedList, error) {
-	var list PrivilegePagedList
-
-	var page model.Page
-	page.CurrentPage = currentPage
-	page.PageSize = pageSize
-	page.TotalElements = totalElements
-	page.TotalPages = (totalElements + pageSize - 1) / pageSize
-
-	var items []Privilege
-	offset := currentPage * pageSize
-	result := config.LocalDatabase.
-		Offset(offset).
-		Limit(pageSize).
-		Find(&items)
-	if result.Error != nil {
-		return PrivilegePagedList{}, result.Error
-	}
-	list.List = items
-	list.Page = page
-	return list, nil
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&Privilege{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]Privilege) *gorm.DB {
+			return tx.Model(&Privilege{}).Find(items)
+		},
+		forEachFunc,
+	)
 }
 
 func (p *Privilege) Save() *Privilege {

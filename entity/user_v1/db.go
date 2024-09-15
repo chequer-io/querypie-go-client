@@ -2,6 +2,7 @@ package user_v1
 
 import (
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"qpc/config"
 	"qpc/model"
 	"qpc/utils"
@@ -25,50 +26,15 @@ func (u *UserV1) FetchAllAndForEach(
 func (u *UserV1) FindAllAndForEach(
 	forEachFunc func(found *UserV1) bool,
 ) {
-	var users []UserV1
-	var total, fetched int64 = 0, 0
-	result := config.LocalDatabase.Model(&UserV1{}).Count(&total)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to count items: %v", result.Error)
-	}
-	logrus.Debugf("Found %d items", total)
-
-	result = config.LocalDatabase.Find(&users)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to select data from local database: %v", result.Error)
-		return
-	}
-	fetched = int64(len(users))
-	for _, sc := range users {
-		forEachFunc(&sc)
-	}
-	if fetched != total {
-		logrus.Errorf("Selected %d, whereas total count was %d, difference: %d",
-			fetched, total, total-fetched)
-	}
-}
-
-func (pul *PagedUserV1List) FindAllAsPagedList(currentPage, pageSize, totalElements int) (PagedUserV1List, error) {
-	var list PagedUserV1List
-
-	var page model.Page
-	page.CurrentPage = currentPage
-	page.PageSize = pageSize
-	page.TotalElements = totalElements
-	page.TotalPages = (totalElements + pageSize - 1) / pageSize
-
-	var items []UserV1
-	offset := currentPage * pageSize
-	result := config.LocalDatabase.
-		Offset(offset).
-		Limit(pageSize).
-		Find(&items)
-	if result.Error != nil {
-		return PagedUserV1List{}, result.Error
-	}
-	list.List = items
-	list.Page = page
-	return list, nil
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&UserV1{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]UserV1) *gorm.DB {
+			return tx.Model(&UserV1{}).Find(items)
+		},
+		forEachFunc,
+	)
 }
 
 func (u *UserV1) Save() *UserV1 {

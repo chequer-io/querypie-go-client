@@ -2,6 +2,7 @@ package dac_access_control
 
 import (
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"qpc/config"
 	"qpc/utils"
 )
@@ -21,13 +22,25 @@ func (sac *SummarizedAccessControl) FetchAllAndForEach(
 	)
 }
 
-func (sac *SummarizedAccessControl) Save() *SummarizedAccessControl {
-	sac.PopulateMemberStr()
+func (sac *SummarizedAccessControl) FindAllAndForEach(
+	forEachFunc func(sc *SummarizedAccessControl) bool,
+) {
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&SummarizedAccessControl{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]SummarizedAccessControl) *gorm.DB {
+			return tx.Model(&SummarizedAccessControl{}).Find(items)
+		},
+		forEachFunc,
+	)
+}
 
-	// Attempt to update the user
+func (sac *SummarizedAccessControl) Save() *SummarizedAccessControl {
+	// Attempt to update the item
 	result := config.LocalDatabase.Model(&SummarizedAccessControl{}).Where("uuid = ?", sac.Uuid).Updates(&sac)
 
-	// If no rows were affected, create a new user
+	// If no rows were affected, create a new item
 	if result.RowsAffected == 0 {
 		if err := config.LocalDatabase.Create(&sac).Error; err != nil {
 			logrus.Fatalf("Failed to save access control %s: %v", sac.ShortID(), err)

@@ -7,7 +7,6 @@ import (
 	"qpc/entity/dac_access_control"
 	"qpc/entity/dac_connection"
 	"qpc/entity/dac_privilege"
-	"qpc/model"
 	"qpc/utils"
 	"strconv"
 )
@@ -88,7 +87,12 @@ var dacListCmd = &cobra.Command{
 				return true // OK to continue finding
 			})
 		case "access-controls":
-			selectFromDatabaseAndPrintSummarizedAccessControlPagedList()
+			var sac dac_access_control.SummarizedAccessControl
+			sac.PrintHeader()
+			sac.FindAllAndForEach(func(c *dac_access_control.SummarizedAccessControl) bool {
+				c.Print()
+				return true // OK to continue finding
+			})
 		case "privileges":
 			var p dac_privilege.Privilege
 			p.PrintHeader()
@@ -100,68 +104,6 @@ var dacListCmd = &cobra.Command{
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}
 	},
-}
-
-func selectFromDatabaseAndPrintSummarizedAccessControlPagedList() {
-	var total, fetched int64 = 0, 0
-	result := config.LocalDatabase.Model(&dac_access_control.SummarizedAccessControl{}).Count(&total)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to count dac connections: %v", result.Error)
-	}
-	logrus.Debugf("Found %d dac connections", total)
-
-	page := 0
-	size := 30 // Set the desired page size
-
-	var sc dac_access_control.SummarizedAccessControl
-	sc.PrintHeader()
-	for {
-		list, err := selectSummarizedAccessControlPagedList(page, size, int(total))
-		if err != nil {
-			logrus.Fatalf("Failed to select data from local database: %v", err)
-		}
-		logrus.Debugf("Selected %d, page %d, size %d, total %d",
-			len(list.List), page, size, total)
-		fetched += int64(len(list.List))
-		for _, sc := range list.List {
-			sc.Print()
-		}
-		if !list.Page.HasNext() {
-			break
-		}
-		page++
-	}
-	logrus.Debugf("Selected %d, whereas total count was %d, difference: %d",
-		fetched, total, total-fetched)
-
-}
-
-func selectSummarizedAccessControlPagedList(
-	currentPage, pageSize, totalElements int,
-) (dac_access_control.SummarizedAccessControlPagedList, error) {
-	var acl dac_access_control.SummarizedAccessControlPagedList
-	var page model.Page
-	var sac []dac_access_control.SummarizedAccessControl
-	offset := currentPage * pageSize
-	result := config.LocalDatabase.
-		Offset(offset).
-		Limit(pageSize).
-		Find(&sac)
-	if result.Error != nil {
-		return dac_access_control.SummarizedAccessControlPagedList{}, result.Error
-	}
-	for i := range sac {
-		sac[i].PopulateMembers()
-		logrus.Debugf("Populated Members[%d]: %v from MembersStr: %v", i, sac[i].Members, sac[i].MembersStr)
-	}
-
-	page.CurrentPage = currentPage
-	page.PageSize = pageSize
-	page.TotalElements = totalElements
-	page.TotalPages = (totalElements + pageSize - 1) / pageSize
-	acl.List = sac
-	acl.Page = page
-	return acl, nil
 }
 
 var dacFetchByUuidCmd = &cobra.Command{

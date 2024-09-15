@@ -10,15 +10,15 @@ type StringList struct {
 	Values []string
 }
 
-func (s StringList) Ellipsis() string {
-	if len(s.Values) < 4 {
+func (s StringList) Ellipsis(show int) string {
+	if len(s.Values) <= show {
 		return s.String()
 	}
 	var extractedList StringList
-	extractedList.Values = s.Values[:3]
+	extractedList.Values = s.Values[:show]
 	extracted := extractedList.String()
 	extracted = extracted[:len(extracted)-1]
-	return fmt.Sprintf("%s,+%d]", extracted, len(s.Values)-3)
+	return fmt.Sprintf("%s,+%d]", extracted, len(s.Values)-show)
 }
 
 // MarshalJSON implements the json.Marshaller interface

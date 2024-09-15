@@ -2,6 +2,7 @@ package user
 
 import (
 	"github.com/sirupsen/logrus"
+	"gorm.io/gorm"
 	"qpc/config"
 	"qpc/utils"
 )
@@ -18,6 +19,20 @@ func (u *User) FetchAllAndForEach(
 			}
 			return true
 		},
+	)
+}
+
+func (u *User) FindAllAndForEach(
+	forEachFunc func(found *User) bool,
+) {
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&User{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]User) *gorm.DB {
+			return tx.Model(&User{}).Find(items)
+		},
+		forEachFunc,
 	)
 }
 

@@ -41,50 +41,15 @@ func (sc *SummarizedConnectionV2) FetchAllAndForEach(
 func (sc *SummarizedConnectionV2) FindAllAndForEach(
 	forEachFunc func(sc *SummarizedConnectionV2) bool,
 ) {
-	var connections []SummarizedConnectionV2
-	var total, fetched int64 = 0, 0
-	result := config.LocalDatabase.Model(&SummarizedConnectionV2{}).Count(&total)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to count dac connections: %v", result.Error)
-	}
-	logrus.Debugf("Found %d dac connections", total)
-
-	result = config.LocalDatabase.Find(&connections)
-	if result.Error != nil {
-		logrus.Fatalf("Failed to select data from local database: %v", result.Error)
-		return
-	}
-	fetched = int64(len(connections))
-	for _, sc := range connections {
-		forEachFunc(&sc)
-	}
-	if fetched != total {
-		logrus.Errorf("Selected %d, whereas total count was %d, difference: %d",
-			fetched, total, total-fetched)
-	}
-}
-
-func (cl *PagedConnectionV2List) FindAllAsPagedList(currentPage, pageSize, totalElements int) (PagedConnectionV2List, error) {
-	var list PagedConnectionV2List
-
-	var page model.Page
-	page.CurrentPage = currentPage
-	page.PageSize = pageSize
-	page.TotalElements = totalElements
-	page.TotalPages = (totalElements + pageSize - 1) / pageSize
-
-	var connections []SummarizedConnectionV2
-	offset := currentPage * pageSize
-	result := config.LocalDatabase.
-		Offset(offset).
-		Limit(pageSize).
-		Find(&connections)
-	if result.Error != nil {
-		return PagedConnectionV2List{}, result.Error
-	}
-	list.List = connections
-	list.Page = page
-	return list, nil
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&SummarizedConnectionV2{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]SummarizedConnectionV2) *gorm.DB {
+			return tx.Model(&SummarizedConnectionV2{}).Find(items)
+		},
+		forEachFunc,
+	)
 }
 
 func (sc *SummarizedConnectionV2) Save() {

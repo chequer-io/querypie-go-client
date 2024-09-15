@@ -30,7 +30,7 @@ func (sac *SummarizedAccessControl) Print() *SummarizedAccessControl {
 		sac.UserType,
 		sac.AuthType,
 		sac.Name,
-		sac.MembersString(),
+		sac.Members.Ellipsis(1),
 		sac.AdminRole,
 		sac.LinkedCount,
 		sac.Linked,

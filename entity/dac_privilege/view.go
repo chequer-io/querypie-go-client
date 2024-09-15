@@ -26,7 +26,7 @@ func (p *Privilege) Print() *Privilege {
 	fmt.Printf(privilegeRowFmt,
 		p.Uuid,
 		p.Name,
-		p.PrivilegeTypes.Ellipsis(),
+		p.PrivilegeTypes.Ellipsis(3),
 		utils.Optional(p.Description),
 		p.PrivilegeVendor,
 		p.Status,
