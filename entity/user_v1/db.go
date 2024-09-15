@@ -23,9 +23,9 @@ func (u *UserV1) FetchAllAndForEach(
 }
 
 func (u *UserV1) FindAllAndForEach(
-	forEachFunc func(sc *UserV1) bool,
+	forEachFunc func(found *UserV1) bool,
 ) {
-	var connections []UserV1
+	var users []UserV1
 	var total, fetched int64 = 0, 0
 	result := config.LocalDatabase.Model(&UserV1{}).Count(&total)
 	if result.Error != nil {
@@ -33,13 +33,13 @@ func (u *UserV1) FindAllAndForEach(
 	}
 	logrus.Debugf("Found %d items", total)
 
-	result = config.LocalDatabase.Find(&connections)
+	result = config.LocalDatabase.Find(&users)
 	if result.Error != nil {
 		logrus.Fatalf("Failed to select data from local database: %v", result.Error)
 		return
 	}
-	fetched = int64(len(connections))
-	for _, sc := range connections {
+	fetched = int64(len(users))
+	for _, sc := range users {
 		forEachFunc(&sc)
 	}
 	if fetched != total {

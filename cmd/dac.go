@@ -56,8 +56,12 @@ var dacFetchAllCmd = &cobra.Command{
 				return true // OK to continue fetching
 			})
 		case "privileges":
-			var pl dac_privilege.PrivilegePagedList
-			pl.FetchAllAndPrintAndSave()
+			var p dac_privilege.Privilege
+			p.PrintHeader()
+			p.FetchAllAndForEach(func(c *dac_privilege.Privilege) bool {
+				c.Print().Save()
+				return true // OK to continue fetching
+			})
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}
@@ -85,6 +89,13 @@ var dacListCmd = &cobra.Command{
 			})
 		case "access-controls":
 			selectFromDatabaseAndPrintSummarizedAccessControlPagedList()
+		case "privileges":
+			var p dac_privilege.Privilege
+			p.PrintHeader()
+			p.FindAllAndForEach(func(c *dac_privilege.Privilege) bool {
+				c.Print()
+				return true // OK to continue finding
+			})
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}

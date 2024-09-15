@@ -6,37 +6,30 @@ import (
 	"qpc/utils"
 )
 
-func (pl *PrivilegePagedList) Print() {
-	first := pl.GetPage().CurrentPage == 0
-	last := !pl.GetPage().HasNext()
+const privilegeHeaderFmt = "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
+const privilegeRowFmt = "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
 
-	headerFmt := "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
-	rowFmt := "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
-	if first {
-		logrus.Debugf("Page: %v", pl.GetPage())
-		fmt.Printf(headerFmt,
-			"UUID",
-			"NAME",
-			"PRIVILEGE_TYPES",
-			"DESCRIPTION",
-			"VENDOR",
-			"STATUS",
-		)
-	}
+func (p *Privilege) PrintHeader() *Privilege {
+	fmt.Printf(privilegeHeaderFmt,
+		"UUID",
+		"NAME",
+		"PRIVILEGE_TYPES",
+		"DESCRIPTION",
+		"VENDOR",
+		"STATUS",
+	)
+	return p
+}
 
-	for _, p := range pl.GetList() {
-		logrus.Debug(p)
-		fmt.Printf(rowFmt,
-			p.Uuid,
-			p.Name,
-			p.PrivilegeTypes.Ellipsis(),
-			utils.Optional(p.Description),
-			p.PrivilegeVendor,
-			p.Status,
-		)
-	}
-
-	if last {
-		logrus.Infof("TotalElements: %v", pl.GetPage().TotalElements)
-	}
+func (p *Privilege) Print() *Privilege {
+	logrus.Debug(p)
+	fmt.Printf(privilegeRowFmt,
+		p.Uuid,
+		p.Name,
+		p.PrivilegeTypes.Ellipsis(),
+		utils.Optional(p.Description),
+		p.PrivilegeVendor,
+		p.Status,
+	)
+	return p
 }
