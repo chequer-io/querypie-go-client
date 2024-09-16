@@ -23,7 +23,7 @@ func (sac *SummarizedAccessControl) FetchAllAndForEach(
 }
 
 func (sac *SummarizedAccessControl) FindAllAndForEach(
-	forEachFunc func(sc *SummarizedAccessControl) bool,
+	forEachFunc func(found *SummarizedAccessControl) bool,
 ) {
 	utils.FindAllAndForEach(
 		func(db *gorm.DB, total *int64) *gorm.DB {

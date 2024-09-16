@@ -55,11 +55,8 @@ func Fetch[T model.RestResponse](
 		SetResult(&result).
 		Get(DefaultQuerypieServer.BaseURL + uri)
 	logrus.Debugf("Response: %v", response)
-	if err != nil {
-		return result, err
-	}
 	result.SetHttpResponse(response)
-	return result, nil
+	return result, err
 }
 
 func FindAllAndForEach[T any](

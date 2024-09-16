@@ -7,7 +7,7 @@ SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SCRIPT_DIR}"/../../../scripts/lib/bash-tap
 TODO= # Define here to prevent unbound variable error from bash-tap.
 
-function compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections() {
+function compare_qpc_dac_fetch_by_uuid_connection_and_qpc_dac_find_by_uuid_connection_1() {
   echo "# ##########"
   echo "# compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections"
   echo "# "
@@ -30,8 +30,31 @@ END_OF_HEADER
   rm -f /tmp/qpc_dac_fetch_by_uuid_connection.$$ /tmp/qpc_dac_find_by_uuid_connection.$$
 }
 
+function compare_qpc_dac_fetch_by_uuid_connection_and_qpc_dac_find_by_uuid_connection_2() {
+  echo "# ##########"
+  echo "# compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections"
+  echo "# "
+  qpc dac fetch-by-uuid connection 512087af-4864-40b0-ad49-2c58e7ae84c2 \
+    >/tmp/qpc_dac_fetch_by_uuid_connection.$$ 2>&1 || true
+  cat >/tmp/qpc_dac_find_by_uuid_connection.$$ <<END_OF_HEADER
+GET /api/external/v2/dac/connections/512087af-4864-40b0-ad49-2c58e7ae84c2 HTTP/1.1
+HTTP/2.0 200 OK
+
+END_OF_HEADER
+  qpc dac find-by-uuid connection 512087af-4864-40b0-ad49-2c58e7ae84c2 \
+    >>/tmp/qpc_dac_find_by_uuid_connection.$$ 2>&1 || true
+  if diff /tmp/qpc_dac_fetch_by_uuid_connection.$$ /tmp/qpc_dac_find_by_uuid_connection.$$ |
+    sed 's/^/# /'; then
+    ok 1 "qpc dac fetch-by-uuid connection <uuid> and qpc dac find-by-uuid connection <uuid> are the same."
+  else
+    ok 0 "qpc dac fetch-by-uuid connection <uuid> and qpc dac find-by-uuid connection <uuid> are different."
+  fi
+  # Clean up temporary files
+  rm -f /tmp/qpc_dac_fetch_by_uuid_connection.$$ /tmp/qpc_dac_find_by_uuid_connection.$$
+}
+
 function main() {
-  local num_of_tests=4
+  local num_of_tests=5
   plan tests ${num_of_tests}
 
   local top_dir basename
@@ -45,7 +68,8 @@ function main() {
   is "$(pwd)" "${top_dir}" "I just changed the current working directory to ${top_dir}."
 
   export PATH=.:${PATH}
-  compare_qpc_dac_fetch_all_connections_and_qpc_dac_ls_connections
+  compare_qpc_dac_fetch_by_uuid_connection_and_qpc_dac_find_by_uuid_connection_1
+  compare_qpc_dac_fetch_by_uuid_connection_and_qpc_dac_find_by_uuid_connection_2
 
   popd &>/dev/null
 

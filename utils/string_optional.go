@@ -6,3 +6,12 @@ func Optional(value string) string {
 	}
 	return value
 }
+
+func OptionalPtr(ptr *string) string {
+	if ptr == nil {
+		return "-"
+	} else if *ptr == "" {
+		return "-"
+	}
+	return *ptr
+}

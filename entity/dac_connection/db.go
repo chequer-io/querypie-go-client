@@ -18,7 +18,7 @@ import (
 // It is implemented as a method of SummarizedConnectionV2 to provide a shorter function name,
 // improve readability, and highlight its association with the Entity model.
 func (sc *SummarizedConnectionV2) FetchAllAndForEach(
-	forEachFunc func(sc *SummarizedConnectionV2) bool,
+	forEachFunc func(fetched *SummarizedConnectionV2) bool,
 ) {
 	utils.FetchPagedListAndForEach(
 		"/api/external/v2/dac/connections",
@@ -33,7 +33,7 @@ func (sc *SummarizedConnectionV2) FetchAllAndForEach(
 }
 
 func (sc *SummarizedConnectionV2) FindAllAndForEach(
-	forEachFunc func(sc *SummarizedConnectionV2) bool,
+	forEachFunc func(found *SummarizedConnectionV2) bool,
 ) {
 	utils.FindAllAndForEach(
 		func(tx *gorm.DB, total *int64) *gorm.DB {
@@ -69,27 +69,14 @@ func (c *ConnectionV2) FetchByUuid(uuid string) *ConnectionV2 {
 	)
 	if err != nil {
 		logrus.Fatalf("Failed to fetch a resource: %v", err)
-	} else {
-		logrus.Debugf("Fetched connection: %v", *conn)
+	} else if conn.HttpResponse.IsError() {
+		logrus.Warnf("Error from API: %s", conn.HttpResponse.Status())
+		// When the API returns an error,
+		// it is necessary to save an empty object with the Uuid,
+		// so that following Save() can save a non-nil object.
+		conn = &ConnectionV2{Uuid: uuid}
 	}
 	return conn
-}
-
-// AndSave A workaround to save detailed connection
-// to skip saving when the http status code is not 200 OK.
-// Sometimes the API may return a non-200 status code.
-func (c *ConnectionV2) AndSave() *ConnectionV2 {
-	if c.HttpResponse == nil {
-		logrus.Debugf("No HttpResponse found, save detailed connection")
-		c.Save()
-	} else if c.HttpResponse.StatusCode() == 200 {
-		logrus.Debugf("Got 200 OK, save detailed connection")
-		c.Save()
-	} else {
-		logrus.Debugf("None-200 http status code: %d, skip saving", c.HttpResponse.StatusCode())
-	}
-	logrus.Debugf("Done saving detailed connection: %v", c.ShortID())
-	return c
 }
 
 func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {

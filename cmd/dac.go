@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"qpc/config"
@@ -20,8 +21,9 @@ var dacFetchAllCmd = &cobra.Command{
 	Use:   "fetch-all <resource>",
 	Short: "Fetch all DAC resources from QueryPie server and save them to local sqlite database",
 	Example: `  fetch-all connections # from QueryPie API v2
-  fetch-all privileges # from QueryPie API v2,
-  fetch-all access-controls # from QueryPie API v2`,
+  fetch-all detailed-connections # from QueryPie API v2
+  fetch-all access-controls # from QueryPie API v2
+  fetch-all privileges # from QueryPie API v2`,
 	Args: cobra.ExactArgs(1),
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
@@ -41,25 +43,34 @@ var dacFetchAllCmd = &cobra.Command{
 		case "connections":
 			var sc dac_connection.SummarizedConnectionV2
 			sc.PrintHeader()
-			sc.FetchAllAndForEach(func(c *dac_connection.SummarizedConnectionV2) bool {
-				c.Print().Save()
+			sc.FetchAllAndForEach(func(fetched *dac_connection.SummarizedConnectionV2) bool {
+				fetched.Print().Save()
 				return true // OK to continue fetching
 			})
 		case "detailed-connections":
-			// TODO(JK): Implement this feature in the future
-			logrus.Errorf("Not implemented yet")
+			var sc dac_connection.SummarizedConnectionV2
+			var c dac_connection.ConnectionV2
+			sc.PrintHeader()
+			c.PrintHeader()
+			fmt.Println()
+			sc.FetchAllAndForEach(func(fetched *dac_connection.SummarizedConnectionV2) bool {
+				fetched.Print().Save()
+				c.FetchByUuid(fetched.Uuid).Print().Save()
+				fmt.Println()
+				return true // OK to continue fetching
+			})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
 			sac.PrintHeader()
-			sac.FetchAllAndForEach(func(c *dac_access_control.SummarizedAccessControl) bool {
-				c.Print().Save()
+			sac.FetchAllAndForEach(func(fetched *dac_access_control.SummarizedAccessControl) bool {
+				fetched.Print().Save()
 				return true // OK to continue fetching
 			})
 		case "privileges":
 			var p dac_privilege.Privilege
 			p.PrintHeader()
-			p.FetchAllAndForEach(func(c *dac_privilege.Privilege) bool {
-				c.Print().Save()
+			p.FetchAllAndForEach(func(fetched *dac_privilege.Privilege) bool {
+				fetched.Print().Save()
 				return true // OK to continue fetching
 			})
 		default:
@@ -72,7 +83,10 @@ var dacListCmd = &cobra.Command{
 	Use:   "ls",
 	Short: "List DAC connections in local sqlite database",
 	Example: `  ls connections # from local sqlite database
-  ls access-controls # from local sqlite database`,
+  ls detailed-connections # from local sqlite database
+  ls access-controls # from local sqlite database
+  ls privileges # from QueryPie API v2
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		if len(args) == 0 {
 			_ = cmd.Help()
@@ -83,22 +97,34 @@ var dacListCmd = &cobra.Command{
 		case "connections":
 			var sc dac_connection.SummarizedConnectionV2
 			sc.PrintHeader()
-			sc.FindAllAndForEach(func(sc *dac_connection.SummarizedConnectionV2) bool {
-				sc.Print()
+			sc.FindAllAndForEach(func(found *dac_connection.SummarizedConnectionV2) bool {
+				found.Print()
 				return true // OK to continue finding
+			})
+		case "detailed-connections":
+			var sc dac_connection.SummarizedConnectionV2
+			var c dac_connection.ConnectionV2
+			sc.PrintHeader()
+			c.PrintHeader()
+			fmt.Println()
+			sc.FindAllAndForEach(func(found *dac_connection.SummarizedConnectionV2) bool {
+				found.Print()
+				c.FindByUuid(found.Uuid).Print()
+				fmt.Println()
+				return true // OK to continue fetching
 			})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
 			sac.PrintHeader()
-			sac.FindAllAndForEach(func(c *dac_access_control.SummarizedAccessControl) bool {
-				c.Print()
+			sac.FindAllAndForEach(func(found *dac_access_control.SummarizedAccessControl) bool {
+				found.Print()
 				return true // OK to continue finding
 			})
 		case "privileges":
 			var p dac_privilege.Privilege
 			p.PrintHeader()
-			p.FindAllAndForEach(func(c *dac_privilege.Privilege) bool {
-				c.Print()
+			p.FindAllAndForEach(func(found *dac_privilege.Privilege) bool {
+				found.Print()
 				return true // OK to continue finding
 			})
 		default:
@@ -131,7 +157,7 @@ var dacFetchByUuidCmd = &cobra.Command{
 		switch resource {
 		case "connection":
 			var c dac_connection.ConnectionV2
-			c.FetchByUuid(uuid).Print().AndSave()
+			c.FetchByUuid(uuid).PrintJson().Save()
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}
@@ -154,7 +180,7 @@ var dacFindByUuidCmd = &cobra.Command{
 		switch resource {
 		case "connection":
 			var c dac_connection.ConnectionV2
-			c.FindByUuid(uuid).Print()
+			c.FindByUuid(uuid).PrintJson()
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}

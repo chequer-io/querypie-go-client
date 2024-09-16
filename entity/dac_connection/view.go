@@ -54,6 +54,31 @@ func (sc *SummarizedConnectionV2) Print() *SummarizedConnectionV2 {
 	return sc
 }
 
+const connHeaderFmt = "  %-8s  %-6s  %-13s  %-12s  %-16s\n"
+const connRowFmt = "  %-8d  %-6d  %-13s  %-12s  %-16s\n"
+
+func (c *ConnectionV2) PrintHeader() *ConnectionV2 {
+	fmt.Printf(connHeaderFmt,
+		"CLUSTERS",
+		"OWNERS",
+		"ACNT_TYPE", // UIDPWD, SASL_KERBEROS
+		"DB_ACNT_NAME",
+		"DESCRIPTION",
+	)
+	return c
+}
+
+func (c *ConnectionV2) Print() *ConnectionV2 {
+	fmt.Printf(connRowFmt,
+		len(c.Clusters),
+		len(c.ConnectionOwners),
+		utils.Optional(c.ConnectionAccount.Type),
+		utils.OptionalPtr(c.ConnectionAccount.DbAccountName),
+		utils.Optional(c.AdditionalInfo.Description),
+	)
+	return c
+}
+
 func (c *ConnectionV2) printHttpRequestLineAndResponseStatus() {
 	req := c.HttpResponse.Request.RawRequest
 	res := c.HttpResponse.RawResponse
@@ -61,7 +86,7 @@ func (c *ConnectionV2) printHttpRequestLineAndResponseStatus() {
 	fmt.Printf("%s %s\n\n", res.Proto, res.Status)
 }
 
-func (c *ConnectionV2) Print() *ConnectionV2 {
+func (c *ConnectionV2) PrintJson() *ConnectionV2 {
 	if c == nil {
 		return c
 	} else if c.HttpResponse != nil {
