@@ -4,8 +4,24 @@ import (
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
+	"qpc/entity/dac_connection"
+	"qpc/entity/dac_privilege"
+	"qpc/entity/user"
 	"qpc/utils"
 )
+
+type DraftGrantRequest struct {
+	UserQuery      string
+	PrivilegeQuery string
+	ClusterQuery   string
+	Force          bool
+	DryRun         bool
+
+	users       []user.User
+	privileges  []dac_privilege.Privilege
+	connections []dac_connection.ConnectionV2
+	clusters    []dac_connection.Cluster
+}
 
 type GrantRequest struct {
 	// Required: UUID of target user or a group

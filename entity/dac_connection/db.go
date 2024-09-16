@@ -101,6 +101,47 @@ func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {
 	return &connection
 }
 
+func (c *Cluster) FindByHostAndPort(query string, clusters *[]Cluster) *[]Cluster {
+	result := config.LocalDatabase.
+		Model(&Cluster{}).
+		// Note: Column names are snake_case in the database.
+		Where("CONCAT(host, ':', port) = ?", query).
+		Find(clusters)
+
+	if result.Error == nil {
+		logrus.Debugf("Found %d rows: %v", result.RowsAffected, clusters)
+	} else if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			logrus.Debugf("Cluster not found by <%s>", query)
+		} else {
+			logrus.Fatalf("Failed to find a cluster by <%s>: %s", query, result.Error)
+		}
+	}
+	return clusters
+}
+
+func (c *Cluster) FindByUuid(uuid string) *Cluster {
+	var cluster Cluster
+	result := config.LocalDatabase.
+		Model(&Cluster{}).
+		Where("uuid = ?", uuid).
+		First(cluster)
+
+	if result.Error == nil {
+		logrus.Debugf("Found %d rows: %v", result.RowsAffected, cluster)
+	} else if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			logrus.Debugf("Cluster not found by <%s>", uuid)
+			return nil
+		} else {
+			logrus.Fatalf("Failed to find a cluster by <%s>: %s", uuid, result.Error)
+		}
+	}
+
+	logrus.Debugf("Found: %v", cluster)
+	return &cluster
+}
+
 func RunAutoMigrate() {
 	db := config.LocalDatabase
 	err := db.AutoMigrate(

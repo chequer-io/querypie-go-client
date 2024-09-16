@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/pretty"
+	"qpc/entity/dac_connection"
+	"qpc/entity/dac_privilege"
+	"qpc/entity/user"
 )
 
 const sacHeaderFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3s  %-5s\n"
@@ -36,6 +39,29 @@ func (sac *SummarizedAccessControl) Print() *SummarizedAccessControl {
 		sac.Linked,
 	)
 	return sac
+}
+
+func (dr *DraftGrantRequest) Print() *DraftGrantRequest {
+	fmt.Printf("GRANT REQUEST\n\n")
+	fmt.Printf("Users matched: %d\n", len(dr.users))
+	(&user.User{}).PrintHeader()
+	for _, u := range dr.users {
+		u.Print()
+	}
+	fmt.Println()
+	fmt.Printf("\nPrivileges matched: %d\n", len(dr.privileges))
+	(&dac_privilege.Privilege{}).PrintHeader()
+	for _, p := range dr.privileges {
+		p.Print()
+	}
+	fmt.Println()
+	fmt.Printf("\nClusters matched: %d\n", len(dr.clusters))
+	(&dac_connection.Cluster{}).PrintHeader()
+	for _, c := range dr.clusters {
+		c.Print()
+	}
+	fmt.Println()
+	return dr
 }
 
 func (r *GrantResponse) Print() {

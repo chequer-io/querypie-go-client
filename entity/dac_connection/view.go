@@ -104,3 +104,29 @@ func (c *ConnectionV2) PrintJson() *ConnectionV2 {
 	fmt.Printf("%s\n", pretty.Pretty(_json))
 	return c
 }
+
+const clusterFmt = "%-36s  %-24s  %-5s  %-8s  %-16s  %-8s\n"
+
+func (c *Cluster) PrintHeader() *Cluster {
+	fmt.Printf(clusterFmt,
+		"UUID",
+		"HOST",
+		"PORT",
+		"TYPE",
+		"CLOUD_ID",
+		"STATUS",
+	)
+	return c
+}
+
+func (c *Cluster) Print() *Cluster {
+	fmt.Printf(clusterFmt,
+		c.Uuid,
+		c.Host,
+		c.Port,
+		c.ReplicationType,
+		utils.OptionalPtr(c.CloudIdentifier),
+		c.Status(),
+	)
+	return c
+}

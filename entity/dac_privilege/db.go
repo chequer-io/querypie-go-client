@@ -8,6 +8,13 @@ import (
 	"qpc/utils"
 )
 
+func (p *Privilege) FindByNameOrUuid(query string, privileges *[]Privilege) {
+	config.LocalDatabase.
+		// Note: Column names are snake_case in the database.
+		Where("name = ? OR uuid = ?", query, query).
+		Find(privileges)
+}
+
 func (p *Privilege) FetchAllAndForEach(
 	forEachFunc func(fetched *Privilege) bool,
 ) {

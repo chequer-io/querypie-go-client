@@ -207,6 +207,13 @@ type Cluster struct {
 	ConnectionUuid  string  `json:"-"`
 }
 
+func (c *Cluster) Status() string {
+	if c.Deleted {
+		return "deleted"
+	}
+	return "-"
+}
+
 type KerberosProtocol struct {
 	Principal   string `json:"principal"`
 	Realm       string `json:"realm"`

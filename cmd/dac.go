@@ -133,6 +133,38 @@ var dacListCmd = &cobra.Command{
 	},
 }
 
+var grantCmd = &cobra.Command{
+	Use:   "grant <user> <privilege> <cluster|connection>",
+	Short: "Grants a <privilege> to <user> for accessing a <cluster> in a DAC connection",
+	Example: `  <user>       - login_id, email, or uuid
+  <privilege>  - name, or uuid
+  <cluster>    - host:port, cloud_identifier, or uuid
+  <connection> - name, or uuid`,
+	Args: cobra.ExactArgs(3),
+	Run: func(cmd *cobra.Command, args []string) {
+		force, _ := cmd.Flags().GetBool("force")
+		dryRun, _ := cmd.Flags().GetBool("dry-run")
+		var req = dac_access_control.DraftGrantRequest{
+			UserQuery:      args[0],
+			PrivilegeQuery: args[1],
+			ClusterQuery:   args[2],
+			Force:          force,
+		}
+		req.LookUpEntities().Print().Validate()
+		// TODO(JK): Implement granting on server actually.
+		if dryRun {
+			logrus.Warnf("Dry-run mode is enabled. No actual grant is performed.")
+		} else {
+			logrus.Warnf("Dry-run mode is disabled. Actual grant is performed.")
+		}
+	},
+}
+
+func initGrantCmd(cmd *cobra.Command) {
+	cmd.Flags().Bool("dry-run", false, "Dry-run mode to verify the request")
+	cmd.Flags().Bool("force", false, "Force to replace the existing privilege (default: false)")
+}
+
 var dacFetchByUuidCmd = &cobra.Command{
 	Use:     "fetch-by-uuid <resource> <uuid>",
 	Short:   "Fetch a DAC resource specified as UUID, and save it to local sqlite database",
@@ -214,9 +246,13 @@ var grantByUuidCmd = &cobra.Command{
 }
 
 func init() {
-	// Add dacListCmd subcommands to dacCmd
+
+	initGrantCmd(grantCmd)
+
 	dacCmd.AddCommand(dacListCmd)
 	dacCmd.AddCommand(dacFetchAllCmd)
+	dacCmd.AddCommand(grantCmd)
+
 	dacCmd.AddCommand(dacFetchByUuidCmd)
 	dacCmd.AddCommand(dacFindByUuidCmd)
 	dacCmd.AddCommand(grantByUuidCmd)
