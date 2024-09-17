@@ -56,9 +56,9 @@ func (dr *DraftGrantRequest) Print() *DraftGrantRequest {
 	}
 	fmt.Println()
 	fmt.Printf("\nClusters matched: %d\n", len(dr.clusters))
-	(&dac_connection.Cluster{}).PrintHeader()
+	(&dac_connection.Cluster{}).PrintHeaderWithConnection()
 	for _, c := range dr.clusters {
-		c.Print()
+		c.PrintWithConnection()
 	}
 	fmt.Println()
 	return dr

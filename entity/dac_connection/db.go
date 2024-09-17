@@ -101,9 +101,26 @@ func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {
 	return &connection
 }
 
+func (c *Cluster) FindAllAndForEach(
+	forEachFunc func(found *Cluster) bool,
+) {
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&Cluster{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]Cluster) *gorm.DB {
+			return tx.Model(&Cluster{}).
+				Preload("Connection").
+				Find(items)
+		},
+		forEachFunc,
+	)
+}
+
 func (c *Cluster) FindByHostAndPort(query string, clusters *[]Cluster) *[]Cluster {
 	result := config.LocalDatabase.
 		Model(&Cluster{}).
+		Preload("Connection").
 		// Note: Column names are snake_case in the database.
 		Where("CONCAT(host, ':', port) = ?", query).
 		Find(clusters)
@@ -124,6 +141,7 @@ func (c *Cluster) FindByUuid(uuid string) *Cluster {
 	var cluster Cluster
 	result := config.LocalDatabase.
 		Model(&Cluster{}).
+		Preload("Connection").
 		Where("uuid = ?", uuid).
 		First(cluster)
 

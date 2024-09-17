@@ -198,13 +198,14 @@ type AdvancedPrivilegeSetting struct {
 }
 
 type Cluster struct {
-	Uuid            string  `json:"uuid" gorm:"primaryKey"`
-	CloudIdentifier *string `json:"cloudIdentifier"`
-	Host            string  `json:"host"`
-	Port            string  `json:"port"`
-	ReplicationType string  `json:"replicationType"`
-	Deleted         bool    `json:"deleted"`
-	ConnectionUuid  string  `json:"-"`
+	Uuid            string       `json:"uuid" gorm:"primaryKey"`
+	CloudIdentifier *string      `json:"cloudIdentifier"`
+	Host            string       `json:"host"`
+	Port            string       `json:"port"`
+	ReplicationType string       `json:"replicationType"`
+	Deleted         bool         `json:"deleted"`
+	ConnectionUuid  string       `json:"-"`
+	Connection      ConnectionV2 `json:"connection" gorm:"foreignKey:ConnectionUuid"`
 }
 
 func (c *Cluster) Status() string {
@@ -212,6 +213,16 @@ func (c *Cluster) Status() string {
 		return "deleted"
 	}
 	return "-"
+}
+
+func (c *Cluster) String() string {
+	return fmt.Sprintf(
+		"{ Uuid=%s, Host=%s, Port=%s, ReplicationType=%s, "+
+			"CloudIdentifier=%s, Deleted=%t, Connection=%s }",
+		c.Uuid, c.Host, c.Port, c.ReplicationType,
+		utils.OptionalPtr(c.CloudIdentifier), c.Deleted,
+		c.Connection.ShortID(),
+	)
 }
 
 type KerberosProtocol struct {

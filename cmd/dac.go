@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"qpc/config"
@@ -48,17 +47,12 @@ var dacFetchAllCmd = &cobra.Command{
 				return true // OK to continue fetching
 			})
 		case "detailed-connections":
-			var sc dac_connection.SummarizedConnectionV2
-			var c dac_connection.ConnectionV2
-			sc.PrintHeader()
-			c.PrintHeader()
-			fmt.Println()
-			sc.FetchAllAndForEach(func(fetched *dac_connection.SummarizedConnectionV2) bool {
-				fetched.Print().Save()
-				c.FetchByUuid(fetched.Uuid).Print().Save()
-				fmt.Println()
-				return true // OK to continue fetching
-			})
+			dac_connection.PrintHeaderOfDetailedConnection()
+			(&dac_connection.SummarizedConnectionV2{}).
+				FetchAllAndForEach(func(fetched *dac_connection.SummarizedConnectionV2) bool {
+					fetched.Print().Save()
+					return fetched.FindDetailedConnectionAndPrint()
+				})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
 			sac.PrintHeader()
@@ -102,17 +96,12 @@ var dacListCmd = &cobra.Command{
 				return true // OK to continue finding
 			})
 		case "detailed-connections":
-			var sc dac_connection.SummarizedConnectionV2
-			var c dac_connection.ConnectionV2
-			sc.PrintHeader()
-			c.PrintHeader()
-			fmt.Println()
-			sc.FindAllAndForEach(func(found *dac_connection.SummarizedConnectionV2) bool {
-				found.Print()
-				c.FindByUuid(found.Uuid).Print()
-				fmt.Println()
-				return true // OK to continue fetching
-			})
+			dac_connection.PrintHeaderOfDetailedConnection()
+			(&dac_connection.SummarizedConnectionV2{}).
+				FindAllAndForEach(func(found *dac_connection.SummarizedConnectionV2) bool {
+					found.Print()
+					return found.FindDetailedConnectionAndPrint()
+				})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
 			sac.PrintHeader()
@@ -125,6 +114,14 @@ var dacListCmd = &cobra.Command{
 			p.PrintHeader()
 			p.FindAllAndForEach(func(found *dac_privilege.Privilege) bool {
 				found.Print()
+				return true // OK to continue finding
+			})
+		case "clusters":
+			var c dac_connection.Cluster
+			c.PrintHeaderWithConnection()
+			c.FindAllAndForEach(func(found *dac_connection.Cluster) bool {
+				logrus.Debug(found)
+				found.PrintWithConnection()
 				return true // OK to continue finding
 			})
 		default:
