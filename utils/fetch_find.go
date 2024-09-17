@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"github.com/go-resty/resty/v2"
 	"github.com/sirupsen/logrus"
@@ -84,4 +85,48 @@ func FindAllAndForEach[T any](
 		logrus.Errorf("Selected %d, whereas total count was %d, difference: %d",
 			selected, total, total-selected)
 	}
+}
+
+func FindMultiple[T any](
+	items *[]T,
+	queryFunc func(db *gorm.DB) *gorm.DB,
+) {
+	result := queryFunc(config.LocalDatabase)
+
+	if result.Error == nil {
+		if result.RowsAffected == 0 {
+			logrus.Debugf("No rows found")
+		} else {
+			logrus.Debugf("Found %d rows: %v", result.RowsAffected, &(*items)[0])
+		}
+	} else if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			logrus.Debugf("No rows found: %v", result.Error)
+		} else {
+			logrus.Fatalf("Failed to find items by error: %s", result.Error)
+		}
+	}
+}
+
+func First[T any](
+	item *T,
+	queryFunc func(db *gorm.DB) *gorm.DB,
+) *T {
+	result := queryFunc(config.LocalDatabase)
+
+	if result.Error == nil {
+		if result.RowsAffected == 0 {
+			logrus.Debugf("No rows found")
+		} else {
+			logrus.Debugf("Found %d rows: %v", result.RowsAffected, item)
+			return item
+		}
+	} else if result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			logrus.Debugf("No rows found: %s", result.Error)
+		} else {
+			logrus.Fatalf("Failed to find items by error: %s", result.Error)
+		}
+	}
+	return nil
 }

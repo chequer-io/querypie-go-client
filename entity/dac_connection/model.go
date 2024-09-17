@@ -154,7 +154,7 @@ func (c *ConnectionV2) String() string {
 			"Zones=%v, Ledger=%t, "+
 			"CreatedAt=%s, CreatedBy=%v, UpdatedAt=%s, UpdatedBy=%v }",
 		c.Uuid, c.DatabaseType,
-		*c.CloudProviderType, *c.CloudProviderUuid,
+		utils.OptionalPtr(c.CloudProviderType), utils.OptionalPtr(c.CloudProviderUuid),
 		c.Name, c.AdditionalInfo,
 		c.Zones, c.Ledger,
 		c.CreatedAt, c.CreatedBy, c.UpdatedAt, c.UpdatedBy,

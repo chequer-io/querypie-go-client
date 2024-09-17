@@ -143,7 +143,7 @@ func (c *Cluster) PrintHeaderWithConnection() *Cluster {
 		"HOST",
 		"PORT",
 		"TYPE",
-		"CLOUD_ID",
+		"CLOUD_IDENTIFIER",
 		"STATUS",
 		"CONNECTION_UUID",
 		"CONNECTION_NAME",

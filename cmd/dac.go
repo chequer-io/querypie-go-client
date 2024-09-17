@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os"
 	"qpc/config"
 	"qpc/entity/dac_access_control"
 	"qpc/entity/dac_connection"
@@ -147,7 +149,15 @@ var grantCmd = &cobra.Command{
 			ClusterQuery:   args[2],
 			Force:          force,
 		}
-		req.LookUpEntities().Print().Validate()
+		req.LookUpEntities().Print().Validate(
+			func() {
+				fmt.Println("Validation succeeded.")
+			},
+			func(reason string) {
+				fmt.Println("Validation failed: " + reason)
+				os.Exit(4)
+			},
+		)
 		// TODO(JK): Implement granting on server actually.
 		if dryRun {
 			logrus.Warnf("Dry-run mode is enabled. No actual grant is performed.")

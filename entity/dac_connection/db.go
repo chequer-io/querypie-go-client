@@ -1,7 +1,6 @@
 package dac_connection
 
 import (
-	"errors"
 	"gorm.io/gorm"
 	"qpc/config"
 	"qpc/model"
@@ -80,25 +79,17 @@ func (c *ConnectionV2) FetchByUuid(uuid string) *ConnectionV2 {
 }
 
 func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {
-	var connection ConnectionV2
-	result := config.LocalDatabase.
-		Model(&ConnectionV2{}).
-		Where("uuid = ?", uuid).
-		Preload("Clusters").
-		Preload("ConnectionOwners").
-		Preload("ConnectionOwners.Role").
-		Preload("ConnectionOwners.OwnedBy").
-		First(&connection)
-	if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			logrus.Errorf("Connection not found: %s", uuid)
-		} else {
-			logrus.Fatalf("Failed to find a connection: %s", uuid)
-		}
-		return nil
-	}
-	logrus.Debugf("Found: %v", connection)
-	return &connection
+	var item ConnectionV2
+	return utils.First[ConnectionV2](&item, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&ConnectionV2{}).
+			Preload("Clusters").
+			Preload("ConnectionOwners").
+			Preload("ConnectionOwners.Role").
+			Preload("ConnectionOwners.OwnedBy").
+			Where("uuid = ?", uuid).
+			First(&item)
+	})
 }
 
 func (c *Cluster) FindAllAndForEach(
@@ -117,47 +108,41 @@ func (c *Cluster) FindAllAndForEach(
 	)
 }
 
-func (c *Cluster) FindByHostAndPort(query string, clusters *[]Cluster) *[]Cluster {
-	result := config.LocalDatabase.
-		Model(&Cluster{}).
-		Preload("Connection").
-		// Note: Column names are snake_case in the database.
-		Where("CONCAT(host, ':', port) = ?", query).
-		Find(clusters)
+func (c *Cluster) FindByHostAndPort(query string, clusters *[]Cluster) {
+	utils.FindMultiple(clusters, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&Cluster{}).
+			Preload("Connection").
+			// Note: Column names are snake_case in the database.
+			Where("CONCAT(host, ':', port) = ?", query).
+			Find(clusters)
 
-	if result.Error == nil {
-		logrus.Debugf("Found %d rows: %v", result.RowsAffected, clusters)
-	} else if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			logrus.Debugf("Cluster not found by <%s>", query)
-		} else {
-			logrus.Fatalf("Failed to find a cluster by <%s>: %s", query, result.Error)
-		}
-	}
-	return clusters
+	})
 }
 
-func (c *Cluster) FindByUuid(uuid string) *Cluster {
-	var cluster Cluster
-	result := config.LocalDatabase.
-		Model(&Cluster{}).
-		Preload("Connection").
-		Where("uuid = ?", uuid).
-		First(cluster)
+func (c *Cluster) FindByCloudIdentifier(
+	query string,
+	clusters *[]Cluster,
+) {
+	utils.FindMultiple(clusters, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&Cluster{}).
+			Preload("Connection").
+			// Note: Column names are snake_case in the database.
+			Where("cloud_identifier = ?", query).
+			Find(clusters)
+	})
+}
 
-	if result.Error == nil {
-		logrus.Debugf("Found %d rows: %v", result.RowsAffected, cluster)
-	} else if result.Error != nil {
-		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-			logrus.Debugf("Cluster not found by <%s>", uuid)
-			return nil
-		} else {
-			logrus.Fatalf("Failed to find a cluster by <%s>: %s", uuid, result.Error)
-		}
-	}
-
-	logrus.Debugf("Found: %v", cluster)
-	return &cluster
+func (c *Cluster) FirstByUuid(uuid string) *Cluster {
+	var item Cluster
+	return utils.First(&item, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&Cluster{}).
+			Preload("Connection").
+			Where("uuid = ?", uuid).
+			First(&item)
+	})
 }
 
 func RunAutoMigrate() {

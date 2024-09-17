@@ -23,10 +23,13 @@ func (u *User) FetchAllAndForEach(
 }
 
 func (u *User) FindByLoginIdOrEmailOrUuid(query string, users *[]User) {
-	config.LocalDatabase.
-		// Note: Column names are snake_case in the database.
-		Where("login_id = ? OR email = ? OR uuid = ?", query, query, query).
-		Find(users)
+	utils.FindMultiple(users, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&User{}).
+			// Note: Column names are snake_case in the database.
+			Where("login_id = ? OR email = ? OR uuid = ?", query, query, query).
+			Find(users)
+	})
 }
 
 func (u *User) FindAllAndForEach(

@@ -9,10 +9,13 @@ import (
 )
 
 func (p *Privilege) FindByNameOrUuid(query string, privileges *[]Privilege) {
-	config.LocalDatabase.
-		// Note: Column names are snake_case in the database.
-		Where("name = ? OR uuid = ?", query, query).
-		Find(privileges)
+	utils.FindMultiple(privileges, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&Privilege{}).
+			// Note: Column names are snake_case in the database.
+			Where("name = ? OR uuid = ?", query, query).
+			Find(privileges)
+	})
 }
 
 func (p *Privilege) FetchAllAndForEach(
