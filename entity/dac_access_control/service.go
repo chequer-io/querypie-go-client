@@ -28,6 +28,17 @@ func (dr *DraftGrantRequest) LookUpEntities() *DraftGrantRequest {
 	} else {
 		(&dac_connection.Cluster{}).FindByCloudIdentifier(dr.ClusterQuery, &dr.clusters)
 	}
+
+	// Look up connections, if clusters are not found.
+	if len(dr.clusters) == 0 {
+		(&dac_connection.ConnectionV2{}).FindByNameOrUuid(dr.ClusterQuery, &dr.connections)
+		// If connections are found, add their clusters to the list.
+		for _, connection := range dr.connections {
+			for _, cluster := range connection.Clusters {
+				dr.clusters = append(dr.clusters, cluster)
+			}
+		}
+	}
 	return dr
 }
 

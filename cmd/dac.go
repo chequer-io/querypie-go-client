@@ -53,7 +53,7 @@ var dacFetchAllCmd = &cobra.Command{
 			(&dac_connection.SummarizedConnectionV2{}).
 				FetchAllAndForEach(func(fetched *dac_connection.SummarizedConnectionV2) bool {
 					fetched.Print().Save()
-					return fetched.FindDetailedConnectionAndPrint()
+					return fetched.FirstDetailedConnectionAndPrint()
 				})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
@@ -102,7 +102,7 @@ var dacListCmd = &cobra.Command{
 			(&dac_connection.SummarizedConnectionV2{}).
 				FindAllAndForEach(func(found *dac_connection.SummarizedConnectionV2) bool {
 					found.Print()
-					return found.FindDetailedConnectionAndPrint()
+					return found.FirstDetailedConnectionAndPrint()
 				})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
@@ -155,6 +155,7 @@ var grantCmd = &cobra.Command{
 			},
 			func(reason string) {
 				fmt.Println("Validation failed: " + reason)
+				// Exit with error code 4 for validation failure
 				os.Exit(4)
 			},
 		)
@@ -219,7 +220,7 @@ var dacFindByUuidCmd = &cobra.Command{
 		switch resource {
 		case "connection":
 			var c dac_connection.ConnectionV2
-			c.FindByUuid(uuid).PrintJson()
+			c.FirstByUuid(uuid).PrintJson()
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}

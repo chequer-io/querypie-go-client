@@ -9,8 +9,8 @@ func PrintHeaderOfDetailedConnection() {
 	fmt.Println()
 }
 
-func (sc *SummarizedConnectionV2) FindDetailedConnectionAndPrint() bool {
-	conn := (&ConnectionV2{}).FindByUuid(sc.Uuid)
+func (sc *SummarizedConnectionV2) FirstDetailedConnectionAndPrint() bool {
+	conn := (&ConnectionV2{}).FirstByUuid(sc.Uuid)
 	conn.Print("DETAILED  ")
 	for _, cluster := range conn.Clusters {
 		cluster.Print("CLUSTER  ")

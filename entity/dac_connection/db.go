@@ -78,7 +78,7 @@ func (c *ConnectionV2) FetchByUuid(uuid string) *ConnectionV2 {
 	return conn
 }
 
-func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {
+func (c *ConnectionV2) FirstByUuid(uuid string) *ConnectionV2 {
 	var item ConnectionV2
 	return utils.First[ConnectionV2](&item, func(db *gorm.DB) *gorm.DB {
 		return db.
@@ -89,6 +89,18 @@ func (c *ConnectionV2) FindByUuid(uuid string) *ConnectionV2 {
 			Preload("ConnectionOwners.OwnedBy").
 			Where("uuid = ?", uuid).
 			First(&item)
+	})
+}
+
+func (c *ConnectionV2) FindByNameOrUuid(query string, connections *[]ConnectionV2) {
+	utils.FindMultiple(connections, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&ConnectionV2{}).
+			Preload("Clusters").
+			Preload("Clusters.Connection").
+			// Note: Column names are snake_case in the database.
+			Where("name = ? OR uuid = ?", query, query).
+			Find(connections)
 	})
 }
 
