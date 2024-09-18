@@ -20,9 +20,8 @@ func (sc *SummarizedConnectionV2) FirstDetailedConnectionAndPrint() bool {
 }
 
 func (sc *SummarizedConnectionV2) FetchDetailedConnectionAndPrintAndSave() bool {
-	sc.Print()
 	conn := (&ConnectionV2{}).FetchByUuid(sc.Uuid)
-	conn.Print("DETAILED  ").Save()
+	conn.Print("DETAILED  ").SaveAlsoForServerError()
 	for _, cluster := range conn.Clusters {
 		cluster.Print("CLUSTER  ")
 	}

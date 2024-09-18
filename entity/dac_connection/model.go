@@ -205,7 +205,7 @@ type Cluster struct {
 	ReplicationType string       `json:"replicationType"`
 	Deleted         bool         `json:"deleted"`
 	ConnectionUuid  string       `json:"-"`
-	Connection      ConnectionV2 `json:"connection" gorm:"foreignKey:ConnectionUuid"`
+	Connection      ConnectionV2 `json:"-" gorm:"foreignKey:ConnectionUuid"`
 }
 
 func (c *Cluster) Status() string {

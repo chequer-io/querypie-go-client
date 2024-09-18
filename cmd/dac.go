@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/tidwall/pretty"
 	"os"
 	"qpc/config"
 	"qpc/entity/dac_access_control"
@@ -53,7 +54,7 @@ var dacFetchAllCmd = &cobra.Command{
 			(&dac_connection.SummarizedConnectionV2{}).
 				FetchAllAndForEach(func(fetched *dac_connection.SummarizedConnectionV2) bool {
 					fetched.Print().Save()
-					return fetched.FirstDetailedConnectionAndPrint()
+					return fetched.FetchDetailedConnectionAndPrintAndSave()
 				})
 		case "access-controls":
 			var sac dac_access_control.SummarizedAccessControl
@@ -196,8 +197,23 @@ var dacFetchByUuidCmd = &cobra.Command{
 		uuid := args[1]
 		switch resource {
 		case "connection":
-			var c dac_connection.ConnectionV2
-			c.FetchByUuid(uuid).PrintJson().Save()
+			var c = (&dac_connection.ConnectionV2{}).FetchByUuid(uuid)
+			utils.PrintHttpRequestLineAndResponseStatus(c.HttpResponse)
+			if c.HttpResponse.IsSuccess() {
+				c.PrintJson().Save()
+			} else if utils.IsServerError(c.HttpResponse) {
+				fmt.Printf("%s\n", pretty.Pretty(c.HttpResponse.Body()))
+				// When the API returns a server error,
+				// it is necessary to save an empty object with the Uuid,
+				// so that following Save() can save a non-nil object,
+				// as a workaround to prevent error due to missing entities in local database.
+				c.SaveAlsoForServerError()
+			} else if utils.IsClientError(c.HttpResponse) {
+				fmt.Printf("%s\n", pretty.Pretty(c.HttpResponse.Body()))
+				// Do not save for client errors such as 404 Not Found
+			} else {
+				logrus.Fatalf("Unexpected error: %s", c.HttpResponse.Status())
+			}
 		default:
 			logrus.Fatalf("Unknown resource: %s", resource)
 		}

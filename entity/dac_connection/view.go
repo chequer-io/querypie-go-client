@@ -81,22 +81,9 @@ func (c *ConnectionV2) Print(prefix string) *ConnectionV2 {
 	return c
 }
 
-func (c *ConnectionV2) printHttpRequestLineAndResponseStatus() {
-	req := c.HttpResponse.Request.RawRequest
-	res := c.HttpResponse.RawResponse
-	fmt.Printf("%s %s %s\n", req.Method, req.URL.RequestURI(), req.Proto)
-	fmt.Printf("%s %s\n\n", res.Proto, res.Status)
-}
-
 func (c *ConnectionV2) PrintJson() *ConnectionV2 {
 	if c == nil {
 		return c
-	} else if c.HttpResponse != nil {
-		c.printHttpRequestLineAndResponseStatus()
-		if c.HttpResponse.IsError() {
-			fmt.Printf("%s\n", pretty.Pretty(c.HttpResponse.Body()))
-			return c
-		}
 	}
 	_json, err := json.Marshal(c)
 	if err != nil {

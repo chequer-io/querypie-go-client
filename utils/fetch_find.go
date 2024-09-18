@@ -60,6 +60,21 @@ func Fetch[T model.RestResponse](
 	return result, err
 }
 
+func IsClientError(r *resty.Response) bool {
+	return 399 < r.StatusCode() && r.StatusCode() < 500
+}
+
+func IsServerError(r *resty.Response) bool {
+	return 499 < r.StatusCode() && r.StatusCode() < 600
+}
+
+func PrintHttpRequestLineAndResponseStatus(r *resty.Response) {
+	req := r.Request.RawRequest
+	res := r.RawResponse
+	fmt.Printf("%s %s %s\n", req.Method, req.URL.RequestURI(), req.Proto)
+	fmt.Printf("%s %s\n\n", res.Proto, res.Status)
+}
+
 func FindAllAndForEach[T any](
 	countFunc func(db *gorm.DB, total *int64) *gorm.DB,
 	findAllFunc func(db *gorm.DB, items *[]T) *gorm.DB,

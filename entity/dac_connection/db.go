@@ -56,8 +56,12 @@ func (sc *SummarizedConnectionV2) Save() *SummarizedConnectionV2 {
 func (c *ConnectionV2) Save() *ConnectionV2 {
 	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
 	// https://gorm.io/docs/update.html#Save
-	db := config.LocalDatabase.Save(c)
-	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
+	if c == nil {
+		logrus.Debugf("Did not save it as it is nil")
+	} else {
+		db := config.LocalDatabase.Save(c)
+		logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
+	}
 	return c
 }
 
@@ -68,14 +72,29 @@ func (c *ConnectionV2) FetchByUuid(uuid string) *ConnectionV2 {
 	)
 	if err != nil {
 		logrus.Fatalf("Failed to fetch a resource: %v", err)
-	} else if conn.HttpResponse.IsError() {
-		logrus.Warnf("Error from API: %s", conn.HttpResponse.Status())
-		// When the API returns an error,
-		// it is necessary to save an empty object with the Uuid,
-		// so that following Save() can save a non-nil object.
-		conn = &ConnectionV2{Uuid: uuid}
+		// Early exit to prevent further processing
 	}
+	conn.Uuid = uuid // Uuid might be missing when 500 Internal Server Error occurs
 	return conn
+}
+
+func (c *ConnectionV2) SaveAlsoForServerError() *ConnectionV2 {
+	if c.HttpResponse.IsSuccess() {
+		c.Save()
+	} else if utils.IsServerError(c.HttpResponse) {
+		// When the API returns a server error,
+		// it is necessary to save an empty object with the Uuid,
+		// as a workaround to prevent error due to missing entities in local database.
+		empty := &ConnectionV2{Uuid: c.Uuid}
+		empty.Save()
+	} else if utils.IsClientError(c.HttpResponse) {
+		// When the API returns a client error such as 404 Not Found,
+		// it should not save the object to the local database.
+		logrus.Debugf("Did not save it as it is a client error: %s", c.HttpResponse.Status())
+	} else {
+		logrus.Fatalf("Unexpected error: %s", c.HttpResponse.Status())
+	}
+	return c
 }
 
 func (c *ConnectionV2) FirstByUuid(uuid string) *ConnectionV2 {
