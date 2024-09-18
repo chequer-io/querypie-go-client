@@ -5,7 +5,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-const userFmt = "%-36s  %-24s  %-24s  %-20s  %-8s  %-16s  %-16s\n"
+// Please do not print extra white spaces in the last column.
+const userFmt = "%-36s  %-24s  %-24s  %-20s  %-8s  %-16s  %s\n"
 
 func (u *UserV1) PrintHeader() *UserV1 {
 	fmt.Printf(userFmt,

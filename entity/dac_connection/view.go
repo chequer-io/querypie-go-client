@@ -8,7 +8,8 @@ import (
 	"qpc/utils"
 )
 
-const scFmt = "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %-16s\n"
+// Please do not print extra white spaces in the last column.
+const scFmt = "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %s\n"
 
 func (cl *PagedConnectionV2List) Print() *PagedConnectionV2List {
 	first := cl.GetPage().CurrentPage == 0
@@ -54,8 +55,9 @@ func (sc *SummarizedConnectionV2) Print() *SummarizedConnectionV2 {
 	return sc
 }
 
-const connHeaderFmt = "%s%-8s  %-6s  %-13s  %-12s  %-16s\n"
-const connRowFmt = "%s%-8d  %-6d  %-13s  %-12s  %-16s\n"
+// Please do not print extra white spaces in the last column.
+const connHeaderFmt = "%s%-8s  %-6s  %-13s  %-12s  %s\n"
+const connRowFmt = "%s%-8d  %-6d  %-13s  %-12s  %s\n"
 
 func (c *ConnectionV2) PrintHeader(prefix string) *ConnectionV2 {
 	fmt.Printf(connHeaderFmt,
@@ -94,7 +96,8 @@ func (c *ConnectionV2) PrintJson() *ConnectionV2 {
 	return c
 }
 
-const clusterFmt = "%s%-36s  %-24s  %-5s  %-8s  %-16s  %-8s\n"
+// Please do not print extra white spaces in the last column.
+const clusterFmt = "%s%-36s  %-24s  %-5s  %-8s  %-16s  %s\n"
 
 func (c *Cluster) PrintHeader(prefix string) *Cluster {
 	fmt.Printf(clusterFmt,
@@ -122,7 +125,8 @@ func (c *Cluster) Print(prefix string) *Cluster {
 	return c
 }
 
-const clusterFmtWithConnection = "%-36s  %-24s  %-5s  %-8s  %-16s  %-8s  %-36s  %-36s\n"
+// Please do not print extra white spaces in the last column.
+const clusterFmtWithConnection = "%-36s  %-24s  %-5s  %-8s  %-16s  %-8s  %-36s  %s\n"
 
 func (c *Cluster) PrintHeaderWithConnection() *Cluster {
 	fmt.Printf(clusterFmtWithConnection,

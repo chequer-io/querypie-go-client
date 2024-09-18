@@ -6,8 +6,9 @@ import (
 	"qpc/utils"
 )
 
-const privilegeHeaderFmt = "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
-const privilegeRowFmt = "%-36s  %-20s  %-40s  %-18s  %-8s  %-10s\n"
+// Please do not print extra white spaces in the last column.
+const privilegeHeaderFmt = "%-36s  %-20s  %-40s  %-18s  %-8s  %s\n"
+const privilegeRowFmt = "%-36s  %-20s  %-40s  %-18s  %-8s  %s\n"
 
 func (p *Privilege) PrintHeader() *Privilege {
 	fmt.Printf(privilegeHeaderFmt,

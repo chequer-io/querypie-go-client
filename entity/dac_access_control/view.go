@@ -10,8 +10,9 @@ import (
 	"qpc/utils"
 )
 
-const sacHeaderFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3s  %-5s\n"
-const sacRowFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3d  %-5t\n"
+// Please do not print extra white spaces in the last column.
+const sacHeaderFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3s  %s\n"
+const sacRowFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3d  %t\n"
 
 func (sac *SummarizedAccessControl) PrintHeader() *SummarizedAccessControl {
 	fmt.Printf(sacHeaderFmt,
@@ -73,7 +74,7 @@ func (r *GrantResponse) Print() {
 		)
 		return
 	}
-	format := "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %-16s\n"
+	format := "%-36s  %-10s  %-5s  %-36s  %-8s  %-16s  %s\n"
 	fmt.Printf(format,
 		"UUID",
 		"USER_TYPE",

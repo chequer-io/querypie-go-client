@@ -1,0 +1,18 @@
+GRANT REQUEST
+
+Users matched: 1
+UUID                                  LOGIN_ID                EMAIL                   NAME                STATUS    MORE     CREATED           UPDATED
+d9207c90-15ae-45bd-983b-794d9e4bcbfa  jk@chequer.io           jk@chequer.io           Jk KIm              ACTIVE    -        2024-05-09 14:06  2024-09-16 20:32
+
+
+Privileges matched: 1
+UUID                                  NAME                  PRIVILEGE_TYPES                           DESCRIPTION         VENDOR    STATUS
+ad5a17d1-bbf2-11ed-9e22-0242ac110002  Read/Write            ["SELECT","DELETE","INSERT",+15]          Default Read/Write  SQL       ACTIVE
+
+
+Clusters matched: 1
+UUID                                  HOST                      PORT   TYPE      CLOUD_IDENTIFIER  STATUS    CONNECTION_UUID                       CONNECTION_NAME
+08476195-2ccd-4fc9-bb32-b857c7ced30f  mysql.querypie.io         3306   SINGLE    -                 -         14796ecd-abfc-44b8-bab5-abc10a8eaa3e  lucas test
+
+VALIDATION: success
+

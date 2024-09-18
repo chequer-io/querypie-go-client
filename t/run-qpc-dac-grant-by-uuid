@@ -35,6 +35,7 @@ function test_qpc_dac_grant_by_uuid_400_bad_request() {
 
   actual=$(qpc dac grant-by-uuid a b c)
   expected=$(cat <<'END_OF_EXPECTED'
+POST /api/external/v2/dac/access-controls/a/grant HTTP/1.1
 HTTP/2.0 400 Bad Request
 
 {

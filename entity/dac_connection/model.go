@@ -198,14 +198,14 @@ type AdvancedPrivilegeSetting struct {
 }
 
 type Cluster struct {
-	Uuid            string       `json:"uuid" gorm:"primaryKey"`
-	CloudIdentifier *string      `json:"cloudIdentifier"`
-	Host            string       `json:"host"`
-	Port            string       `json:"port"`
-	ReplicationType string       `json:"replicationType"`
-	Deleted         bool         `json:"deleted"`
-	ConnectionUuid  string       `json:"-"`
-	Connection      ConnectionV2 `json:"-" gorm:"foreignKey:ConnectionUuid"`
+	Uuid            string        `json:"uuid" gorm:"primaryKey"`
+	CloudIdentifier *string       `json:"cloudIdentifier"`
+	Host            string        `json:"host"`
+	Port            string        `json:"port"`
+	ReplicationType string        `json:"replicationType"`
+	Deleted         bool          `json:"deleted"`
+	ConnectionUuid  string        `json:"-"`
+	Connection      *ConnectionV2 `json:"connection,omitempty" gorm:"foreignKey:ConnectionUuid"`
 }
 
 func (c *Cluster) Status() string {
