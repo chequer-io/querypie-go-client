@@ -23,6 +23,15 @@ type DraftGrantRequest struct {
 	clusters    []dac_connection.Cluster
 }
 
+func (dr *DraftGrantRequest) ToGrantRequest() *GrantRequest {
+	return &GrantRequest{
+		UserUuid:      dr.users[0].Uuid,
+		ClusterUuid:   dr.clusters[0].Uuid,
+		PrivilegeUuid: dr.privileges[0].Uuid,
+		Force:         dr.Force,
+	}
+}
+
 type GrantRequest struct {
 	// Required: UUID of target user or a group
 	UserUuid string `json:"-"`

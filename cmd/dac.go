@@ -151,19 +151,19 @@ var grantCmd = &cobra.Command{
 		}
 		req.LookUpEntities().Print().Validate(
 			func() {
-				fmt.Println("Validation succeeded.")
+				fmt.Print("VALIDATION: success\n\n")
 			},
 			func(reason string) {
-				fmt.Println("Validation failed: " + reason)
+				fmt.Printf("VALIDATION: failure - %s\n\n", reason)
 				// Exit with error code 4 for validation failure
 				os.Exit(4)
 			},
 		)
-		// TODO(JK): Implement granting on server actually.
+		r := req.ToGrantRequest()
 		if dryRun {
-			logrus.Warnf("Dry-run mode is enabled. No actual grant is performed.")
+			logrus.Infof("Dry-run mode is enabled. No actual grant is performed.")
 		} else {
-			logrus.Warnf("Dry-run mode is disabled. Actual grant is performed.")
+			r.Post(utils.DefaultQuerypieServer).Print()
 		}
 	},
 }

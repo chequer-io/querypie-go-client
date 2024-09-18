@@ -7,6 +7,7 @@ import (
 	"qpc/entity/dac_connection"
 	"qpc/entity/dac_privilege"
 	"qpc/entity/user"
+	"qpc/utils"
 )
 
 const sacHeaderFmt = "%-36s  %-9s  %-9s  %-24s  %-24s  %-10s  %-3s  %-5s\n"
@@ -65,10 +66,7 @@ func (dr *DraftGrantRequest) Print() *DraftGrantRequest {
 }
 
 func (r *GrantResponse) Print() {
-	fmt.Printf("%s %s\n\n",
-		r.HttpResponse.RawResponse.Proto,
-		r.HttpResponse.Status(),
-	)
+	utils.PrintHttpRequestLineAndResponseStatus(r.HttpResponse)
 	if r.HttpResponse.StatusCode() != 200 {
 		fmt.Printf("%s\n",
 			pretty.Pretty(r.HttpResponse.Body()),
