@@ -1,0 +1,72 @@
+{
+  "createdAt": "2019-08-24T14:15:22Z",
+  "maskingRule": {
+    "createdAt": "2019-08-24T14:15:22Z",
+    "createdBy": 0,
+    "deleted": true,
+    "id": 0,
+    "isDeleted": true,
+    "objectPathUuid": "string",
+    "pattern": {
+      "createdAt": "2019-08-24T14:15:22Z",
+      "createdBy": 0,
+      "deleted": true,
+      "description": "string",
+      "detectingPattern": "string",
+      "id": 0,
+      "isDeleted": true,
+      "maskingPattern": "string",
+      "rawData": "string",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "updatedBy": 0,
+      "uuid": "string"
+    },
+    "patternId": 0,
+    "policy": {
+      "createdAt": "2019-08-24T14:15:22Z",
+      "createdBy": 0,
+      "deleted": true,
+      "enabled": true,
+      "id": 0,
+      "isDeleted": true,
+      "objectType": "UNDEFINED",
+      "objectUuid": "string",
+      "policyUuid": "string",
+      "title": "string",
+      "type": "DATA_LEVEL",
+      "updatedAt": "2019-08-24T14:15:22Z",
+      "updatedBy": 0,
+      "uuid": "string",
+      "version": 0
+    },
+    "policyType": "DATA_LEVEL",
+    "policyUuid": "string",
+    "updatedAt": "2019-08-24T14:15:22Z",
+    "updatedBy": 0,
+    "uuid": "string"
+  },
+  "objectPath": [
+    "table",
+    "column"
+  ],
+  "objectPathElement": {
+    "objectPath": {
+      "fullPathHash": "string",
+      "id": 0,
+      "type": "UNKNOWN",
+      "uuid": "string"
+    },
+    "objectPathItems": [
+      {
+        "id": 0,
+        "objectPathUuid": "string",
+        "value": "string"
+      }
+    ]
+  },
+  "objectType": "COLUMN",
+  "patternUuid": "5063396b-5047-44ca-833a-61c0e4f6dcd9",
+  "policyUuid": "35cfa847-165c-48b5-bb4e-af271e490f19",
+  "updatedAt": "2019-08-24T14:15:22Z",
+  "uuid": "35cfa847-165c-48b5-bb4e-af271e490f19"
+}

@@ -1,0 +1,11 @@
+{
+  "allowedUserUuids": [
+    "5063396b-5047-44ca-833a-61c0e4f6dcd9",
+    "16238493-5047-44ca-833a-61c0e4f6dcd1"
+  ],
+  "objectPath": [
+    "table",
+    "column"
+  ],
+  "objectType": "COLUMN"
+}

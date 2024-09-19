@@ -1,0 +1,13 @@
+[
+  {
+    "createdAt": "2019-08-24T14:15:22Z",
+    "objectPath": [
+      "table",
+      "column"
+    ],
+    "objectType": "COLUMN",
+    "policyUuid": "35cfa847-165c-48b5-bb4e-af271e490f19",
+    "updatedAt": "2019-08-24T14:15:22Z",
+    "uuid": "35cfa847-165c-48b5-bb4e-af271e490f19"
+  }
+]
