@@ -1,11 +1,21 @@
 {
   "clusterGroupUuid": "35cfa847-165c-48b5-bb4e-af271e490f19",
   "createdAt": "2019-08-24T14:15:22Z",
-  "createdUser": "User Information",
+  "createdUser": {
+    "loginId": "bruce@chequer.io",
+    "uuid": "78390079-403d-4c80-9a1d-5b068065c838",
+    "name": "Bruce Han",
+    "email": "bruce@chequer.io"
+  },
   "enabled": true,
   "numberOfRules": 10,
   "title": "Policy Title",
   "updatedAt": "2019-08-24T14:15:22Z",
-  "updatedUser": "User Information",
+  "updatedUser": {
+    "loginId": "bruce@chequer.io",
+    "uuid": "78390079-403d-4c80-9a1d-5b068065c838",
+    "name": "Bruce Han",
+    "email": "bruce@chequer.io"
+  },
   "uuid": "35cfa847-165c-48b5-bb4e-af271e490f19"
 }

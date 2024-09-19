@@ -1,0 +1,157 @@
+{
+  "list": [
+    {
+      "uuid": "c15f0d96-829c-4271-b8b1-4dd9dc3ffd82",
+      "clusterGroupUuid": "59db4f83-d3c8-4836-9de7-d691b105c9ba",
+      "title": "MySQL Sensitive Data Policy",
+      "numberOfRules": 2,
+      "enabled": true,
+      "createdAt": "2024-09-05T08:02:22.923Z",
+      "createdUser": {
+        "loginId": "daniel@chequer.io",
+        "uuid": "4afff027-35d0-4fca-8e67-85f757d9c44c",
+        "name": "Daniel Son",
+        "email": "daniel@chequer.io"
+      },
+      "updatedAt": "2024-09-05T08:03:36.708Z",
+      "updatedUser": {
+        "loginId": "daniel@chequer.io",
+        "uuid": "4afff027-35d0-4fca-8e67-85f757d9c44c",
+        "name": "Daniel Son",
+        "email": "daniel@chequer.io"
+      }
+    },
+    {
+      "uuid": "db3978b5-923f-4f13-8ab9-a28299db9190",
+      "clusterGroupUuid": "d741e280-626e-4dc6-a9d8-52e6fa888fd8",
+      "title": "[Irwin] MongoDB",
+      "numberOfRules": 0,
+      "enabled": true,
+      "createdAt": "2024-09-05T04:58:17.980Z",
+      "createdUser": {
+        "loginId": "irwin@chequer.io",
+        "uuid": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "name": "Irwin Lee",
+        "email": "irwin@chequer.io"
+      },
+      "updatedAt": "2024-09-05T04:58:17.980Z",
+      "updatedUser": {
+        "loginId": "irwin@chequer.io",
+        "uuid": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "name": "Irwin Lee",
+        "email": "irwin@chequer.io"
+      }
+    },
+    {
+      "uuid": "97f1a947-6bb4-4d67-9a8e-a7373203d594",
+      "clusterGroupUuid": "fea646fd-e468-414a-bb85-60455c30ae89",
+      "title": "[Irwin] DynamoDB policy",
+      "numberOfRules": 0,
+      "enabled": true,
+      "createdAt": "2024-09-05T03:15:58.711Z",
+      "createdUser": {
+        "loginId": "irwin@chequer.io",
+        "uuid": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "name": "Irwin Lee",
+        "email": "irwin@chequer.io"
+      },
+      "updatedAt": "2024-09-05T03:15:58.711Z",
+      "updatedUser": {
+        "loginId": "irwin@chequer.io",
+        "uuid": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "name": "Irwin Lee",
+        "email": "irwin@chequer.io"
+      }
+    },
+    {
+      "uuid": "fd09ab7b-c3d5-4396-a045-0481affe2a20",
+      "clusterGroupUuid": "ef78287a-1e9d-4f07-af58-f1c3dfc56d6c",
+      "title": "[Irwin] Policy",
+      "numberOfRules": 1,
+      "enabled": true,
+      "createdAt": "2024-09-05T03:08:41.564Z",
+      "createdUser": {
+        "loginId": "irwin@chequer.io",
+        "uuid": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "name": "Irwin Lee",
+        "email": "irwin@chequer.io"
+      },
+      "updatedAt": "2024-09-05T03:09:12.111Z",
+      "updatedUser": {
+        "loginId": "irwin@chequer.io",
+        "uuid": "3421dbe2-02ef-469c-9bc4-8b6d042bfd61",
+        "name": "Irwin Lee",
+        "email": "irwin@chequer.io"
+      }
+    },
+    {
+      "uuid": "6904b37f-b883-4e9e-be7a-5912961e2cfd",
+      "clusterGroupUuid": "a71eee9e-bca1-4b92-beac-6d218234ed01",
+      "title": "MF_Policy_1",
+      "numberOfRules": 1,
+      "enabled": true,
+      "createdAt": "2024-08-29T04:43:59.170Z",
+      "createdUser": {
+        "loginId": "maretomo@chequer.io",
+        "uuid": "c666db49-fa39-4eb6-b9c5-4d3ce049c9bf",
+        "name": "Maretomo Fukushima",
+        "email": "maretomo@chequer.io"
+      },
+      "updatedAt": "2024-08-29T04:44:15.476Z",
+      "updatedUser": {
+        "loginId": "maretomo@chequer.io",
+        "uuid": "c666db49-fa39-4eb6-b9c5-4d3ce049c9bf",
+        "name": "Maretomo Fukushima",
+        "email": "maretomo@chequer.io"
+      }
+    },
+    {
+      "uuid": "87a9a6b4-7d71-4272-ad0c-7662534843c0",
+      "clusterGroupUuid": "506b15af-bad6-4a47-979d-b1a7affb46df",
+      "title": "testname",
+      "numberOfRules": 1,
+      "enabled": true,
+      "createdAt": "2024-08-29T04:19:09.090Z",
+      "createdUser": {
+        "loginId": "qp-admin",
+        "uuid": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "name": "Admin",
+        "email": "admin@querypie.com"
+      },
+      "updatedAt": "2024-08-29T04:25:56.052Z",
+      "updatedUser": {
+        "loginId": "qp-admin",
+        "uuid": "d8665fba-8080-11eb-a305-0a789f7c7580",
+        "name": "Admin",
+        "email": "admin@querypie.com"
+      }
+    },
+    {
+      "uuid": "80722211-b64b-423f-baf4-a423fdc3235f",
+      "clusterGroupUuid": "308fb242-cabc-4452-88fb-1abde45e519a",
+      "title": "test-s",
+      "numberOfRules": 1,
+      "enabled": true,
+      "createdAt": "2024-07-22T08:09:47.254Z",
+      "createdUser": {
+        "loginId": "bruce@chequer.io",
+        "uuid": "78390079-403d-4c80-9a1d-5b068065c838",
+        "name": "Bruce Han",
+        "email": "bruce@chequer.io"
+      },
+      "updatedAt": "2024-07-22T08:10:15.886Z",
+      "updatedUser": {
+        "loginId": "bruce@chequer.io",
+        "uuid": "78390079-403d-4c80-9a1d-5b068065c838",
+        "name": "Bruce Han",
+        "email": "bruce@chequer.io"
+      }
+    }
+  ],
+  "page": {
+    "currentPage": 0,
+    "pageSize": 40,
+    "totalPages": 1,
+    "totalElements": 7
+  }
+}
