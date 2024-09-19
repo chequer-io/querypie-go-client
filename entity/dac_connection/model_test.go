@@ -154,6 +154,37 @@ func TestParseAndMarshalV2DacConnectionDetail(t *testing.T) {
 
 }
 
+func TestParseAndMarshalV2DacConnectionDetail2(t *testing.T) {
+	// Read the JSON file
+	json1, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail-2.json")
+	if err != nil {
+		t.Fatalf("Failed to read JSON file: %v", err)
+	}
+
+	// Unmarshal the JSON data into a Connection struct
+	var connection ConnectionV2
+	if err := json.Unmarshal(json1, &connection); err != nil {
+		t.Fatalf("Failed to unmarshal JSON data: %v", err)
+	}
+
+	json2, err := json.Marshal(connection)
+
+	d := gojsondiff.New()
+	diff, err := d.Compare(json1, json2)
+	if err != nil {
+		t.Fatalf("Failed to compare JSON data: %v", err)
+	}
+
+	if diff.Modified() {
+		fmt.Println("JSONs are different:")
+		f := formatter.NewDeltaFormatter()
+		diffString, _ := f.Format(diff)
+		fmt.Println(diffString)
+		t.Errorf("Expected JSON data to be identical")
+	}
+
+}
+
 func TestParseConnectionV2FromFixture2(t *testing.T) {
 	// Read fixture file
 	fixtureData, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail-2.json")

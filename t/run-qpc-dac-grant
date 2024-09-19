@@ -13,6 +13,42 @@ function revert_updated_at() {
   sed -i.bak 's/2024-05-09 14:06  20..-..-.. ..:../2024-05-09 14:06  2024-09-16 20:32/' "${filename}"
 }
 
+function test_qpc_user_fetch_all() {
+  echo "# ##########"
+  echo "# test_qpc_user_fetch_all"
+  echo "# "
+
+  if qpc user fetch-all >/dev/null 2>&1; then
+    ok 1 "Running qpc user fetch-all succeeded."
+  else
+    ok 0 "Running qpc user fetch-all failed."
+  fi
+}
+
+function test_qpc_dac_fetch_all_privileges() {
+  echo "# ##########"
+  echo "# test_qpc_dac_fetch_all_privileges"
+  echo "# "
+
+  if qpc dac fetch-all privileges >/dev/null 2>&1; then
+    ok 1 "Running qpc dac fetch-all privileges succeeded."
+  else
+    ok 0 "Running qpc dac fetch-all privileges failed."
+  fi
+}
+
+function test_qpc_dac_fetch_all_detailed_connections() {
+  echo "# ##########"
+  echo "# test_qpc_dac_fetch_all_detailed_connections"
+  echo "# "
+
+  if qpc dac fetch-all detailed-connections >/dev/null 2>&1; then
+    ok 1 "Running qpc dac fetch-all detailed-connections succeeded."
+  else
+    ok 0 "Running qpc dac fetch-all detailed-connections failed."
+  fi
+}
+
 function test_qpc_dac_grant_that_is_rejected_by_duplication() {
   local filename
   echo "# ##########"
@@ -65,7 +101,7 @@ function test_qpc_dac_grant_that_is_accepted_by_force() {
 }
 
 function main() {
-  local num_of_tests=6
+  local num_of_tests=9
   plan tests ${num_of_tests}
 
   local top_dir basename
@@ -79,6 +115,12 @@ function main() {
   is "$(pwd)" "${top_dir}" "I just changed the current working directory to ${top_dir}."
 
   export PATH=.:${PATH}
+
+  # It is required to run these three commands before `qpc dac grant`.
+  test_qpc_user_fetch_all
+  test_qpc_dac_fetch_all_privileges
+  test_qpc_dac_fetch_all_detailed_connections
+
   test_qpc_dac_grant_that_is_rejected_by_duplication
   test_qpc_dac_grant_that_does_dry_run
   test_qpc_dac_grant_that_is_accepted_by_force

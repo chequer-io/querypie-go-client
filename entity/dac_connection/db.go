@@ -46,6 +46,14 @@ func (sc *SummarizedConnectionV2) FindAllAndForEach(
 }
 
 func (sc *SummarizedConnectionV2) Save() *SummarizedConnectionV2 {
+	if sc == nil {
+		logrus.Debugf("Did not save it as it is nil")
+		return sc
+	} else if sc.CreatedByUuid == "" {
+		sc.CreatedByUuid = sc.CreatedBy.Uuid
+	} else if sc.UpdatedByUuid == "" {
+		sc.UpdatedByUuid = sc.UpdatedBy.Uuid
+	}
 	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
 	// https://gorm.io/docs/update.html#Save
 	db := config.LocalDatabase.Save(sc)
@@ -53,15 +61,40 @@ func (sc *SummarizedConnectionV2) Save() *SummarizedConnectionV2 {
 	return sc
 }
 
+func (c *ConnectionV2) FindAllAndForEach(
+	forEachFunc func(found *ConnectionV2) bool,
+) {
+	utils.FindAllAndForEach(
+		func(tx *gorm.DB, total *int64) *gorm.DB {
+			return tx.Model(&ConnectionV2{}).Count(total)
+		},
+		func(tx *gorm.DB, items *[]ConnectionV2) *gorm.DB {
+			return tx.Model(&ConnectionV2{}).
+				Preload("UpdatedBy").
+				Preload("CreatedBy").
+				Preload("Clusters").
+				Preload("ConnectionOwners").
+				Preload("ConnectionOwners.Role").
+				Preload("ConnectionOwners.OwnedBy").
+				Find(items)
+		},
+		forEachFunc,
+	)
+}
+
 func (c *ConnectionV2) Save() *ConnectionV2 {
-	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
-	// https://gorm.io/docs/update.html#Save
 	if c == nil {
 		logrus.Debugf("Did not save it as it is nil")
-	} else {
-		db := config.LocalDatabase.Save(c)
-		logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
+		return c
+	} else if c.CreatedByUuid == "" {
+		c.CreatedByUuid = c.CreatedBy.Uuid
+	} else if c.UpdatedByUuid == "" {
+		c.UpdatedByUuid = c.UpdatedBy.Uuid
 	}
+	// NOTE Don’t use Save with Model, it’s an Undefined Behavior.
+	// https://gorm.io/docs/update.html#Save
+	db := config.LocalDatabase.Save(c)
+	logrus.Debugf("Saved it, RowsAffected: %d", db.RowsAffected)
 	return c
 }
 
@@ -102,6 +135,8 @@ func (c *ConnectionV2) FirstByUuid(uuid string) *ConnectionV2 {
 	return utils.First[ConnectionV2](&item, func(db *gorm.DB) *gorm.DB {
 		return db.
 			Model(&ConnectionV2{}).
+			Preload("UpdatedBy").
+			Preload("CreatedBy").
 			Preload("Clusters").
 			Preload("ConnectionOwners").
 			Preload("ConnectionOwners.Role").
@@ -179,7 +214,10 @@ func (c *Cluster) FirstByUuid(uuid string) *Cluster {
 func RunAutoMigrate() {
 	db := config.LocalDatabase
 	err := db.AutoMigrate(
+		&model.Modifier{},
 		&SummarizedConnectionV2{},
+
+		&model.Modifier{},
 		&model.Role{},
 		&OwnedBy{},
 		&ConnectionOwner{},

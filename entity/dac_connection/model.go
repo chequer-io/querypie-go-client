@@ -9,25 +9,25 @@ import (
 )
 
 type SummarizedConnectionV2 struct {
-	Uuid              string `json:"uuid" gorm:"primaryKey"`
-	DatabaseType      string `json:"databaseType"`
-	CloudProviderType string `json:"cloudProviderType"`
-	CloudProviderUuid string `json:"cloudProviderUuid"`
+	Uuid              string `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
+	DatabaseType      string `json:"databaseType" yaml:"databaseType"`
+	CloudProviderType string `json:"cloudProviderType" yaml:"cloudProviderType"`
+	CloudProviderUuid string `json:"cloudProviderUuid" yaml:"cloudProviderUuid"`
 
-	Name string `json:"name"`
+	Name string `json:"name" yaml:"name"`
 
-	AdditionalInfo SummarizedAdditionalInfo `json:"additionalInfo" gorm:"-"`
+	AdditionalInfo SummarizedAdditionalInfo `json:"additionalInfo" gorm:"-" yaml:"additionalInfo"`
 
-	Zones   []model.SummarizedZone `json:"zones" gorm:"-"`
-	Ledger  bool                   `json:"ledger"`
-	Deleted bool                   `json:"deleted"`
+	Zones   []model.SummarizedZone `json:"zones" gorm:"-" yaml:"zones"`
+	Ledger  bool                   `json:"ledger" yaml:"ledger"`
+	Deleted bool                   `json:"deleted" yaml:"deleted"`
 
-	CreatedAt     string         `json:"createdAt"`
-	CreatedBy     model.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid"`
-	CreatedByUuid string         `json:"-"`
-	UpdatedAt     string         `json:"updatedAt" gorm:"autoUpdateTime:false"`
-	UpdatedBy     model.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid"`
-	UpdatedByUuid string         `json:"-"`
+	CreatedAt     time.Time      `json:"createdAt" yaml:"createdAt"`
+	CreatedBy     model.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid" yaml:"createdBy"`
+	CreatedByUuid string         `json:"-" yaml:"-"`
+	UpdatedAt     time.Time      `json:"updatedAt" gorm:"autoUpdateTime:false" yaml:"updatedAt"`
+	UpdatedBy     model.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid" yaml:"updatedBy"`
+	UpdatedByUuid string         `json:"-" yaml:"-"`
 }
 
 func (sc *SummarizedConnectionV2) String() string {
@@ -56,11 +56,11 @@ func (sc *SummarizedConnectionV2) Status() string {
 }
 
 func (sc *SummarizedConnectionV2) ShortCreatedAt() string {
-	return utils.ShortDatetimeWithTZ(sc.CreatedAt)
+	return utils.ShortDatetime(sc.CreatedAt)
 }
 
 func (sc *SummarizedConnectionV2) ShortUpdatedAt() string {
-	return utils.ShortDatetimeWithTZ(sc.UpdatedAt)
+	return utils.ShortDatetime(sc.UpdatedAt)
 }
 
 func (sc *SummarizedConnectionV2) ShortID() string {
@@ -71,10 +71,10 @@ func (sc *SummarizedConnectionV2) ShortID() string {
 }
 
 type SummarizedAdditionalInfo struct {
-	AuditEnabled       bool   `json:"auditEnabled"`
-	DmlSnapshotEnabled bool   `json:"dmlSnapshotEnabled"`
-	ProxyEnabled       bool   `json:"proxyEnabled"`
-	ProxyAuthType      string `json:"proxyAuthType"`
+	AuditEnabled       bool   `json:"auditEnabled" yaml:"auditEnabled"`
+	DmlSnapshotEnabled bool   `json:"dmlSnapshotEnabled" yaml:"dmlSnapshotEnabled"`
+	ProxyEnabled       bool   `json:"proxyEnabled" yaml:"proxyEnabled"`
+	ProxyAuthType      string `json:"proxyAuthType" yaml:"proxyAuthType"`
 }
 
 func (i SummarizedAdditionalInfo) String() string {
@@ -100,39 +100,41 @@ func (cl *PagedConnectionV2List) GetList() []SummarizedConnectionV2 {
 }
 
 type ConnectionV2 struct {
-	Uuid              string  `json:"uuid" gorm:"primaryKey"`
-	DatabaseType      string  `json:"databaseType"`
-	CloudProviderType *string `json:"cloudProviderType"`
-	CloudProviderUuid *string `json:"cloudProviderUuid"`
+	Uuid              string  `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
+	DatabaseType      string  `json:"databaseType" yaml:"databaseType"`
+	CloudProviderType *string `json:"cloudProviderType" yaml:"cloudProviderType"`
+	CloudProviderUuid *string `json:"cloudProviderUuid" yaml:"cloudProviderUuid"`
 
 	Name string `json:"name"`
 
-	Clusters          []Cluster         `json:"clusters" gorm:"foreignKey:ConnectionUuid"`
-	ConnectionAccount ConnectionAccount `json:"connectionAccount" gorm:"embedded"`
-	HideCredential    bool              `json:"hideCredential"`
+	Clusters          []Cluster         `json:"clusters" gorm:"foreignKey:ConnectionUuid" yaml:"clusters"`
+	ConnectionAccount ConnectionAccount `json:"connectionAccount" gorm:"embedded" yaml:"connectionAccount"`
+	HideCredential    bool              `json:"hideCredential" yaml:"hideCredential"`
 
 	// More tabs
-	AdditionalInfo        AdditionalInfo        `json:"additionalInfo" gorm:"embedded"`
-	JustificationSettings JustificationSettings `json:"justificationSettings" gorm:"embedded"`
+	AdditionalInfo        AdditionalInfo        `json:"additionalInfo" gorm:"embedded" yaml:"additionalInfo"`
+	JustificationSettings JustificationSettings `json:"justificationSettings" gorm:"embedded" yaml:"justificationSettings"`
 
-	SslSetting SslSetting `json:"sslSetting" gorm:"embedded"`
-	SshSetting SshSetting `json:"sshSetting" gorm:"embedded"`
+	SslSetting SslSetting `json:"sslSetting" gorm:"embedded" yaml:"sslSetting"`
+	SshSetting SshSetting `json:"sshSetting" gorm:"embedded" yaml:"sshSetting"`
 
-	ConnectionOwners []ConnectionOwner `json:"connectionOwners" gorm:"foreignKey:ObjectUuid"`
+	ConnectionOwners []ConnectionOwner `json:"connectionOwners" gorm:"foreignKey:ObjectUuid" yaml:"connectionOwners"`
 
-	AdvancedPrivilegeSetting []AdvancedPrivilegeSetting `json:"advancedPrivilegeSetting" gorm:"json"`
+	AdvancedPrivilegeSetting []AdvancedPrivilegeSetting `json:"advancedPrivilegeSetting" gorm:"json" yaml:"advancedPrivilegeSetting"`
 
-	Zones        []model.Zone `json:"zones" gorm:"json"`
-	Ledger       bool         `json:"ledger"`
-	VendorDetail VendorDetail `json:"vendorDetail" gorm:"json"`
+	Zones        []model.Zone `json:"zones" gorm:"json" yaml:"zones"`
+	Ledger       bool         `json:"ledger" yaml:"ledger"`
+	VendorDetail VendorDetail `json:"vendorDetail" gorm:"json" yaml:"vendorDetail"`
 
-	CreatedAt time.Time      `json:"createdAt"`
-	CreatedBy model.Modifier `json:"createdBy" gorm:"json"`
-	UpdatedAt time.Time      `json:"updatedAt" gorm:"autoUpdateTime:false"`
-	UpdatedBy model.Modifier `json:"updatedBy" gorm:"json"`
+	CreatedAt     time.Time      `json:"createdAt" yaml:"createdAt"`
+	CreatedBy     model.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid" yaml:"createdBy"`
+	CreatedByUuid string         `json:"-" yaml:"-"`
+	UpdatedAt     time.Time      `json:"updatedAt" gorm:"autoUpdateTime:false" yaml:"updatedAt"`
+	UpdatedBy     model.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid" yaml:"updatedBy"`
+	UpdatedByUuid string         `json:"-" yaml:"-"`
 
 	// Internal: HTTP response
-	HttpResponse *resty.Response `json:"-" gorm:"-"`
+	HttpResponse *resty.Response `json:"-" gorm:"-" yaml:"-"`
 }
 
 func (c *ConnectionV2) SetHttpResponse(response *resty.Response) {
@@ -169,43 +171,43 @@ func (c *ConnectionV2) ShortID() string {
 }
 
 type AdditionalInfo struct {
-	AccessEndTime       *string          `json:"accessEndTime"`
-	AccessStartTime     *string          `json:"accessStartTime"`
-	AuditEnabled        bool             `json:"auditEnabled"`
-	DatabaseVersion     *string          `json:"databaseVersion"`
-	Description         string           `json:"description"`
-	DmlSnapshotEnabled  bool             `json:"dmlSnapshotEnabled"`
-	LoginRules          LoginRules       `json:"loginRules" gorm:"embedded"`
-	MaxDisplayRows      int              `json:"maxDisplayRows"`
-	MaxExportRows       int              `json:"maxExportRows"`
-	NetworkId           *string          `json:"networkId"`
-	ProxyAuthType       *string          `json:"proxyAuthType"`
-	ProxyEnabled        bool             `json:"proxyEnabled"`
-	WeekdayAccessDenied model.StringList `json:"weekdayAccessDenied"`
+	AccessEndTime       *string          `json:"accessEndTime" yaml:"accessEndTime"`
+	AccessStartTime     *string          `json:"accessStartTime" yaml:"accessStartTime"`
+	AuditEnabled        bool             `json:"auditEnabled" yaml:"auditEnabled"`
+	DatabaseVersion     *string          `json:"databaseVersion" yaml:"databaseVersion"`
+	Description         string           `json:"description" yaml:"description"`
+	DmlSnapshotEnabled  bool             `json:"dmlSnapshotEnabled" yaml:"dmlSnapshotEnabled"`
+	LoginRules          LoginRules       `json:"loginRules,omitempty" gorm:"embedded" yaml:"loginRules,omitempty"`
+	MaxDisplayRows      int              `json:"maxDisplayRows" yaml:"maxDisplayRows"`
+	MaxExportRows       int              `json:"maxExportRows" yaml:"maxExportRows"`
+	NetworkId           *string          `json:"networkId" yaml:"networkId"`
+	ProxyAuthType       *string          `json:"proxyAuthType" yaml:"proxyAuthType"`
+	ProxyEnabled        bool             `json:"proxyEnabled" yaml:"proxyEnabled"`
+	WeekdayAccessDenied model.StringList `json:"weekdayAccessDenied,omitempty" yaml:"weekdayAccessDenied,omitempty"`
 }
 
 type LoginRules struct {
-	Interval         string `json:"interval"`
-	MaxLoginFailures int    `json:"maxLoginFailures"`
+	Interval         string `json:"interval,omitempty" yaml:"interval,omitempty"`
+	MaxLoginFailures int    `json:"maxLoginFailures" yaml:"maxLoginFailures"`
 }
 
 type AdvancedPrivilegeSetting struct {
-	PrivilegeUuid string `json:"privilegeUuid"`
-	PrivilegeName string `json:"privilegeName"`
-	DbAccountName string `json:"dbAccountName"`
+	PrivilegeUuid string `json:"privilegeUuid,omitempty" yaml:"privilegeUuid,omitempty"`
+	PrivilegeName string `json:"privilegeName,omitempty" yaml:"privilegeName,omitempty"`
+	DbAccountName string `json:"dbAccountName,omitempty" yaml:"dbAccountName,omitempty"`
 
 	ConnectionUuid string `json:"-"`
 }
 
 type Cluster struct {
-	Uuid            string        `json:"uuid" gorm:"primaryKey"`
-	CloudIdentifier *string       `json:"cloudIdentifier"`
-	Host            string        `json:"host"`
-	Port            string        `json:"port"`
-	ReplicationType string        `json:"replicationType"`
-	Deleted         bool          `json:"deleted"`
-	ConnectionUuid  string        `json:"-"`
-	Connection      *ConnectionV2 `json:"connection,omitempty" gorm:"foreignKey:ConnectionUuid"`
+	Uuid            string        `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
+	CloudIdentifier *string       `json:"cloudIdentifier" yaml:"cloudIdentifier"`
+	Host            string        `json:"host" yaml:"host"`
+	Port            string        `json:"port" yaml:"port"`
+	ReplicationType string        `json:"replicationType" yaml:"replicationType"`
+	Deleted         bool          `json:"deleted" yaml:"deleted"`
+	ConnectionUuid  string        `json:"-" yaml:"-"`
+	Connection      *ConnectionV2 `json:"connection,omitempty" gorm:"foreignKey:ConnectionUuid" yaml:"connection,omitempty"`
 }
 
 func (c *Cluster) Status() string {
@@ -226,65 +228,65 @@ func (c *Cluster) String() string {
 }
 
 type KerberosProtocol struct {
-	Principal   string `json:"principal"`
-	Realm       string `json:"realm"`
-	ServiceName string `json:"serviceName"`
+	Principal   string `json:"principal,omitempty" yaml:"principal,omitempty"`
+	Realm       string `json:"realm,omitempty" yaml:"realm,omitempty"`
+	ServiceName string `json:"serviceName,omitempty" yaml:"serviceName,omitempty"`
 }
 
 type ConnectionAccount struct {
-	DbAccountName      *string            `json:"dbAccountName"`
-	KerberosProtocol   *KerberosProtocol  `json:"kerberosProtocol" gorm:"json"`
-	SecretStore        *model.SecretStore `json:"secretStore" gorm:"json"`
-	SecretStoreEnabled bool               `json:"secretStoreEnabled"`
-	Type               string             `json:"type"`
+	DbAccountName      *string            `json:"dbAccountName" yaml:"dbAccountName"`
+	KerberosProtocol   *KerberosProtocol  `json:"kerberosProtocol" gorm:"json" yaml:"kerberosProtocol"`
+	SecretStore        *model.SecretStore `json:"secretStore" gorm:"json" yaml:"secretStore"`
+	SecretStoreEnabled bool               `json:"secretStoreEnabled" yaml:"secretStoreEnabled"`
+	Type               string             `json:"type" yaml:"type"`
 }
 
 type OwnedBy struct {
-	Uuid     string `json:"uuid" gorm:"primaryKey"`
-	UserType string `json:"userType"`
-	AuthType string `json:"authType"`
-	LoginId  string `json:"loginId"`
-	Name     string `json:"name"`
-	Email    string `json:"email"`
-	Active   bool   `json:"active"`
+	Uuid     string `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
+	UserType string `json:"userType" yaml:"userType"`
+	AuthType string `json:"authType" yaml:"authType"`
+	LoginId  string `json:"loginId" yaml:"loginId"`
+	Name     string `json:"name" yaml:"name"`
+	Email    string `json:"email" yaml:"email"`
+	Active   bool   `json:"active" yaml:"active"`
 }
 
 type ConnectionOwner struct {
-	Uuid string `json:"uuid" gorm:"primaryKey"`
+	Uuid string `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
 
-	RoleUuid string     `json:"-"`
-	Role     model.Role `json:"role" gorm:"foreignKey:RoleUuid"`
+	RoleUuid string     `json:"-" yaml:"-"`
+	Role     model.Role `json:"role" gorm:"foreignKey:RoleUuid" yaml:"role"`
 
-	OwnerUuid string  `json:"-"`
-	OwnedBy   OwnedBy `json:"ownedBy" gorm:"foreignKey:OwnerUuid"`
+	OwnerUuid string  `json:"-" yaml:"-"`
+	OwnedBy   OwnedBy `json:"ownedBy" gorm:"foreignKey:OwnerUuid" yaml:"ownedBy"`
 
-	ObjectUuid string `json:"objectUuid"`
+	ObjectUuid string `json:"objectUuid" yaml:"objectUuid"`
 }
 
 type JustificationSettings struct {
-	RequireExecuteReason      bool `json:"requireExecuteReason"`
-	RequireExportDataReason   bool `json:"requireExportDataReason"`
-	RequireExportSchemaReason bool `json:"requireExportSchemaReason"`
-	RequireImportDataReason   bool `json:"requireImportDataReason"`
-	RequireImportSchemaReason bool `json:"requireImportSchemaReason"`
+	RequireExecuteReason      bool `json:"requireExecuteReason" yaml:"requireExecuteReason"`
+	RequireExportDataReason   bool `json:"requireExportDataReason" yaml:"requireExportDataReason"`
+	RequireExportSchemaReason bool `json:"requireExportSchemaReason" yaml:"requireExportSchemaReason"`
+	RequireImportDataReason   bool `json:"requireImportDataReason" yaml:"requireImportDataReason"`
+	RequireImportSchemaReason bool `json:"requireImportSchemaReason" yaml:"requireImportSchemaReason"`
 }
 
 type SshSetting struct {
-	SshConfigName *string `json:"sshConfigName"`
-	SshConfigUuid *string `json:"sshConfigUuid"`
-	UseSsh        bool    `json:"useSsh"`
+	UseSsh        bool    `json:"useSsh" yaml:"useSsh"`
+	SshConfigUuid *string `json:"sshConfigUuid" yaml:"sshConfigUuid"`
+	SshConfigName *string `json:"sshConfigName" yaml:"sshConfigName"`
 }
 
 type SslSetting struct {
-	SslConfigName *string `json:"sslConfigName"`
-	SslConfigUuid *string `json:"sslConfigUuid"`
-	UseSsl        bool    `json:"useSsl"`
+	UseSsl        bool    `json:"useSsl" yaml:"useSsl"`
+	SslConfigName *string `json:"sslConfigName" yaml:"sslConfigName"`
+	SslConfigUuid *string `json:"sslConfigUuid" yaml:"sslConfigUuid"`
 }
 
 type VendorDetail struct {
-	DatabaseName  string  `json:"databaseName"`
-	Charset       *string `json:"charset,omitempty"`
-	Collation     *string `json:"collation,omitempty"`
-	CloudRegion   *string `json:"cloudRegion,omitempty"`
-	WorkGroupName *string `json:"workGroupName,omitempty"`
+	DatabaseName  string  `json:"databaseName" yaml:"databaseName"`
+	Charset       *string `json:"charset" yaml:"charset"`
+	Collation     *string `json:"collation" yaml:"collation"`
+	CloudRegion   *string `json:"cloudRegion,omitempty" yaml:"cloudRegion,omitempty"`
+	WorkGroupName *string `json:"workGroupName,omitempty" yaml:"workGroupName,omitempty"`
 }

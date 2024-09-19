@@ -17,6 +17,11 @@ func ShortDatetimeWithTZ(datetimeStr string) string {
 	return localTime.Format("2006-01-02 15:04")
 }
 
+func ShortDatetime(datetime time.Time) string {
+	localTime := datetime.In(timezone)
+	return localTime.Format("2006-01-02 15:04")
+}
+
 func init() {
 	tz := os.Getenv("TZ")
 	if tz == "" {

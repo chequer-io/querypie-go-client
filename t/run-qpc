@@ -16,7 +16,7 @@ function test_qpc_exists() {
 function test_qpc_version() {
   local version
   version=$(qpc version)
-  like "${version}" "^qpc v[0-9]+\.[0-9]+\.[0-9]+" "It should print version string."
+  like "${version}" "^qpc version [0-9]+\.[0-9]+\.[0-9]+" "It should print version string."
 }
 
 function test_qpc_shows_help() {

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/sirupsen/logrus"
 	"github.com/tidwall/pretty"
+	"gopkg.in/yaml.v3"
 	"qpc/utils"
 )
 
@@ -55,6 +56,38 @@ func (sc *SummarizedConnectionV2) Print() *SummarizedConnectionV2 {
 	return sc
 }
 
+func (sc *SummarizedConnectionV2) PrintYamlHeader(silent bool) *SummarizedConnectionV2 {
+	if silent {
+		return sc
+	}
+	fmt.Printf("# begin of summarized connection v2\n")
+	return sc
+}
+
+func (sc *SummarizedConnectionV2) PrintYaml(silent bool) *SummarizedConnectionV2 {
+	logrus.Debug(sc)
+	if silent {
+		return sc
+	}
+	slice := []SummarizedConnectionV2{*sc}
+	_yaml, err := yaml.Marshal(slice)
+	if err == nil {
+		fmt.Print(string(_yaml))
+	} else {
+		logrus.Errorf("Failed to marshal SummarizedConnectionV2: %v", err)
+	}
+	return sc
+}
+
+func (sc *SummarizedConnectionV2) PrintYamlFooter(silent bool, count int) *SummarizedConnectionV2 {
+	if silent {
+		return sc
+	}
+	fmt.Printf("# end of summarized connection v2, total elements: %d\n", count)
+	logrus.Infof("TotalElements: %v", count)
+	return sc
+}
+
 // Please do not print extra white spaces in the last column.
 const connHeaderFmt = "%s%-8s  %-6s  %-13s  %-12s  %s\n"
 const connRowFmt = "%s%-8d  %-6d  %-13s  %-12s  %s\n"
@@ -93,6 +126,38 @@ func (c *ConnectionV2) PrintJson() *ConnectionV2 {
 		return c
 	}
 	fmt.Printf("%s\n", pretty.Pretty(_json))
+	return c
+}
+
+func (c *ConnectionV2) PrintYamlHeader(silent bool) *ConnectionV2 {
+	if silent {
+		return c
+	}
+	fmt.Printf("# begin of connection v2\n")
+	return c
+}
+
+func (c *ConnectionV2) PrintYaml(silent bool) *ConnectionV2 {
+	logrus.Debug(c)
+	if silent {
+		return c
+	}
+	slice := []ConnectionV2{*c}
+	_yaml, err := yaml.Marshal(slice)
+	if err == nil {
+		fmt.Print(string(_yaml))
+	} else {
+		logrus.Errorf("Failed to marshal ConnectionV2: %v", err)
+	}
+	return c
+}
+
+func (c *ConnectionV2) PrintYamlFooter(silent bool, count int) *ConnectionV2 {
+	if silent {
+		return c
+	}
+	fmt.Printf("# end of connection v2, total elements: %d\n", count)
+	logrus.Infof("TotalElements: %v", count)
 	return c
 }
 

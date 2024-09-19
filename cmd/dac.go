@@ -169,7 +169,7 @@ var grantCmd = &cobra.Command{
 	},
 }
 
-func initGrantCmd(cmd *cobra.Command) {
+func addFlagsForGrant(cmd *cobra.Command) {
 	cmd.Flags().Bool("dry-run", false, "Dry-run mode to verify the request")
 	cmd.Flags().Bool("force", false, "Force to replace the existing privilege (default: false)")
 }
@@ -271,8 +271,9 @@ var grantByUuidCmd = &cobra.Command{
 
 func init() {
 
-	initGrantCmd(grantCmd)
+	addFlagsForGrant(grantCmd)
 
+	dacCmd.AddCommand(dacConnectionsCmd)
 	dacCmd.AddCommand(dacListCmd)
 	dacCmd.AddCommand(dacFetchAllCmd)
 	dacCmd.AddCommand(grantCmd)
