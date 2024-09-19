@@ -73,7 +73,10 @@ func (c *ConnectionV2) FindAllAndForEach(
 				Preload("UpdatedBy").
 				Preload("CreatedBy").
 				Preload("Clusters").
-				Preload("ConnectionOwners").
+				Preload("ConnectionOwners", func(db *gorm.DB) *gorm.DB {
+					// This is a workaround to keep the order of ConnectionOwners as the same as the API response.
+					return db.Order("connection_owners.uuid DESC")
+				}).
 				Preload("ConnectionOwners.Role").
 				Preload("ConnectionOwners.OwnedBy").
 				Find(items)
@@ -138,7 +141,10 @@ func (c *ConnectionV2) FirstByUuid(uuid string) *ConnectionV2 {
 			Preload("UpdatedBy").
 			Preload("CreatedBy").
 			Preload("Clusters").
-			Preload("ConnectionOwners").
+			Preload("ConnectionOwners", func(db *gorm.DB) *gorm.DB {
+				// This is a workaround to keep the order of ConnectionOwners as the same as the API response.
+				return db.Order("connection_owners.uuid DESC")
+			}).
 			Preload("ConnectionOwners.Role").
 			Preload("ConnectionOwners.OwnedBy").
 			Where("uuid = ?", uuid).

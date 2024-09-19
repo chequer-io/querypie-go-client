@@ -5,7 +5,6 @@ import (
 	"github.com/go-resty/resty/v2"
 	"qpc/model"
 	"qpc/utils"
-	"time"
 )
 
 type SummarizedConnectionV2 struct {
@@ -22,10 +21,10 @@ type SummarizedConnectionV2 struct {
 	Ledger  bool                   `json:"ledger" yaml:"ledger"`
 	Deleted bool                   `json:"deleted" yaml:"deleted"`
 
-	CreatedAt     time.Time      `json:"createdAt" yaml:"createdAt"`
+	CreatedAt     string         `json:"createdAt" yaml:"createdAt"`
 	CreatedBy     model.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid" yaml:"createdBy"`
 	CreatedByUuid string         `json:"-" yaml:"-"`
-	UpdatedAt     time.Time      `json:"updatedAt" gorm:"autoUpdateTime:false" yaml:"updatedAt"`
+	UpdatedAt     string         `json:"updatedAt" gorm:"autoUpdateTime:false" yaml:"updatedAt"`
 	UpdatedBy     model.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid" yaml:"updatedBy"`
 	UpdatedByUuid string         `json:"-" yaml:"-"`
 }
@@ -56,11 +55,11 @@ func (sc *SummarizedConnectionV2) Status() string {
 }
 
 func (sc *SummarizedConnectionV2) ShortCreatedAt() string {
-	return utils.ShortDatetime(sc.CreatedAt)
+	return utils.ShortDatetimeWithTZ(sc.CreatedAt)
 }
 
 func (sc *SummarizedConnectionV2) ShortUpdatedAt() string {
-	return utils.ShortDatetime(sc.UpdatedAt)
+	return utils.ShortDatetimeWithTZ(sc.UpdatedAt)
 }
 
 func (sc *SummarizedConnectionV2) ShortID() string {
@@ -118,7 +117,7 @@ type ConnectionV2 struct {
 	SslSetting SslSetting `json:"sslSetting" gorm:"embedded" yaml:"sslSetting"`
 	SshSetting SshSetting `json:"sshSetting" gorm:"embedded" yaml:"sshSetting"`
 
-	ConnectionOwners []ConnectionOwner `json:"connectionOwners" gorm:"foreignKey:ObjectUuid" yaml:"connectionOwners"`
+	ConnectionOwners []ConnectionOwner `json:"connectionOwners" gorm:"many2many" yaml:"connectionOwners"`
 
 	AdvancedPrivilegeSetting []AdvancedPrivilegeSetting `json:"advancedPrivilegeSetting" gorm:"json" yaml:"advancedPrivilegeSetting"`
 
@@ -126,10 +125,10 @@ type ConnectionV2 struct {
 	Ledger       bool         `json:"ledger" yaml:"ledger"`
 	VendorDetail VendorDetail `json:"vendorDetail" gorm:"json" yaml:"vendorDetail"`
 
-	CreatedAt     time.Time      `json:"createdAt" yaml:"createdAt"`
+	CreatedAt     string         `json:"createdAt" yaml:"createdAt"`
 	CreatedBy     model.Modifier `json:"createdBy" gorm:"foreignKey:CreatedByUuid" yaml:"createdBy"`
 	CreatedByUuid string         `json:"-" yaml:"-"`
-	UpdatedAt     time.Time      `json:"updatedAt" gorm:"autoUpdateTime:false" yaml:"updatedAt"`
+	UpdatedAt     string         `json:"updatedAt" gorm:"autoUpdateTime:false" yaml:"updatedAt"`
 	UpdatedBy     model.Modifier `json:"updatedBy" gorm:"foreignKey:UpdatedByUuid" yaml:"updatedBy"`
 	UpdatedByUuid string         `json:"-" yaml:"-"`
 
@@ -252,15 +251,14 @@ type OwnedBy struct {
 }
 
 type ConnectionOwner struct {
-	Uuid string `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
+	ObjectUuid string        `json:"objectUuid" gorm:"primaryKey" yaml:"objectUuid"`
+	Connection *ConnectionV2 `json:"connection,omitempty" gorm:"foreignKey:ObjectUuid" yaml:"connection,omitempty"`
 
-	RoleUuid string     `json:"-" yaml:"-"`
+	RoleUuid string     `json:"-" gorm:"primaryKey" yaml:"-"`
 	Role     model.Role `json:"role" gorm:"foreignKey:RoleUuid" yaml:"role"`
 
-	OwnerUuid string  `json:"-" yaml:"-"`
-	OwnedBy   OwnedBy `json:"ownedBy" gorm:"foreignKey:OwnerUuid" yaml:"ownedBy"`
-
-	ObjectUuid string `json:"objectUuid" yaml:"objectUuid"`
+	Uuid    string  `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
+	OwnedBy OwnedBy `json:"ownedBy" gorm:"foreignKey:Uuid" yaml:"ownedBy"`
 }
 
 type JustificationSettings struct {

@@ -9,7 +9,6 @@ import (
 	"os"
 	"qpc/model"
 	"testing"
-	"time"
 )
 
 func TestParseFixtureV2DacConnectionList(t *testing.T) {
@@ -98,13 +97,13 @@ func TestParseFixtureAndValidateV2DacConnectionDetail(t *testing.T) {
 	if connection.DatabaseType == "" {
 		t.Errorf("Expected database type to be non-empty")
 	}
-	if connection.CreatedAt.IsZero() {
+	if connection.CreatedAt == "" {
 		t.Errorf("Expected created at to be non-empty")
 	}
 	if connection.CreatedBy.Uuid == "" {
 		t.Errorf("Expected created by UUID to be non-empty")
 	}
-	if connection.UpdatedAt.IsZero() {
+	if connection.UpdatedAt == "" {
 		t.Errorf("Expected updated at to be non-empty")
 	}
 	if connection.UpdatedBy.Uuid == "" {
@@ -203,8 +202,8 @@ func TestParseConnectionV2FromFixture2(t *testing.T) {
 	assert.Empty(t, connection.CloudProviderType, "CloudProviderType should be empty")
 
 	// Validate time fields
-	assert.Equal(t, "2024-06-18T06:24:01.609Z", connection.CreatedAt.Format(time.RFC3339Nano), "CreatedAt mismatch")
-	assert.Equal(t, "2024-09-05T08:22:16.936Z", connection.UpdatedAt.Format(time.RFC3339Nano), "UpdatedAt mismatch")
+	assert.Equal(t, "2024-06-18T06:24:01.609Z", connection.CreatedAt, "CreatedAt mismatch")
+	assert.Equal(t, "2024-09-05T08:22:16.936Z", connection.UpdatedAt, "UpdatedAt mismatch")
 
 	// Validate CreatedBy
 	assert.Equal(t, "ella@chequer.io", connection.CreatedBy.Uuid, "CreatedBy UUID mismatch")
