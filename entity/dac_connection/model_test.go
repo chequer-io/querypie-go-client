@@ -150,7 +150,6 @@ func TestParseAndMarshalV2DacConnectionDetail(t *testing.T) {
 		fmt.Println(diffString)
 		t.Errorf("Expected JSON data to be identical")
 	}
-
 }
 
 func TestParseAndMarshalV2DacConnectionDetail2(t *testing.T) {
@@ -181,7 +180,6 @@ func TestParseAndMarshalV2DacConnectionDetail2(t *testing.T) {
 		fmt.Println(diffString)
 		t.Errorf("Expected JSON data to be identical")
 	}
-
 }
 
 func TestParseConnectionV2FromFixture2(t *testing.T) {

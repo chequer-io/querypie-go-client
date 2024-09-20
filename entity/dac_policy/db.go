@@ -8,12 +8,16 @@ import (
 	"qpc/utils"
 )
 
-func (p *Policy) FindByNameOrUuid(query string, policies *[]Policy) {
+func (p *Policy) FindByNameOrUuid(query string, like bool, policies *[]Policy) {
+	where := "name = ? OR uuid = ?"
+	if like {
+		where = "name LIKE ? OR uuid LIKE ?"
+	}
 	utils.FindMultiple(policies, func(db *gorm.DB) *gorm.DB {
 		return db.
 			Model(&Policy{}).
 			// Note: Column names are snake_case in the database.
-			Where("name = ? OR uuid = ?", query, query).
+			Where(where, query, query).
 			Preload("UpdatedBy").
 			Preload("CreatedBy").
 			Preload("Connection").

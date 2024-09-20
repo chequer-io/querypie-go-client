@@ -277,7 +277,7 @@ func init() {
 	dacCmd.AddCommand(dacListCmd)
 	dacCmd.AddCommand(dacFetchAllCmd)
 	dacCmd.AddCommand(grantCmd)
-	dacCmd.AddCommand(dacPoliciesCmd)
+	dacCmd.AddCommand(dacPolicyCmd)
 
 	dacCmd.AddCommand(dacFetchByUuidCmd)
 	dacCmd.AddCommand(dacFindByUuidCmd)

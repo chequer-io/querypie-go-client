@@ -28,7 +28,7 @@ function test_qpc_dac() {
   ls            List DAC connections in local sqlite database
   fetch-all     Fetch all DAC resources from QueryPie server and save them to local sqlite database
   grant         Grants a <privilege> to <user> for accessing a <cluster> in a DAC connection
-  policies      List policies or fetch them from QueryPie API v0.9
+  policy        Manage DAC Policies
   fetch-by-uuid Fetch a DAC resource specified as UUID, and save it to local sqlite database
   find-by-uuid  Find a DAC resource specified as UUID from local sqlite database
   grant-by-uuid Grant access to a DAC connection using UUIDs as argument

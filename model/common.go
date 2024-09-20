@@ -10,7 +10,7 @@ type CloudProvider struct {
 
 type Modifier struct {
 	Uuid    string `json:"uuid" gorm:"primaryKey"`
-	LoginId string `json:"loginId"`
+	LoginId string `json:"loginId" yaml:"loginId"`
 	Email   string `json:"email"`
 	Name    string `json:"name"`
 }

@@ -9,7 +9,7 @@ type Policy struct {
 	Uuid             string                        `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
 	ClusterGroupUuid string                        `json:"clusterGroupUuid" yaml:"-"`
 	Connection       SummarizedConnectionForPolicy `json:"-" gorm:"foreignKey:ClusterGroupUuid" yaml:"connection"`
-	Title            string                        `json:"title" yaml:"name"`
+	Name             string                        `json:"title" yaml:"name"`
 	PolicyType       string                        `json:"policyType" yaml:"policyType"`
 	NumberOfRules    int                           `json:"numberOfRules" yaml:"numberOfRules"`
 	Enabled          bool                          `json:"enabled" yaml:"enabled"`
@@ -24,13 +24,13 @@ type Policy struct {
 func (p *Policy) ShortID() string {
 	return fmt.Sprintf(
 		"{ Uuid=%s, Name=%s, NumberOfRules=%d }",
-		p.Uuid, p.Title, p.NumberOfRules,
+		p.Uuid, p.Name, p.NumberOfRules,
 	)
 }
 
 func (p *Policy) String() string {
 	return fmt.Sprintf(
-		"{ Uuid=%s, ClusterGroupUuid=%s, Title=%s, PolicyType=%s"+
+		"{ Uuid=%s, ClusterGroupUuid=%s, Name=%s, PolicyType=%s"+
 			"NumberOfRules=%d, Enabled=%t, "+
 			"CreatedAt=%s, CreatedBy=%s, UpdatedAt=%s, UpdatedBy=%s }",
 		p.Uuid, p.ClusterGroupUuid, p.ClusterGroupUuid, p.PolicyType,

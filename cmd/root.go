@@ -34,12 +34,15 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 	cobra.EnableCommandSorting = false // Do not sort commands alphabetically
+	rootCmd.Flags().SortFlags = false  // Do not sort flags alphabetically
+	rootCmd.PersistentFlags().SortFlags = false
 	rootCmd.PersistentFlags().StringVar(&configFile,
 		"config", ".querypie-client.yaml",
 		"yaml file for configuration")
 	rootCmd.PersistentFlags().StringVar(&logLevel,
 		"log-level", "warn",
 		"Set the logging level (debug, info, warn, error, fatal, panic)")
+
 	// Add global flags or subcommands here
 	rootCmd.AddCommand(dacCmd)
 	rootCmd.AddCommand(userCmd)
