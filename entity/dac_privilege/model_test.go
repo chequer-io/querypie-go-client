@@ -8,7 +8,7 @@ import (
 
 func TestParseFixtureV2DacPrivilegeList(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_privilege_list.json")
+	data, err := os.ReadFile("fixture/v2_privileges_list.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -40,7 +40,7 @@ func TestParseFixtureV2DacPrivilegeList(t *testing.T) {
 
 func TestParseFixtureAndValidateV2DacPrivilegeDetail(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_privilege_detail.json")
+	data, err := os.ReadFile("fixture/v2_privilege_detail.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}

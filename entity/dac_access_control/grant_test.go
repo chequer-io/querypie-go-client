@@ -8,7 +8,7 @@ import (
 
 func TestParseFixtureV2DacGrantResponse(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_grant_response.json")
+	data, err := os.ReadFile("fixture/v2_grant_response.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}

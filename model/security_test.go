@@ -8,7 +8,7 @@ import (
 
 func TestParseFixtureV2Security(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../test/fixture_v2_security.json")
+	data, err := os.ReadFile("fixture/v2_security.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}

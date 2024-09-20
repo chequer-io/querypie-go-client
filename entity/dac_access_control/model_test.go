@@ -11,7 +11,7 @@ import (
 
 func TestParseFixtureV2DacAccessControlList(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_access_control_list.json")
+	data, err := os.ReadFile("fixture/v2_access_control_list.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestParseFixtureV2DacAccessControlList(t *testing.T) {
 
 func TestParseFixtureAndValidateV2DacAccessControlDetail(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_access_control_detail.json")
+	data, err := os.ReadFile("fixture/v2_access_control_detail.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -83,7 +83,7 @@ func TestParseFixtureAndValidateV2DacAccessControlDetail(t *testing.T) {
 
 func TestParseFixtureV2DacAccessControlList2(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_access_control_list-2.json")
+	data, err := os.ReadFile("fixture/v2_access_control_list-2.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -122,7 +122,7 @@ func TestParseAndMarshalV2DacAccessControlList3(t *testing.T) {
 	}
 
 	// Read the JSON file
-	json1, err := os.ReadFile("../../test/fixture_v2_dac_access_control_list-3.json")
+	json1, err := os.ReadFile("fixture/v2_access_control_list-3.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}

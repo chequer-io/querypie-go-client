@@ -13,7 +13,7 @@ import (
 
 func TestParseFixtureV2DacConnectionList(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_connection_list.json")
+	data, err := os.ReadFile("fixture/v2_connections_list.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -45,7 +45,7 @@ func TestParseFixtureV2DacConnectionList(t *testing.T) {
 
 func TestParseAndMarshalV2DacConnectionList(t *testing.T) {
 	// Read the JSON file
-	json1, err := os.ReadFile("../../test/fixture_v2_dac_connection_list.json")
+	json1, err := os.ReadFile("fixture/v2_connections_list.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -76,7 +76,7 @@ func TestParseAndMarshalV2DacConnectionList(t *testing.T) {
 
 func TestParseFixtureAndValidateV2DacConnectionDetail(t *testing.T) {
 	// Read the JSON file
-	data, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail.json")
+	data, err := os.ReadFile("fixture/v2_connection_detail.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -124,7 +124,7 @@ func TestParseFixtureAndValidateV2DacConnectionDetail(t *testing.T) {
 
 func TestParseAndMarshalV2DacConnectionDetail(t *testing.T) {
 	// Read the JSON file
-	json1, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail.json")
+	json1, err := os.ReadFile("fixture/v2_connection_detail.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -155,7 +155,7 @@ func TestParseAndMarshalV2DacConnectionDetail(t *testing.T) {
 
 func TestParseAndMarshalV2DacConnectionDetail2(t *testing.T) {
 	// Read the JSON file
-	json1, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail-2.json")
+	json1, err := os.ReadFile("fixture/v2_connection_detail-2.json")
 	if err != nil {
 		t.Fatalf("Failed to read JSON file: %v", err)
 	}
@@ -186,7 +186,7 @@ func TestParseAndMarshalV2DacConnectionDetail2(t *testing.T) {
 
 func TestParseConnectionV2FromFixture2(t *testing.T) {
 	// Read fixture file
-	fixtureData, err := os.ReadFile("../../test/fixture_v2_dac_connection_detail-2.json")
+	fixtureData, err := os.ReadFile("fixture/v2_connection_detail-2.json")
 	assert.NoError(t, err, "Failed to read fixture file")
 
 	// Parse JSON
