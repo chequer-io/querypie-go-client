@@ -10,7 +10,7 @@ type Policy struct {
 	ClusterGroupUuid string                        `json:"clusterGroupUuid" yaml:"-"`
 	Connection       SummarizedConnectionForPolicy `json:"-" gorm:"foreignKey:ClusterGroupUuid" yaml:"connection"`
 	Name             string                        `json:"title" yaml:"name"`
-	PolicyType       string                        `json:"policyType" yaml:"policyType"`
+	PolicyType       PolicyType                    `json:"policyType" yaml:"policyType"`
 	NumberOfRules    int                           `json:"numberOfRules" yaml:"numberOfRules"`
 	Enabled          bool                          `json:"enabled" yaml:"enabled"`
 	CreatedAt        string                        `json:"createdAt" yaml:"createdAt"`
@@ -38,6 +38,16 @@ func (p *Policy) String() string {
 		p.CreatedAt, p.CreatedBy, p.UpdatedAt, p.UpdatedBy,
 	)
 }
+
+type PolicyType string // PolicyType is a string type alias.
+const (
+	UnknownPolicyType PolicyType = ""
+	DataLevel         PolicyType = "DATA_LEVEL"
+	DataAccess        PolicyType = "DATA_ACCESS"
+	DataMasking       PolicyType = "DATA_MASKING"
+	Notification      PolicyType = "NOTIFICATION"
+	Ledger            PolicyType = "LEDGER"
+)
 
 type PolicyPagedList struct {
 	List []Policy   `json:"list"`

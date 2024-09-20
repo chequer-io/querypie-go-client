@@ -20,7 +20,7 @@ func TestParsePolicyCreateRequest1(t *testing.T) {
 
 	// Validate the fields
 	assert.Equal(t, "35cfa847-165c-48b5-bb4e-af271e490f19", request.ClusterGroupUuid, "ClusterGroupUuid mismatch")
-	assert.Equal(t, "DATA_ACCESS", request.PolicyType, "PolicyType mismatch")
+	assert.Equal(t, DataAccess, request.PolicyType, "PolicyType mismatch")
 	assert.Equal(t, "Policy Title", request.Name, "Name mismatch")
 }
 
@@ -61,7 +61,7 @@ func TestParsePolicyUpdateRequest1(t *testing.T) {
 	// Validate the fields
 	assert.Equal(t, "", request.ClusterGroupUuid, "ClusterGroupUuid mismatch")
 	assert.Equal(t, "Policy Title", request.Name, "Name mismatch")
-	assert.Equal(t, "", request.PolicyType, "PolicyType mismatch")
+	assert.Equal(t, UnknownPolicyType, request.PolicyType, "PolicyType mismatch")
 }
 
 func TestParsePolicyUpdateResponse1(t *testing.T) {
