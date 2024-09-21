@@ -3,6 +3,7 @@ package cmd
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os"
 	"qpc/config"
 	"qpc/entity/dac_policy"
 )
@@ -76,10 +77,13 @@ func listPoliciesInYaml(args []string, like bool, silent bool) {
 }
 
 var dacPolicyUpsertCmd = &cobra.Command{
-	Use:   "policy-upsert <connection> <name> <policy-type> [--uuid=<uuid>] [flags]",
+	Use:   "policy-upsert <connection> <policy-type> <name> [--uuid=<uuid>] [flags]",
 	Short: "Update or create a DAC policy",
-	Example: `  policy-upsert <connection> <name> <policy-type>
-  policy-upsert <connection> <name> <policy-type> --uuid=<uuid>`,
+	Example: `  <connection>  - Name, or uuid of a DAC connection
+  <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, NOTIFICATION, or LEDGER
+  <name>        - Name, or title of the policy
+  <uuid>        - Optional. Uuid of the policy`,
+	Args: cobra.ExactArgs(3),
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -89,7 +93,19 @@ var dacPolicyUpsertCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		silent, _ := cmd.Flags().GetBool("silent")
 
-		logrus.Warn("TODO: upsert a policy to QueryPie API v0.9", silent)
+		dac_policy.GeneratePolicyRequest(
+			args[0],
+			dac_policy.PolicyType(args[1]),
+			args[2],
+		).Validate().PrintYaml(silent).IfValidated(
+			func(request *dac_policy.PolicyRequest) {
+				logrus.Info("Validated")
+			},
+			func() {
+				logrus.Warn("Validation failed")
+				os.Exit(4) // Exit code 4 means input error.
+			},
+		).PolicyRequest.Post()
 	},
 }
 

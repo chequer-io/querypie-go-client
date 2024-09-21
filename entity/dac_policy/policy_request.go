@@ -8,18 +8,33 @@ import (
 )
 
 type PolicyRequest struct {
-	Matched    []SummarizedConnectionForPolicy `json:"-" yaml:"matched"`
-	Validation struct {
-		Result bool   `json:"-" yaml:"result"`
-		Reason string `json:"-" yaml:"reason,omitempty"`
-	} `json:"-" yaml:"validation"`
-
-	ConnectionUuid string     `json:"clusterGroupUuid" yaml:"-"`
-	PolicyType     PolicyType `json:"policyType"`
-	Name           string     `json:"title"`
+	ClusterGroupUuid string     `json:"clusterGroupUuid" yaml:"clusterGroupUuid"`
+	PolicyType       PolicyType `json:"policyType" yaml:"policyType"`
+	Title            string     `json:"title" yaml:"title"`
 }
 
-func GeneratePolicyRequest(connection string, policyType PolicyType, name string) *PolicyRequest {
+func (pr PolicyRequest) Post() {
+	logrus.Warnf("Not Yet Implemented: %v", pr)
+}
+
+type UserInput struct {
+	Connection []SummarizedConnectionForPolicy `json:"-" yaml:"connection"`
+	PolicyType PolicyType                      `json:"-" yaml:"policyType"`
+	Name       string                          `json:"-" yaml:"name"`
+}
+
+type ValidatablePolicyRequest struct {
+	UserInput UserInput `json:"-" yaml:"USER_INPUT"`
+
+	Validation struct {
+		Result bool     `json:"-" yaml:"result"`
+		Reason []string `json:"-" yaml:"reason,omitempty"`
+	} `json:"-" yaml:"VALIDATION"`
+
+	PolicyRequest *PolicyRequest `json:"-" yaml:"POLICY_REQUEST,omitempty"`
+}
+
+func GeneratePolicyRequest(connection string, policyType PolicyType, name string) *ValidatablePolicyRequest {
 	var found []dac_connection.ConnectionV2
 	if len(connection) > 0 {
 		(&dac_connection.ConnectionV2{}).FindByNameOrUuid(connection, &found)
@@ -33,28 +48,54 @@ func GeneratePolicyRequest(connection string, policyType PolicyType, name string
 			Name:         it.Name,
 		})
 	}
-	return &PolicyRequest{
-		Matched:    matched,
-		PolicyType: policyType,
-		Name:       name,
+	return &ValidatablePolicyRequest{
+		UserInput: UserInput{
+			Connection: matched,
+			PolicyType: policyType,
+			Name:       name,
+		},
 	}
 }
 
-func (pr *PolicyRequest) Validate() *PolicyRequest {
-	pr.Validation.Result = false
+func (pr *ValidatablePolicyRequest) Validate() *ValidatablePolicyRequest {
+	pr.Validation.Result = true
 
-	if len(pr.Matched) == 0 {
-		pr.Validation.Reason = "Connection not found"
-	} else if len(pr.Matched) == 1 {
-		pr.ConnectionUuid = pr.Matched[0].Uuid
-		pr.Validation.Result = true
+	if len(pr.UserInput.Connection) == 0 {
+		pr.Validation.Result = false
+		pr.Validation.Reason = append(pr.Validation.Reason, "Connection not found")
+	} else if len(pr.UserInput.Connection) == 1 {
+		// do nothing
 	} else {
-		pr.Validation.Reason = "Multiple connections found"
+		pr.Validation.Result = false
+		pr.Validation.Reason = append(pr.Validation.Reason, "Multiple connections found")
+	}
+
+	switch pr.UserInput.PolicyType {
+	case DataLevel, DataAccess, DataMasking, Notification, Ledger:
+		// do nothing
+	default:
+		pr.Validation.Result = false
+		pr.Validation.Reason = append(pr.Validation.Reason, "Invalid policy type")
+	}
+
+	if len(pr.UserInput.Name) > 0 {
+		// do nothing
+	} else {
+		pr.Validation.Result = false
+		pr.Validation.Reason = append(pr.Validation.Reason, "Name is empty")
+	}
+
+	if pr.Validation.Result {
+		pr.PolicyRequest = &PolicyRequest{
+			ClusterGroupUuid: pr.UserInput.Connection[0].Uuid,
+			PolicyType:       pr.UserInput.PolicyType,
+			Title:            pr.UserInput.Name,
+		}
 	}
 	return pr
 }
 
-func (pr *PolicyRequest) PrintYaml(silent bool) *PolicyRequest {
+func (pr *ValidatablePolicyRequest) PrintYaml(silent bool) *ValidatablePolicyRequest {
 	logrus.Debug(pr)
 	if silent {
 		return pr
@@ -68,12 +109,12 @@ func (pr *PolicyRequest) PrintYaml(silent bool) *PolicyRequest {
 	return pr
 }
 
-func (pr *PolicyRequest) IfValidated(
-	valid func(),
+func (pr *ValidatablePolicyRequest) IfValidated(
+	valid func(request *PolicyRequest),
 	invalid func(),
-) *PolicyRequest {
+) *ValidatablePolicyRequest {
 	if pr.Validation.Result {
-		valid()
+		valid(pr.PolicyRequest)
 	} else {
 		invalid()
 	}
