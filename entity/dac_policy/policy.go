@@ -20,7 +20,7 @@ type Policy struct {
 	UpdatedByUuid    string                        `json:"-" yaml:"-"`
 	UpdatedBy        model.Modifier                `json:"updatedUser" gorm:"foreignKey:UpdatedByUuid" yaml:"updatedBy"`
 
-	model.WithHttpResponse
+	model.WithHttpResponse `json:"-" gorm:"-" yaml:"-"`
 }
 
 func (p *Policy) ShortID() string {

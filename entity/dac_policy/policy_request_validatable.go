@@ -46,6 +46,7 @@ type PolicyRequestValidatable struct {
 func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 	pr.Validation.Result = true
 
+	// 1) Check if connection is found.
 	if len(pr.UserInput.Connection) == 0 {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Connection not found")
@@ -56,6 +57,7 @@ func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 		pr.Validation.Reason = append(pr.Validation.Reason, "Multiple connections found")
 	}
 
+	// 2) Check if policyType is valid.
 	switch pr.UserInput.PolicyType {
 	case DataLevel, DataAccess, DataMasking, Notification, Ledger:
 		// do nothing
@@ -64,6 +66,7 @@ func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 		pr.Validation.Reason = append(pr.Validation.Reason, "Invalid policy type")
 	}
 
+	// 3) Check if name is valid.
 	if len(pr.UserInput.Name) > 0 {
 		// do nothing
 	} else {
@@ -71,11 +74,22 @@ func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 		pr.Validation.Reason = append(pr.Validation.Reason, "Name is empty")
 	}
 
+	// If validated, create a PolicyRequest.
 	if pr.Validation.Result {
 		pr.PolicyRequest = &PolicyRequest{
 			ClusterGroupUuid: pr.UserInput.Connection[0].Uuid,
 			PolicyType:       pr.UserInput.PolicyType,
 			Title:            pr.UserInput.Name,
+		}
+
+		// Try to find the policy locally.
+		policy := (&Policy{}).FirstByClusterGroupUuidAndName(
+			pr.UserInput.Connection[0].Uuid,
+			pr.UserInput.Name,
+		)
+		logrus.Debugf("policy = %s", policy)
+		if policy != nil {
+			pr.PolicyRequest.PolicyUuid = policy.Uuid
 		}
 	}
 	return pr
@@ -87,16 +101,9 @@ func (pr *PolicyRequestValidatable) ValidateForDelete() *PolicyRequestValidatabl
 		return pr
 	}
 
-	policy := (&Policy{}).FirstByClusterGroupUuidAndName(
-		pr.UserInput.Connection[0].Uuid,
-		pr.UserInput.Name,
-	)
-
-	if policy == nil {
+	if len(pr.PolicyRequest.PolicyUuid) == 0 {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Policy not found")
-	} else {
-		pr.PolicyRequest.PolicyUuid = policy.Uuid
 	}
 	return pr
 }

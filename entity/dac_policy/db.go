@@ -28,7 +28,7 @@ func (p *Policy) FindByNameOrUuid(query string, like bool, policies *[]Policy) {
 func (p *Policy) FirstByClusterGroupUuidAndName(uuid string, name string) *Policy {
 	policy := &Policy{}
 	where := "cluster_group_uuid = ? AND name = ?"
-	utils.First(policy, func(db *gorm.DB) *gorm.DB {
+	return utils.First(policy, func(db *gorm.DB) *gorm.DB {
 		return db.
 			Model(&Policy{}).
 			// Note: Column names are snake_case in the database.
@@ -38,7 +38,6 @@ func (p *Policy) FirstByClusterGroupUuidAndName(uuid string, name string) *Polic
 			Preload("Connection").
 			First(policy)
 	})
-	return policy
 }
 
 func (p *Policy) FetchAllAndForEach(
@@ -90,6 +89,12 @@ func (p *Policy) SaveAndLoad() *Policy {
 		Preload("CreatedBy").
 		Preload("Connection").
 		First(p, "uuid = ?", p.Uuid)
+	return p
+}
+
+func (p *Policy) Delete() *Policy {
+	db := config.LocalDatabase.Delete(p)
+	logrus.Debugf("Deleted it, RowsAffected: %d", db.RowsAffected)
 	return p
 }
 
