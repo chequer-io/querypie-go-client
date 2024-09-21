@@ -7,7 +7,7 @@ import (
 
 type Policy struct {
 	Uuid             string                        `json:"uuid" gorm:"primaryKey" yaml:"uuid"`
-	ClusterGroupUuid string                        `json:"clusterGroupUuid" yaml:"-"`
+	ClusterGroupUuid string                        `json:"clusterGroupUuid" yaml:"clusterGroupUuid"`
 	Connection       SummarizedConnectionForPolicy `json:"-" gorm:"foreignKey:ClusterGroupUuid" yaml:"connection"`
 	Name             string                        `json:"title" yaml:"name"`
 	PolicyType       PolicyType                    `json:"policyType" yaml:"policyType"`
@@ -19,6 +19,8 @@ type Policy struct {
 	UpdatedAt        string                        `json:"updatedAt" yaml:"updatedAt"`
 	UpdatedByUuid    string                        `json:"-" yaml:"-"`
 	UpdatedBy        model.Modifier                `json:"updatedUser" gorm:"foreignKey:UpdatedByUuid" yaml:"updatedBy"`
+
+	model.WithHttpResponse
 }
 
 func (p *Policy) ShortID() string {

@@ -6,6 +6,7 @@ import (
 	"os"
 	"qpc/config"
 	"qpc/entity/dac_policy"
+	"qpc/utils"
 )
 
 var dacPolicyCmd = &cobra.Command{
@@ -92,26 +93,54 @@ var dacPolicyUpsertCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		silent, _ := cmd.Flags().GetBool("silent")
+		deleteFlag, _ := cmd.Flags().GetBool("delete")
+		uuid, _ := cmd.Flags().GetString("uuid")
 
-		dac_policy.GeneratePolicyRequest(
-			args[0],
-			dac_policy.PolicyType(args[1]),
-			args[2],
-		).Validate().PrintYaml(silent).IfValidated(
-			func(request *dac_policy.PolicyRequest) {
-				logrus.Info("Validated")
-			},
-			func() {
+		if deleteFlag && len(uuid) > 0 {
+			policy := (&dac_policy.PolicyRequest{PolicyUuid: uuid}).
+				DeleteByDelete(utils.DefaultQuerypieServer)
+			policy.PrintHttpReqRes(silent, func() {
+				policy.PrintYaml(silent)
+			})
+		} else if deleteFlag {
+			policy := dac_policy.GeneratePolicyRequest(
+				args[0],
+				dac_policy.PolicyType(args[1]),
+				args[2],
+			).ValidateForDelete().PrintYaml(silent).UnlessValidated(func() {
 				logrus.Warn("Validation failed")
 				os.Exit(4) // Exit code 4 means input error.
-			},
-		).PolicyRequest.Post()
+			}).
+				PolicyRequest.
+				DeleteByDelete(utils.DefaultQuerypieServer)
+
+			policy.PrintHttpReqRes(silent, func() {
+				policy.PrintYaml(silent)
+			})
+		} else {
+			policy := dac_policy.GeneratePolicyRequest(
+				args[0],
+				dac_policy.PolicyType(args[1]),
+				args[2],
+			).Validate().PrintYaml(silent).UnlessValidated(func() {
+				logrus.Warn("Validation failed")
+				os.Exit(4) // Exit code 4 means input error.
+			}).
+				PolicyRequest.
+				CreateByPost(utils.DefaultQuerypieServer).
+				SaveAndLoad()
+
+			policy.PrintHttpReqRes(silent, func() {
+				policy.PrintYaml(silent)
+			})
+		}
 	},
 }
 
 func addFlagsForPolicyUpsert(cmd *cobra.Command) {
 	cmd.Flags().SortFlags = false
 	cmd.Flags().Bool("silent", false, "Silent or quiet mode. Do not print outputs")
+	cmd.Flags().Bool("delete", false, "Delete the policy from QueryPie API v0.9")
 	cmd.Flags().String("uuid", "", "Uuid of the policy")
 }
 

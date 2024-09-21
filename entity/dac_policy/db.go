@@ -25,6 +25,22 @@ func (p *Policy) FindByNameOrUuid(query string, like bool, policies *[]Policy) {
 	})
 }
 
+func (p *Policy) FirstByClusterGroupUuidAndName(uuid string, name string) *Policy {
+	policy := &Policy{}
+	where := "cluster_group_uuid = ? AND name = ?"
+	utils.First(policy, func(db *gorm.DB) *gorm.DB {
+		return db.
+			Model(&Policy{}).
+			// Note: Column names are snake_case in the database.
+			Where(where, uuid, name).
+			Preload("UpdatedBy").
+			Preload("CreatedBy").
+			Preload("Connection").
+			First(policy)
+	})
+	return policy
+}
+
 func (p *Policy) FetchAllAndForEach(
 	forEachFunc func(fetched *Policy) bool,
 ) {
