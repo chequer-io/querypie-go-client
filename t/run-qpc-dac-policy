@@ -11,13 +11,13 @@ function compare_qpc_dac_policy_fetch_and_list_1() {
   echo "# ##########"
   echo "# compare_qpc_dac_policy_fetch_and_list_1"
   echo "# "
-  qpc dac policy --fetch >/tmp/qpc_dac_policy_fetch.$$ 2>&1 || true
-  qpc dac policy >/tmp/qpc_dac_policy_list.$$ 2>&1 || true
+  qpc dac policy fetch >/tmp/qpc_dac_policy_fetch.$$ 2>&1 || true
+  qpc dac policy ls >/tmp/qpc_dac_policy_list.$$ 2>&1 || true
   if diff /tmp/qpc_dac_policy_fetch.$$ /tmp/qpc_dac_policy_list.$$ |
     sed 's/^/# /'; then
-    ok 1 "qpc dac policy --fetch and qpc dac policy are the same."
+    ok 1 "\`qpc dac policy fetch\` and \`qpc dac policy ls\` are the same."
   else
-    ok 0 "qpc dac policy --fetch and qpc dac policy are different."
+    ok 0 "\`qpc dac policy fetch\` and \`qpc dac policy ls\` are different."
   fi
   # Clean up temporary files
   rm -f /tmp/qpc_dac_policy_fetch.$$ /tmp/qpc_dac_policy_list.$$

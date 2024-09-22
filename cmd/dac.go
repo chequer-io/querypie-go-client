@@ -278,8 +278,6 @@ func init() {
 	dacCmd.AddCommand(dacFetchAllCmd)
 	dacCmd.AddCommand(grantCmd)
 	dacCmd.AddCommand(dacPolicyCmd)
-	dacCmd.AddCommand(dacPolicyUpsertCmd)
-	dacCmd.AddCommand(dacPolicyDeleteCmd)
 
 	dacCmd.AddCommand(dacFetchByUuidCmd)
 	dacCmd.AddCommand(dacFindByUuidCmd)

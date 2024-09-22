@@ -10,12 +10,18 @@ import (
 )
 
 var dacPolicyCmd = &cobra.Command{
-	Use:   "policy [<name|uuid> ...] [flags]",
+	Use:   "policy <command> [...] [flags]",
 	Short: "Manage DAC Policies",
-	Example: `  policy # List all policies in local sqlite database
-  policy --fetch # Fetch all policies from QueryPie API v2
-  policy <name|uuid> # Show a policy in local sqlite database
-  policy <name|uuid> --fetch # Fetch a policy from QueryPie API v0.9`,
+}
+
+var dacPolicyListCmd = &cobra.Command{
+	Use:     "ls [<name|uuid> ...] [flags]",
+	Aliases: []string{"list"},
+	Short:   "List policies in local sqlite database",
+	Example: `  ls # List all policies in local sqlite database
+  ls pattern% # List policies with a prefix 'pattern' in name
+  ls %pattern # List policies with a postfix 'pattern' in name
+  ls <name|uuid> # Show a policy with given name or uuid`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -23,26 +29,46 @@ var dacPolicyCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		fetch, _ := cmd.Flags().GetBool("fetch")
-		like, _ := cmd.Flags().GetBool("like")
-		silent, _ := cmd.Flags().GetBool("silent")
+		const silent = false
 
 		if len(args) > 0 {
-			listPoliciesInYaml(args, like, silent)
+			listOrFetchPoliciesInYaml(args, false, silent)
 		} else {
-			listAllPoliciesInYaml(fetch, silent)
+			listOrFetchAllPoliciesInYaml(false, silent)
 		}
 	},
 }
 
-func addFlagsForPolicy(cmd *cobra.Command) {
+var dacPolicyFetchCmd = &cobra.Command{
+	Use:   "fetch [<name|uuid> ...] [flags]",
+	Short: "Fetch policies from QueryPie API v2",
+	Example: `  fetch # Fetch all policies from QueryPie API v2
+  fetch pattern% # Fetch policies with a prefix 'pattern' in name
+  fetch %pattern # Fetch policies with a postfix 'pattern' in name
+  fetch <name|uuid> # Fetch a policy from QueryPie API v2`,
+	PreRun: func(cmd *cobra.Command, args []string) {
+		m := config.LocalDatabase.Migrator()
+		if !m.HasTable(&dac_policy.Policy{}) {
+			dac_policy.RunAutoMigrate()
+		}
+	},
+	Run: func(cmd *cobra.Command, args []string) {
+		silent, _ := cmd.Flags().GetBool("silent")
+
+		if len(args) > 0 {
+			listOrFetchPoliciesInYaml(args, true, silent)
+		} else {
+			listOrFetchAllPoliciesInYaml(true, silent)
+		}
+	},
+}
+
+func addFlagsForPolicyFetch(cmd *cobra.Command) {
 	cmd.Flags().SortFlags = false
-	cmd.Flags().Bool("fetch", false, "Fetch from QueryPie API v0.9 and save to local sqlite database")
-	cmd.Flags().Bool("like", false, "Use LIKE instead of = in SQL queries")
 	cmd.Flags().Bool("silent", false, "Silent or quiet mode. Do not print outputs")
 }
 
-func listAllPoliciesInYaml(fetch bool, silent bool) {
+func listOrFetchAllPoliciesInYaml(fetch bool, silent bool) {
 	var p dac_policy.Policy
 	var count = 0
 	p.PrintYamlHeader(silent)
@@ -62,15 +88,20 @@ func listAllPoliciesInYaml(fetch bool, silent bool) {
 	p.PrintYamlFooter(silent, count)
 }
 
-func listPoliciesInYaml(args []string, like bool, silent bool) {
+func listOrFetchPoliciesInYaml(args []string, fetch bool, silent bool) {
 	var p dac_policy.Policy
 	var count = 0
 	p.PrintYamlHeader(silent)
-	for _, arg := range args {
+	for _, pattern := range args {
 		var list []dac_policy.Policy
-		p.FindByNameOrUuid(arg, like, &list)
+		p.FindByNameOrUuid(pattern, &list)
 		for _, found := range list {
-			found.PrintYaml(silent)
+			if fetch {
+				fetched := found.FetchByUuid(found.Uuid)
+				fetched.SaveAndLoad().PrintYaml(silent)
+			} else {
+				found.PrintYaml(silent)
+			}
 		}
 		count += len(list)
 	}
@@ -78,13 +109,13 @@ func listPoliciesInYaml(args []string, like bool, silent bool) {
 }
 
 var dacPolicyUpsertCmd = &cobra.Command{
-	Use:   "policy-upsert <connection> <policy-type> <name> [flags]",
-	Short: "Update or create a DAC policy",
+	Use:   "upsert <connection> <policy-type> <name> [flags]",
+	Short: "Create or update a policy",
 	Example: `  <connection>  - Name, or uuid of a DAC connection
   <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, NOTIFICATION, or LEDGER
   <name>        - Name, or title of the policy
 
-  policy-upsert My-Connection DATA_LEVEL My-Policy # Upsert a policy`,
+  upsert My-Connection DATA_LEVEL My-Policy # Upsert a policy`,
 
 	Args: cobra.ExactArgs(3),
 	PreRun: func(cmd *cobra.Command, args []string) {
@@ -137,15 +168,15 @@ func addFlagsForPolicyUpsert(cmd *cobra.Command) {
 }
 
 var dacPolicyDeleteCmd = &cobra.Command{
-	Use:   "policy-delete [<connection> <policy-type> <name>] [--uuid=<uuid>] [flags]",
-	Short: "Delete a DAC policy",
+	Use:   "delete [<connection> <policy-type> <name>] [--uuid=<uuid>] [flags]",
+	Short: "Delete a policy",
 	Example: `  <connection>  - Name, or uuid of a DAC connection
   <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, NOTIFICATION, or LEDGER
   <name>        - Name, or title of the policy
   <uuid>        - Optional. Uuid of the policy
 
-  policy-delete My-Connection DATA_LEVEL My-Policy # Delete a policy
-  policy-delete --uuid <uuid> # Delete a policy by uuid`,
+  delete My-Connection DATA_LEVEL My-Policy # Delete a policy
+  delete --uuid <uuid> # Delete a policy by uuid`,
 
 	Args: cobra.RangeArgs(0, 3),
 	PreRun: func(cmd *cobra.Command, args []string) {
@@ -217,8 +248,13 @@ func addFlagsForPolicyDelete(cmd *cobra.Command) {
 }
 
 func init() {
-	addFlagsForPolicy(dacPolicyCmd)
+	addFlagsForPolicyFetch(dacPolicyFetchCmd)
 	addFlagsForPolicyUpsert(dacPolicyUpsertCmd)
 	addFlagsForPolicyDelete(dacPolicyDeleteCmd)
+
+	dacPolicyCmd.AddCommand(dacPolicyListCmd)
+	dacPolicyCmd.AddCommand(dacPolicyFetchCmd)
+	dacPolicyCmd.AddCommand(dacPolicyUpsertCmd)
+	dacPolicyCmd.AddCommand(dacPolicyDeleteCmd)
 	// dacCmd is added rootCmd in init() of root.go
 }

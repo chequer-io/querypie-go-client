@@ -29,14 +29,12 @@ function test_qpc_dac() {
   fetch-all     Fetch all DAC resources from QueryPie server and save them to local sqlite database
   grant         Grants a <privilege> to <user> for accessing a <cluster> in a DAC connection
   policy        Manage DAC Policies
-  policy-upsert Update or create a DAC policy
-  policy-delete Delete a DAC policy
   fetch-by-uuid Fetch a DAC resource specified as UUID, and save it to local sqlite database
   find-by-uuid  Find a DAC resource specified as UUID from local sqlite database
   grant-by-uuid Grant access to a DAC connection using UUIDs as argument
 
 Flags:"
-  actual=$(qpc dac | grep --after-context=12 "Available Command")
+  actual=$(qpc dac | grep --after-context=10 "Available Command")
   is "${actual}" "${expected}" "It should print available commands."
 }
 

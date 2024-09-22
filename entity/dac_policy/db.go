@@ -8,11 +8,21 @@ import (
 	"qpc/utils"
 )
 
-func (p *Policy) FindByNameOrUuid(query string, like bool, policies *[]Policy) {
-	where := "name = ? OR uuid = ?"
-	if like {
-		where = "name LIKE ? OR uuid LIKE ?"
+func (p *Policy) FetchByUuid(uuid string) *Policy {
+	policy, err := utils.Fetch(
+		"/api/external/policies/"+uuid,
+		&Policy{},
+	)
+	if err != nil {
+		logrus.Fatalf("Failed to fetch a resource: %v", err)
+		// Early exit to prevent further processing
 	}
+	return policy
+}
+
+func (p *Policy) FindByNameOrUuid(query string, policies *[]Policy) {
+	// Use LIKE by default.
+	where := "name LIKE ? OR uuid LIKE ?"
 	utils.FindMultiple(policies, func(db *gorm.DB) *gorm.DB {
 		return db.
 			Model(&Policy{}).
