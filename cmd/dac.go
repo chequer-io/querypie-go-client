@@ -283,5 +283,5 @@ func init() {
 	dacCmd.AddCommand(dacFindByUuidCmd)
 	dacCmd.AddCommand(grantByUuidCmd)
 
-	// dacCmd is added rootCmd in init() of root.go
+	// dacPolicyCmd is added rootCmd in init() of root.go
 }

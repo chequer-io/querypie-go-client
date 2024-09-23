@@ -14,14 +14,37 @@ var dacPolicyCmd = &cobra.Command{
 	Short: "Manage DAC Policies",
 }
 
+func getTargetPolicyTypes(name string) []dac_policy.PolicyType {
+	var policyType = dac_policy.PolicyType(name)
+	switch policyType {
+	case dac_policy.DataLevel, dac_policy.DataAccess,
+		dac_policy.DataMasking, dac_policy.Notification:
+		// valid policy type
+		return []dac_policy.PolicyType{policyType}
+	case dac_policy.UnknownPolicyType:
+		// On empty input, it returns all valid policy types
+		return []dac_policy.PolicyType{
+			dac_policy.DataLevel,
+			dac_policy.DataAccess,
+			dac_policy.DataMasking,
+			dac_policy.Notification,
+		}
+	default:
+		logrus.Warnf("Invalid policy type: %s", name)
+		os.Exit(4) // Exit code 4 means input error.
+	}
+	return nil // Unreachable
+}
+
 var dacPolicyListCmd = &cobra.Command{
-	Use:     "ls [<name|uuid> ...] [flags]",
+	Use:     "ls [flags]",
 	Aliases: []string{"list"},
 	Short:   "List policies in local sqlite database",
 	Example: `  ls # List all policies in local sqlite database
-  ls pattern% # List policies with a prefix 'pattern' in name
-  ls %pattern # List policies with a postfix 'pattern' in name
-  ls <name|uuid> # Show a policy with given name or uuid`,
+  ls --connection=<name> # List policies with connection of the name
+  ls --policy-type=<name> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
+  ls --name=<pattern> # List policies that has the pattern in name
+  ls --uuid=<pattern> # List policies that has the pattern in uuid`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -30,22 +53,33 @@ var dacPolicyListCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		const silent = false
+		policyType, _ := cmd.Flags().GetString("policy-type")
+		connection, _ := cmd.Flags().GetString("connection")
+		name, _ := cmd.Flags().GetString("name")
+		uuid, _ := cmd.Flags().GetString("uuid")
 
-		if len(args) > 0 {
-			listOrFetchPoliciesInYaml(args, false, silent)
+		policyTypes := getTargetPolicyTypes(policyType)
+		if len(connection) == 0 && len(name) == 0 && len(uuid) == 0 {
+			listOrFetchAllPoliciesInYaml(policyTypes, false, silent)
 		} else {
-			listOrFetchAllPoliciesInYaml(false, silent)
+			listOrFetchPoliciesInYaml(connection, name, uuid, false, silent)
 		}
 	},
+}
+
+func addFlagsForPolicyList(cmd *cobra.Command) {
+	cmd.Flags().SortFlags = false
+	cmd.Flags().String("policy-type", "", "DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION")
+	cmd.Flags().String("connection", "", "Connection name of the policy")
+	cmd.Flags().String("name", "", "Policy name to search")
+	cmd.Flags().String("uuid", "", "Policy uuid to search")
 }
 
 var dacPolicyFetchCmd = &cobra.Command{
 	Use:   "fetch [<name|uuid> ...] [flags]",
 	Short: "Fetch policies from QueryPie API v2",
 	Example: `  fetch # Fetch all policies from QueryPie API v2
-  fetch pattern% # Fetch policies with a prefix 'pattern' in name
-  fetch %pattern # Fetch policies with a postfix 'pattern' in name
-  fetch <name|uuid> # Fetch a policy from QueryPie API v2`,
+  fetch --policy-type=<name> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -53,58 +87,66 @@ var dacPolicyFetchCmd = &cobra.Command{
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
+		policyType, _ := cmd.Flags().GetString("policy-type")
 		silent, _ := cmd.Flags().GetBool("silent")
 
-		if len(args) > 0 {
-			listOrFetchPoliciesInYaml(args, true, silent)
-		} else {
-			listOrFetchAllPoliciesInYaml(true, silent)
-		}
+		policyTypes := getTargetPolicyTypes(policyType)
+		listOrFetchAllPoliciesInYaml(policyTypes, true, silent)
 	},
 }
 
 func addFlagsForPolicyFetch(cmd *cobra.Command) {
 	cmd.Flags().SortFlags = false
+	cmd.Flags().String("policy-type", "", "DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION")
 	cmd.Flags().Bool("silent", false, "Silent or quiet mode. Do not print outputs")
 }
 
-func listOrFetchAllPoliciesInYaml(fetch bool, silent bool) {
+func listOrFetchAllPoliciesInYaml(policyTypes []dac_policy.PolicyType, fetch bool, silent bool) {
 	var p dac_policy.Policy
 	var count = 0
 	p.PrintYamlHeader(silent)
 	if fetch {
-		p.FetchAllAndForEach(func(fetched *dac_policy.Policy) bool {
-			fetched.SaveAndLoad().PrintYaml(silent)
-			count++
-			return true // OK to continue fetching
-		})
+		for _, policyType := range policyTypes {
+			p.FetchAllOfPolicyTypeAndForEach(policyType,
+				func(fetched *dac_policy.Policy) bool {
+					// NOTE(JK): Response from API v0.9 does not give the policy type.
+					// So, we need to set it manually.
+					fetched.PolicyType = policyType
+					fetched.SaveAndLoad().PrintYaml(silent)
+					count++
+					return true // OK to continue fetching
+				})
+		}
 	} else {
-		p.FindAllAndForEach(func(found *dac_policy.Policy) bool {
-			found.PrintYaml(silent)
-			count++
-			return true // OK to continue finding
-		})
+		for _, policyType := range policyTypes {
+			p.FindAllOfPolicyTypeAndForEach(policyType, func(found *dac_policy.Policy) bool {
+				found.PrintYaml(silent)
+				count++
+				return true // OK to continue finding
+			})
+		}
 	}
 	p.PrintYamlFooter(silent, count)
 }
 
-func listOrFetchPoliciesInYaml(args []string, fetch bool, silent bool) {
+func listOrFetchPoliciesInYaml(
+	connection string, name string, uuid string,
+	fetch bool, silent bool,
+) {
 	var p dac_policy.Policy
 	var count = 0
+	var policies []dac_policy.Policy
 	p.PrintYamlHeader(silent)
-	for _, pattern := range args {
-		var list []dac_policy.Policy
-		p.FindByNameOrUuid(pattern, &list)
-		for _, found := range list {
-			if fetch {
-				fetched := found.FetchByUuid(found.Uuid)
-				fetched.SaveAndLoad().PrintYaml(silent)
-			} else {
-				found.PrintYaml(silent)
-			}
+	p.FindByConnectionAndNameAndUuid(connection, name, uuid, &policies)
+	for _, found := range policies {
+		if fetch {
+			fetched := found.FetchByUuid(found.Uuid)
+			fetched.SaveAndLoad().PrintYaml(silent)
+		} else {
+			found.PrintYaml(silent)
 		}
-		count += len(list)
 	}
+	count += len(policies)
 	p.PrintYamlFooter(silent, count)
 }
 
@@ -112,7 +154,7 @@ var dacPolicyUpsertCmd = &cobra.Command{
 	Use:   "upsert <connection> <policy-type> <name> [flags]",
 	Short: "Create or update a policy",
 	Example: `  <connection>  - Name, or uuid of a DAC connection
-  <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, NOTIFICATION, or LEDGER
+  <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
   <name>        - Name, or title of the policy
 
   upsert My-Connection DATA_LEVEL My-Policy # Upsert a policy`,
@@ -168,17 +210,16 @@ func addFlagsForPolicyUpsert(cmd *cobra.Command) {
 }
 
 var dacPolicyDeleteCmd = &cobra.Command{
-	Use:   "delete [<connection> <policy-type> <name>] [--uuid=<uuid>] [flags]",
+	Use:   "delete [<connection> <policy-type>] [--uuid=<uuid>] [flags]",
 	Short: "Delete a policy",
 	Example: `  <connection>  - Name, or uuid of a DAC connection
-  <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, NOTIFICATION, or LEDGER
-  <name>        - Name, or title of the policy
+  <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
   <uuid>        - Optional. Uuid of the policy
 
-  delete My-Connection DATA_LEVEL My-Policy # Delete a policy
+  delete My-Connection DATA_ACCESS # Delete a policy
   delete --uuid <uuid> # Delete a policy by uuid`,
 
-	Args: cobra.RangeArgs(0, 3),
+	Args: cobra.RangeArgs(0, 2),
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -191,24 +232,24 @@ var dacPolicyDeleteCmd = &cobra.Command{
 				logrus.Warn("No arguments given")
 				os.Exit(4) // Exit code 4 means input error.
 			}
-		} else if len(args) != 3 {
+		} else if len(args) != 2 {
 			logrus.Warn("Invalid number of arguments")
 			os.Exit(4) // Exit code 4 means input error.
 		}
 	},
 	Run: func(cmd *cobra.Command, args []string) {
-		var connection, policyType, name string
-		if len(args) == 3 {
-			connection, policyType, name = args[0], args[1], args[2]
+		var connection, policyType string
+		if len(args) == 2 {
+			connection, policyType = args[0], args[1]
 		}
 		silent, _ := cmd.Flags().GetBool("silent")
 		uuid, _ := cmd.Flags().GetString("uuid")
 
-		deletePolicy(connection, policyType, name, uuid, silent)
+		deletePolicy(connection, policyType, uuid, silent)
 	},
 }
 
-func deletePolicy(connection string, policyType string, name string, uuid string, silent bool) {
+func deletePolicy(connection string, policyType string, uuid string, silent bool) {
 	var policy *dac_policy.Policy
 
 	if len(uuid) > 0 {
@@ -218,7 +259,7 @@ func deletePolicy(connection string, policyType string, name string, uuid string
 		policy = dac_policy.GeneratePolicyRequest(
 			connection,
 			dac_policy.PolicyType(policyType),
-			name,
+			"",
 		).ValidateForDelete().PrintYaml(silent).UnlessValidated(func() {
 			logrus.Warn("Validation failed")
 			os.Exit(4) // Exit code 4 means input error.
@@ -248,6 +289,7 @@ func addFlagsForPolicyDelete(cmd *cobra.Command) {
 }
 
 func init() {
+	addFlagsForPolicyList(dacPolicyListCmd)
 	addFlagsForPolicyFetch(dacPolicyFetchCmd)
 	addFlagsForPolicyUpsert(dacPolicyUpsertCmd)
 	addFlagsForPolicyDelete(dacPolicyDeleteCmd)

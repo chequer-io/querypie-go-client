@@ -37,6 +37,11 @@ func FetchPagedListAndForEach[T any, P model.PagedList[T]](
 			logrus.Fatalf("Failed to fetch resources: %v", err)
 		}
 
+		if IsClientError(resp) || IsServerError(resp) {
+			PrintHttpRequestLineAndResponseStatus(resp)
+			logrus.Fatalf("Failed to fetch resources: %v", resp.String())
+		}
+
 		ok := forEachFunc(result)
 		if !(ok && result.GetPage().HasNext()) {
 			break

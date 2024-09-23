@@ -43,10 +43,7 @@ type PolicyRequestValidatable struct {
 	PolicyRequest *PolicyRequest   `json:"-" yaml:"POLICY_REQUEST,omitempty"`
 }
 
-func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
-	pr.Validation.Result = true
-
-	// 1) Check if connection is found.
+func (pr *PolicyRequestValidatable) validateConnection() {
 	if len(pr.UserInput.Connection) == 0 {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Connection not found")
@@ -56,8 +53,9 @@ func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Multiple connections found")
 	}
+}
 
-	// 2) Check if policyType is valid.
+func (pr *PolicyRequestValidatable) validatePolicyType() {
 	switch pr.UserInput.PolicyType {
 	case DataLevel, DataAccess, DataMasking, Notification, Ledger:
 		// do nothing
@@ -65,45 +63,64 @@ func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Invalid policy type")
 	}
+}
 
-	// 3) Check if name is valid.
+func (pr *PolicyRequestValidatable) validateName() {
 	if len(pr.UserInput.Name) > 0 {
 		// do nothing
 	} else {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Name is empty")
 	}
+}
 
-	// If validated, create a PolicyRequest.
+func (pr *PolicyRequestValidatable) createPolicyRequestIfValidated() {
 	if pr.Validation.Result {
 		pr.PolicyRequest = &PolicyRequest{
 			ClusterGroupUuid: pr.UserInput.Connection[0].Uuid,
 			PolicyType:       pr.UserInput.PolicyType,
 			Title:            pr.UserInput.Name,
 		}
+	}
+}
 
-		// Try to find the policy locally.
-		policy := (&Policy{}).FirstByClusterGroupUuidAndName(
+func (pr *PolicyRequestValidatable) tryToFindPolicyLocallyIfValidated() {
+	if pr.Validation.Result {
+		policy := (&Policy{}).FirstByClusterGroupUuidAndPolicyType(
 			pr.UserInput.Connection[0].Uuid,
-			pr.UserInput.Name,
+			pr.UserInput.PolicyType,
 		)
-		logrus.Debugf("policy = %s", policy)
 		if policy != nil {
 			pr.PolicyRequest.PolicyUuid = policy.Uuid
 		}
 	}
+}
+
+func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
+	pr.Validation.Result = true
+
+	pr.validateConnection()
+	pr.validatePolicyType()
+	pr.validateName()
+	pr.createPolicyRequestIfValidated()
+	pr.tryToFindPolicyLocallyIfValidated()
 	return pr
 }
 
 func (pr *PolicyRequestValidatable) ValidateForDelete() *PolicyRequestValidatable {
-	pr.Validate()
-	if !pr.Validation.Result {
-		return pr
-	}
+	pr.Validation.Result = true
 
-	if len(pr.PolicyRequest.PolicyUuid) == 0 {
-		pr.Validation.Result = false
-		pr.Validation.Reason = append(pr.Validation.Reason, "Policy not found")
+	pr.validateConnection()
+	pr.validatePolicyType()
+	// No need to check name for delete operation.
+	pr.createPolicyRequestIfValidated()
+	pr.tryToFindPolicyLocallyIfValidated()
+
+	if pr.Validation.Result {
+		if pr.PolicyRequest.PolicyUuid == "" {
+			pr.Validation.Result = false
+			pr.Validation.Reason = append(pr.Validation.Reason, "Policy not found")
+		}
 	}
 	return pr
 }
