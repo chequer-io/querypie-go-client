@@ -42,8 +42,8 @@ var dacPolicyListCmd = &cobra.Command{
 	Short:   "List policies in local sqlite database",
 	Example: `  ls # List all policies in local sqlite database
   ls --connection=<name> # List policies with connection of the name
-  ls --policy-type=<name> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
-  ls --name=<pattern> # List policies that has the pattern in name
+  ls --policy-type=<policy-type> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
+  ls --title=<pattern> # List policies that has the pattern in title
   ls --uuid=<pattern> # List policies that has the pattern in uuid`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
@@ -55,14 +55,14 @@ var dacPolicyListCmd = &cobra.Command{
 		const silent = false
 		policyType, _ := cmd.Flags().GetString("policy-type")
 		connection, _ := cmd.Flags().GetString("connection")
-		name, _ := cmd.Flags().GetString("name")
+		title, _ := cmd.Flags().GetString("title")
 		uuid, _ := cmd.Flags().GetString("uuid")
 
 		policyTypes := getTargetPolicyTypes(policyType)
-		if len(connection) == 0 && len(name) == 0 && len(uuid) == 0 {
+		if len(connection) == 0 && len(title) == 0 && len(uuid) == 0 {
 			listOrFetchAllPoliciesInYaml(policyTypes, false, silent)
 		} else {
-			listOrFetchPoliciesInYaml(connection, name, uuid, false, silent)
+			listOrFetchPoliciesInYaml(connection, title, uuid, false, silent)
 		}
 	},
 }
@@ -71,15 +71,15 @@ func addFlagsForPolicyList(cmd *cobra.Command) {
 	cmd.Flags().SortFlags = false
 	cmd.Flags().String("policy-type", "", "DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION")
 	cmd.Flags().String("connection", "", "Connection name of the policy")
-	cmd.Flags().String("name", "", "Policy name to search")
+	cmd.Flags().String("title", "", "Policy title to search")
 	cmd.Flags().String("uuid", "", "Policy uuid to search")
 }
 
 var dacPolicyFetchCmd = &cobra.Command{
-	Use:   "fetch [<name|uuid> ...] [flags]",
+	Use:   "fetch [flags]",
 	Short: "Fetch policies from QueryPie API v2",
 	Example: `  fetch # Fetch all policies from QueryPie API v2
-  fetch --policy-type=<name> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION`,
+  fetch --policy-type=<policy-type> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -130,14 +130,14 @@ func listOrFetchAllPoliciesInYaml(policyTypes []dac_policy.PolicyType, fetch boo
 }
 
 func listOrFetchPoliciesInYaml(
-	connection string, name string, uuid string,
+	connection string, title string, uuid string,
 	fetch bool, silent bool,
 ) {
 	var p dac_policy.Policy
 	var count = 0
 	var policies []dac_policy.Policy
 	p.PrintYamlHeader(silent)
-	p.FindByConnectionAndNameAndUuid(connection, name, uuid, &policies)
+	p.FindByConnectionAndTitleAndUuid(connection, title, uuid, &policies)
 	for _, found := range policies {
 		if fetch {
 			fetched := found.FetchByUuid(found.Uuid)
@@ -151,11 +151,11 @@ func listOrFetchPoliciesInYaml(
 }
 
 var dacPolicyUpsertCmd = &cobra.Command{
-	Use:   "upsert <connection> <policy-type> <name> [flags]",
+	Use:   "upsert <connection> <policy-type> <title> [flags]",
 	Short: "Create or update a policy",
 	Example: `  <connection>  - Name, or uuid of a DAC connection
   <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
-  <name>        - Name, or title of the policy
+  <title>       - Title of the policy
 
   upsert My-Connection DATA_LEVEL My-Policy # Upsert a policy`,
 
@@ -173,11 +173,11 @@ var dacPolicyUpsertCmd = &cobra.Command{
 	},
 }
 
-func upsertPolicy(connection string, policyType string, name string, silent bool) {
+func upsertPolicy(connection string, policyType string, title string, silent bool) {
 	policy := dac_policy.GeneratePolicyRequest(
 		connection,
 		dac_policy.PolicyType(policyType),
-		name,
+		title,
 	).Validate().PrintYaml(silent).UnlessValidated(func() {
 		logrus.Warn("Validation failed")
 		os.Exit(4) // Exit code 4 means input error.

@@ -20,9 +20,9 @@ func (p *Policy) FetchByUuid(uuid string) *Policy {
 	return policy
 }
 
-func (p *Policy) FindByConnectionAndNameAndUuid(
+func (p *Policy) FindByConnectionAndTitleAndUuid(
 	connection string,
-	policyName string,
+	title string,
 	uuid string,
 	policies *[]Policy,
 ) {
@@ -31,10 +31,10 @@ func (p *Policy) FindByConnectionAndNameAndUuid(
 	} else {
 		connection = "%" + connection + "%"
 	}
-	if len(policyName) == 0 {
-		policyName = "%" // Match all
+	if len(title) == 0 {
+		title = "%" // Match all
 	} else {
-		policyName = "%" + policyName + "%"
+		title = "%" + title + "%"
 	}
 	if len(uuid) == 0 {
 		uuid = "%" // Match all
@@ -46,7 +46,7 @@ func (p *Policy) FindByConnectionAndNameAndUuid(
 		return db.
 			Model(&Policy{}).
 			Joins("JOIN connection_v2 ON policies.cluster_group_uuid = connection_v2.uuid").
-			Where("connection_v2.name LIKE ? AND (policies.name LIKE ? AND policies.uuid LIKE ?)", connection, policyName, uuid).
+			Where("connection_v2.name LIKE ? AND (policies.title LIKE ? AND policies.uuid LIKE ?)", connection, title, uuid).
 			Preload("UpdatedBy").
 			Preload("CreatedBy").
 			Preload("Connection").
@@ -56,12 +56,11 @@ func (p *Policy) FindByConnectionAndNameAndUuid(
 
 func (p *Policy) FirstByClusterGroupUuidAndPolicyType(uuid string, policyType PolicyType) *Policy {
 	policy := &Policy{}
-	where := "cluster_group_uuid = ? AND policy_type = ?"
 	return utils.First(policy, func(db *gorm.DB) *gorm.DB {
 		return db.
 			Model(&Policy{}).
 			// Note: Column names are snake_case in the database.
-			Where(where, uuid, policyType).
+			Where("cluster_group_uuid = ? AND policy_type = ?", uuid, policyType).
 			Preload("UpdatedBy").
 			Preload("CreatedBy").
 			Preload("Connection").

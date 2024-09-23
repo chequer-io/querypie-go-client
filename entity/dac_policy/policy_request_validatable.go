@@ -8,7 +8,7 @@ import (
 	"qpc/model"
 )
 
-func GeneratePolicyRequest(connection string, policyType PolicyType, name string) *PolicyRequestValidatable {
+func GeneratePolicyRequest(connection string, policyType PolicyType, title string) *PolicyRequestValidatable {
 	var found []dac_connection.ConnectionV2
 	if len(connection) > 0 {
 		(&dac_connection.ConnectionV2{}).FindByNameOrUuid(connection, &found)
@@ -26,7 +26,7 @@ func GeneratePolicyRequest(connection string, policyType PolicyType, name string
 		UserInput: UserInput{
 			Connection: matched,
 			PolicyType: policyType,
-			Name:       name,
+			Title:      title,
 		},
 	}
 }
@@ -34,7 +34,7 @@ func GeneratePolicyRequest(connection string, policyType PolicyType, name string
 type UserInput struct {
 	Connection []SummarizedConnectionForPolicy `json:"-" yaml:"connection"`
 	PolicyType PolicyType                      `json:"-" yaml:"policyType"`
-	Name       string                          `json:"-" yaml:"name"`
+	Title      string                          `json:"-" yaml:"title"`
 }
 
 type PolicyRequestValidatable struct {
@@ -65,12 +65,12 @@ func (pr *PolicyRequestValidatable) validatePolicyType() {
 	}
 }
 
-func (pr *PolicyRequestValidatable) validateName() {
-	if len(pr.UserInput.Name) > 0 {
+func (pr *PolicyRequestValidatable) validateTitle() {
+	if len(pr.UserInput.Title) > 0 {
 		// do nothing
 	} else {
 		pr.Validation.Result = false
-		pr.Validation.Reason = append(pr.Validation.Reason, "Name is empty")
+		pr.Validation.Reason = append(pr.Validation.Reason, "Title is empty")
 	}
 }
 
@@ -79,7 +79,7 @@ func (pr *PolicyRequestValidatable) createPolicyRequestIfValidated() {
 		pr.PolicyRequest = &PolicyRequest{
 			ClusterGroupUuid: pr.UserInput.Connection[0].Uuid,
 			PolicyType:       pr.UserInput.PolicyType,
-			Title:            pr.UserInput.Name,
+			Title:            pr.UserInput.Title,
 		}
 	}
 }
@@ -91,6 +91,7 @@ func (pr *PolicyRequestValidatable) tryToFindPolicyLocallyIfValidated() {
 			pr.UserInput.PolicyType,
 		)
 		if policy != nil {
+			pr.PolicyRequest.Title = policy.Title
 			pr.PolicyRequest.PolicyUuid = policy.Uuid
 		}
 	}
@@ -101,7 +102,7 @@ func (pr *PolicyRequestValidatable) Validate() *PolicyRequestValidatable {
 
 	pr.validateConnection()
 	pr.validatePolicyType()
-	pr.validateName()
+	pr.validateTitle()
 	pr.createPolicyRequestIfValidated()
 	pr.tryToFindPolicyLocallyIfValidated()
 	return pr
@@ -112,7 +113,7 @@ func (pr *PolicyRequestValidatable) ValidateForDelete() *PolicyRequestValidatabl
 
 	pr.validateConnection()
 	pr.validatePolicyType()
-	// No need to check name for delete operation.
+	// No need to check title for delete operation.
 	pr.createPolicyRequestIfValidated()
 	pr.tryToFindPolicyLocallyIfValidated()
 
