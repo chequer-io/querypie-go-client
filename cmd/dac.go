@@ -176,7 +176,7 @@ func addFlagsForGrant(cmd *cobra.Command) {
 
 var dacFetchByUuidCmd = &cobra.Command{
 	Use:     "fetch-by-uuid <resource> <uuid>",
-	Short:   "Fetch a DAC resource specified as UUID, and save it to local sqlite database",
+	Short:   "[Debug] Fetch a DAC resource specified as UUID, and save it to local sqlite database",
 	Example: `  fetch-by-uuid connection <connection-uuid> # from QueryPie API v2`,
 	Args:    cobra.ExactArgs(2),
 	PreRun: func(cmd *cobra.Command, args []string) {
@@ -222,7 +222,7 @@ var dacFetchByUuidCmd = &cobra.Command{
 
 var dacFindByUuidCmd = &cobra.Command{
 	Use:     "find-by-uuid <resource> <uuid>",
-	Short:   "Find a DAC resource specified as UUID from local sqlite database",
+	Short:   "[Debug] Find a DAC resource specified as UUID from local sqlite database",
 	Example: `  find-by-uuid connection <connection-uuid>`,
 	Args:    cobra.ExactArgs(2),
 	PreRun: func(cmd *cobra.Command, args []string) {
@@ -245,7 +245,7 @@ var dacFindByUuidCmd = &cobra.Command{
 
 var grantByUuidCmd = &cobra.Command{
 	Use:   "grant-by-uuid <user-uuid> <connection-uuid> <privilege-uuid> [<force>]",
-	Short: "Grant access to a DAC connection using UUIDs as argument",
+	Short: "[Debug] Grant access to a DAC connection using UUIDs as argument",
 	Example: `  grant-by-uuid <uuid> <uuid> <uuid>
   grant-by-uuid <uuid> <uuid> <uuid> false
   grant-by-uuid <uuid> <uuid> <uuid> true`,
@@ -278,6 +278,7 @@ func init() {
 	dacCmd.AddCommand(dacFetchAllCmd)
 	dacCmd.AddCommand(grantCmd)
 	dacCmd.AddCommand(dacPolicyCmd)
+	dacCmd.AddCommand(dacSensitiveDataRuleCmd)
 
 	dacCmd.AddCommand(dacFetchByUuidCmd)
 	dacCmd.AddCommand(dacFindByUuidCmd)

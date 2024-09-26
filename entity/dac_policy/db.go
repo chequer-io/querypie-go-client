@@ -130,6 +130,9 @@ func RunAutoMigrate() {
 	err := db.AutoMigrate(
 		&model.Modifier{},
 		&Policy{},
+
+		// SensitiveDataRule
+		&SensitiveDataRule{},
 	)
 	if err != nil {
 		logrus.Fatal(err)

@@ -24,17 +24,18 @@ function test_qpc_dac() {
     "It should print a header line, Manage DAC resources."
 
   expected="Available Commands:
-  connections   List connections or fetch them from QueryPie API v2
-  ls            List DAC connections in local sqlite database
-  fetch-all     Fetch all DAC resources from QueryPie server and save them to local sqlite database
-  grant         Grants a <privilege> to <user> for accessing a <cluster> in a DAC connection
-  policy        Manage DAC Policies
-  fetch-by-uuid Fetch a DAC resource specified as UUID, and save it to local sqlite database
-  find-by-uuid  Find a DAC resource specified as UUID from local sqlite database
-  grant-by-uuid Grant access to a DAC connection using UUIDs as argument
+  connections         List connections or fetch them from QueryPie API v2
+  ls                  List DAC connections in local sqlite database
+  fetch-all           Fetch all DAC resources from QueryPie server and save them to local sqlite database
+  grant               Grants a <privilege> to <user> for accessing a <cluster> in a DAC connection
+  policy              Manage DAC Policies
+  sensitive-data-rule Manage Sensitive Data Rules
+  fetch-by-uuid       [Debug] Fetch a DAC resource specified as UUID, and save it to local sqlite database
+  find-by-uuid        [Debug] Find a DAC resource specified as UUID from local sqlite database
+  grant-by-uuid       [Debug] Grant access to a DAC connection using UUIDs as argument
 
 Flags:"
-  actual=$(qpc dac | grep --after-context=10 "Available Command")
+  actual=$(qpc dac | grep --after-context=11 "Available Command")
   is "${actual}" "${expected}" "It should print available commands."
 }
 

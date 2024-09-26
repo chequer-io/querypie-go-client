@@ -70,8 +70,8 @@ func addFlagsForPolicyList(cmd *cobra.Command) {
 
 var dacPolicyFetchCmd = &cobra.Command{
 	Use:   "fetch [flags]",
-	Short: "Fetch policies from QueryPie API v2",
-	Example: `  fetch # Fetch all policies from QueryPie API v2
+	Short: "Fetch policies from QueryPie API v0.9",
+	Example: `  fetch # Fetch all policies from QueryPie API v0.9
   fetch --policy-type=<policy-type> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
@@ -293,5 +293,5 @@ func init() {
 	dacPolicyCmd.AddCommand(dacPolicyFetchCmd)
 	dacPolicyCmd.AddCommand(dacPolicyUpsertCmd)
 	dacPolicyCmd.AddCommand(dacPolicyDeleteCmd)
-	// dacCmd is added rootCmd in init() of root.go
+	// dacPolicyCmd is added dacCmd in init() of dac.go
 }

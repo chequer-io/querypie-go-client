@@ -50,6 +50,34 @@ func FetchPagedListAndForEach[T any, P model.PagedList[T]](
 	}
 }
 
+func FetchListAndForEach[T any, P []T](
+	uri string,
+	result P,
+	forEachFunc func(item *T) bool,
+) {
+	restClient := resty.New()
+
+	logrus.Debugf("Type of result: %T", result)
+	resp, err := restClient.R().
+		SetHeader("Accept", "application/json").
+		SetAuthToken(DefaultQuerypieServer.AccessToken).
+		SetResult(&result).
+		Get(DefaultQuerypieServer.BaseURL + uri)
+	logrus.Debugf("Response: %v", resp)
+	if err != nil {
+		logrus.Fatalf("Failed to fetch resources: %v", err)
+	}
+
+	if IsClientError(resp) || IsServerError(resp) {
+		PrintHttpRequestLineAndResponseStatus(resp)
+		logrus.Fatalf("Failed to fetch resources: %v", resp.String())
+	}
+
+	for _, item := range result {
+		forEachFunc(&item)
+	}
+}
+
 func Fetch[T model.RestResponse](
 	uri string,
 	result T,

@@ -25,8 +25,8 @@ function test_qpc_dac_fetch_all_connections() {
     "It should print output of mysql which UUID is an unspecified value."
   is "${DB_TYPE}" "MYSQL" \
     "It should print output of mysql which DB_TYPE is MYSQL."
-  is "${CLOUD}" "-" \
-    "It should print output of mysql which CLOUD is none or -."
+  is "${CLOUD}" "AWS" \
+    "It should print output of mysql which CLOUD is AWS."
   is "${NAME}" "mysql.querypie.io" \
     "It should print output of mysql which NAME is mysql.querypie.io."
   is "${STATUS}" "ledger" \
@@ -55,8 +55,8 @@ function test_qpc_dac_ls_connections() {
     "It should print output of mysql which UUID is an unspecified value."
   is "${DB_TYPE}" "MYSQL" \
     "It should print output of mysql which DB_TYPE is MYSQL."
-  is "${CLOUD}" "-" \
-    "It should print output of mysql which CLOUD is none or -."
+  is "${CLOUD}" "AWS" \
+    "It should print output of mysql which CLOUD is AWS."
   is "${NAME}" "mysql.querypie.io" \
     "It should print output of mysql which NAME is mysql.querypie.io."
   is "${STATUS}" "ledger" \
