@@ -20,10 +20,9 @@ func (p *Policy) FetchByUuid(uuid string) *Policy {
 	return policy
 }
 
-func (p *Policy) FindByConnectionAndTitleAndUuid(
+func (p *Policy) FindByConnectionAndPolicyType(
 	connection string,
-	title string,
-	uuid string,
+	policyType PolicyType,
 	policies *[]Policy,
 ) {
 	if len(connection) == 0 {
@@ -31,22 +30,17 @@ func (p *Policy) FindByConnectionAndTitleAndUuid(
 	} else {
 		connection = "%" + connection + "%"
 	}
-	if len(title) == 0 {
-		title = "%" // Match all
+	if policyType.IsValid() {
+		// do nothing
 	} else {
-		title = "%" + title + "%"
-	}
-	if len(uuid) == 0 {
-		uuid = "%" // Match all
-	} else {
-		uuid = "%" + uuid + "%"
+		policyType = PolicyType("%") // Match all
 	}
 
 	utils.FindMultiple(policies, func(db *gorm.DB) *gorm.DB {
 		return db.
 			Model(&Policy{}).
 			Joins("JOIN connection_v2 ON policies.cluster_group_uuid = connection_v2.uuid").
-			Where("connection_v2.name LIKE ? AND (policies.title LIKE ? AND policies.uuid LIKE ?)", connection, title, uuid).
+			Where("connection_v2.name LIKE ? AND (policies.policy_type LIKE ?)", connection, policyType).
 			Preload("UpdatedBy").
 			Preload("CreatedBy").
 			Preload("Connection").

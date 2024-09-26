@@ -16,12 +16,10 @@ var dacPolicyCmd = &cobra.Command{
 
 func getTargetPolicyTypes(name string) []dac_policy.PolicyType {
 	var policyType = dac_policy.PolicyType(name)
-	switch policyType {
-	case dac_policy.DataLevel, dac_policy.DataAccess,
-		dac_policy.DataMasking, dac_policy.Notification:
+	if policyType.IsValid() {
 		// valid policy type
 		return []dac_policy.PolicyType{policyType}
-	case dac_policy.UnknownPolicyType:
+	} else if policyType == dac_policy.UnknownPolicyType {
 		// On empty input, it returns all valid policy types
 		return []dac_policy.PolicyType{
 			dac_policy.DataLevel,
@@ -29,10 +27,9 @@ func getTargetPolicyTypes(name string) []dac_policy.PolicyType {
 			dac_policy.DataMasking,
 			dac_policy.Notification,
 		}
-	default:
-		logrus.Warnf("Invalid policy type: %s", name)
-		os.Exit(4) // Exit code 4 means input error.
 	}
+	logrus.Warnf("Invalid policy type: %s", name)
+	os.Exit(4) // Exit code 4 means input error.
 	return nil // Unreachable
 }
 
@@ -42,9 +39,7 @@ var dacPolicyListCmd = &cobra.Command{
 	Short:   "List policies in local sqlite database",
 	Example: `  ls # List all policies in local sqlite database
   ls --connection=<name> # List policies with connection of the name
-  ls --policy-type=<policy-type> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
-  ls --title=<pattern> # List policies that has the pattern in title
-  ls --uuid=<pattern> # List policies that has the pattern in uuid`,
+  ls --policy-type=<policy-type> # DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION`,
 	PreRun: func(cmd *cobra.Command, args []string) {
 		m := config.LocalDatabase.Migrator()
 		if !m.HasTable(&dac_policy.Policy{}) {
@@ -53,24 +48,22 @@ var dacPolicyListCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		const silent = false
-		policyType, _ := cmd.Flags().GetString("policy-type")
 		connection, _ := cmd.Flags().GetString("connection")
-		title, _ := cmd.Flags().GetString("title")
-		uuid, _ := cmd.Flags().GetString("uuid")
+		policyType, _ := cmd.Flags().GetString("policy-type")
 
 		policyTypes := getTargetPolicyTypes(policyType)
-		if len(connection) == 0 && len(title) == 0 && len(uuid) == 0 {
+		if len(connection) == 0 {
 			listOrFetchAllPoliciesInYaml(policyTypes, false, silent)
 		} else {
-			listOrFetchPoliciesInYaml(connection, title, uuid, false, silent)
+			listOrFetchPoliciesInYaml(connection, policyTypes, false, silent)
 		}
 	},
 }
 
 func addFlagsForPolicyList(cmd *cobra.Command) {
 	cmd.Flags().SortFlags = false
-	cmd.Flags().String("policy-type", "", "DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION")
 	cmd.Flags().String("connection", "", "Connection name of the policy")
+	cmd.Flags().String("policy-type", "", "DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION")
 	cmd.Flags().String("title", "", "Policy title to search")
 	cmd.Flags().String("uuid", "", "Policy uuid to search")
 }
@@ -130,20 +123,22 @@ func listOrFetchAllPoliciesInYaml(policyTypes []dac_policy.PolicyType, fetch boo
 }
 
 func listOrFetchPoliciesInYaml(
-	connection string, title string, uuid string,
+	connection string, policyTypes []dac_policy.PolicyType,
 	fetch bool, silent bool,
 ) {
 	var p dac_policy.Policy
 	var count = 0
 	var policies []dac_policy.Policy
 	p.PrintYamlHeader(silent)
-	p.FindByConnectionAndTitleAndUuid(connection, title, uuid, &policies)
-	for _, found := range policies {
-		if fetch {
-			fetched := found.FetchByUuid(found.Uuid)
-			fetched.SaveAndLoad().PrintYaml(silent)
-		} else {
-			found.PrintYaml(silent)
+	for _, policyType := range policyTypes {
+		p.FindByConnectionAndPolicyType(connection, policyType, &policies)
+		for _, found := range policies {
+			if fetch {
+				fetched := found.FetchByUuid(found.Uuid)
+				fetched.SaveAndLoad().PrintYaml(silent)
+			} else {
+				found.PrintYaml(silent)
+			}
 		}
 	}
 	count += len(policies)
@@ -214,7 +209,7 @@ var dacPolicyDeleteCmd = &cobra.Command{
 	Short: "Delete a policy",
 	Example: `  <connection>  - Name, or uuid of a DAC connection
   <policy-type> - DATA_LEVEL, DATA_ACCESS, DATA_MASKING, or NOTIFICATION
-  <uuid>        - Optional. Uuid of the policy
+  --uuid=<uuid> - Optional. Uuid of the policy
 
   delete My-Connection DATA_ACCESS # Delete a policy
   delete --uuid <uuid> # Delete a policy by uuid`,

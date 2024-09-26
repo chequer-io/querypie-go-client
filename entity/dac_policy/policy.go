@@ -51,6 +51,13 @@ const (
 	Ledger            PolicyType = "LEDGER"
 )
 
+func (pt PolicyType) IsValid() bool {
+	if pt == DataLevel || pt == DataAccess || pt == DataMasking || pt == Notification {
+		return true
+	}
+	return false
+}
+
 type PolicyPagedList struct {
 	List []Policy   `json:"list"`
 	Page model.Page `json:"page"`

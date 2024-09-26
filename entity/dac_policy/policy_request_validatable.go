@@ -56,10 +56,9 @@ func (pr *PolicyRequestValidatable) validateConnection() {
 }
 
 func (pr *PolicyRequestValidatable) validatePolicyType() {
-	switch pr.UserInput.PolicyType {
-	case DataLevel, DataAccess, DataMasking, Notification, Ledger:
+	if pr.UserInput.PolicyType.IsValid() {
 		// do nothing
-	default:
+	} else {
 		pr.Validation.Result = false
 		pr.Validation.Reason = append(pr.Validation.Reason, "Invalid policy type")
 	}
