@@ -273,7 +273,7 @@ func init() {
 
 	addFlagsForGrant(grantCmd)
 
-	dacCmd.AddCommand(dacConnectionsCmd)
+	dacCmd.AddCommand(dacConnectionCmd)
 	dacCmd.AddCommand(dacListCmd)
 	dacCmd.AddCommand(dacFetchAllCmd)
 	dacCmd.AddCommand(grantCmd)

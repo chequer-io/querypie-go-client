@@ -13,7 +13,7 @@ var userCmd = &cobra.Command{
 }
 
 var userFetchAllCmd = &cobra.Command{
-	Use:   "fetch-all",
+	Use:   "fetch",
 	Short: "Fetch all users from QueryPie server and save them to local sqlite database",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		if !config.LocalDatabase.Migrator().HasTable(&user.User{}) {
@@ -54,7 +54,7 @@ var userV1Cmd = &cobra.Command{
 }
 
 var userV1FetchAllCmd = &cobra.Command{
-	Use:   "fetch-all",
+	Use:   "fetch",
 	Short: "Fetch all users from QueryPie server and save them to local sqlite database",
 	PreRun: func(cmd *cobra.Command, args []string) {
 		if !config.LocalDatabase.Migrator().HasTable(&user_v1.UserV1{}) {

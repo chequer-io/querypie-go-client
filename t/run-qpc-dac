@@ -24,7 +24,7 @@ function test_qpc_dac() {
     "It should print a header line, Manage DAC resources."
 
   expected="Available Commands:
-  connections         List connections or fetch them from QueryPie API v2
+  connection          Manage DAC Connections
   ls                  List DAC connections in local sqlite database
   fetch-all           Fetch all DAC resources from QueryPie server and save them to local sqlite database
   grant               Grants a <privilege> to <user> for accessing a <cluster> in a DAC connection

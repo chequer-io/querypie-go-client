@@ -7,20 +7,20 @@ SCRIPT_DIR=$(dirname "${BASH_SOURCE[0]}")
 source "${SCRIPT_DIR}"/../../../scripts/lib/bash-tap
 TODO= # Define here to prevent unbound variable error from bash-tap.
 
-function compare_qpc_dac_connections_fetch_and_qpc_dac_connections() {
+function compare_qpc_dac_connection_fetch_and_qpc_dac_connection_ls() {
   echo "# ##########"
-  echo "# compare_qpc_dac_connections_fetch_and_qpc_dac_connections"
+  echo "# compare_qpc_dac_connection_fetch_and_qpc_dac_connection_ls"
   echo "# "
-  qpc dac connections --fetch >/tmp/qpc_dac_connections_fetch.$$ 2>&1
-  qpc dac connections >/tmp/qpc_dac_connections.$$ 2>&1
-  if diff /tmp/qpc_dac_connections_fetch.$$ /tmp/qpc_dac_connections.$$ |
+  qpc dac connection fetch >/tmp/qpc_dac_connection_fetch.$$ 2>&1
+  qpc dac connection ls >/tmp/qpc_dac_connection_ls.$$ 2>&1
+  if diff /tmp/qpc_dac_connection_fetch.$$ /tmp/qpc_dac_connection_ls.$$ |
     sed 's/^/# /'; then
-    ok 1 "qpc dac connections --fetch and qpc dac connections are the same."
+    ok 1 "qpc dac connection fetch and qpc dac connection ls are the same."
   else
-    ok 0 "qpc dac connections --fetch and qpc dac connections are different."
+    ok 0 "qpc dac connection fetch and qpc dac connection ls are different."
   fi
   # Clean up temporary files
-  rm -f /tmp/qpc_dac_connections_fetch.$$ /tmp/qpc_dac_connections.$$
+  rm -f /tmp/qpc_dac_connection_fetch.$$ /tmp/qpc_dac_connection_ls.$$
 }
 
 function main() {
@@ -38,7 +38,7 @@ function main() {
   is "$(pwd)" "${top_dir}" "I just changed the current working directory to ${top_dir}."
 
   export PATH=.:${PATH}
-  compare_qpc_dac_connections_fetch_and_qpc_dac_connections
+  compare_qpc_dac_connection_fetch_and_qpc_dac_connection_ls
 
   popd &>/dev/null
 

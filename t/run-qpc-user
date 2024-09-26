@@ -24,7 +24,7 @@ function test_qpc_user() {
     "It should print a header line, Manage user accounts with QueryPie API v2."
 
   expected="Available Commands:
-  fetch-all   Fetch all users from QueryPie server and save them to local sqlite database
+  fetch       Fetch all users from QueryPie server and save them to local sqlite database
   ls          List all users in local sqlite database
 
 Flags:"
@@ -32,17 +32,17 @@ Flags:"
   is "${actual}" "${expected}" "It should print available commands."
 }
 
-function test_qpc_user_fetch_all() {
+function test_qpc_user_fetch() {
   local actual_header actual_output
   echo "# ##########"
-  echo "# test_qpc_user_fetch_all"
+  echo "# test_qpc_user_fetch"
   echo "# "
 
-  actual_header=$(qpc user fetch-all | head -1 || true)
+  actual_header=$(qpc user fetch | head -1 || true)
   like "${actual_header}" "^UUID * LOGIN_ID * EMAIL * NAME * STATUS * MORE * CREATED * UPDATED *$" \
     "It should print a header line of UUID, LOGIN_ID, EMAIL, NAME, STATUS, MORE, CREATED, UPDATED."
 
-  actual_output=$(qpc user fetch-all | grep brant | sed 's/   */\t/g' || true)
+  actual_output=$(qpc user fetch | grep brant | sed 's/   */\t/g' || true)
   IFS=$'\t'
   read -r UUID LOGIN_ID EMAIL NAME STATUS MORE CREATED UPDATED <<< "${actual_output}"
 
@@ -96,20 +96,20 @@ function test_qpc_user_ls() {
     "It should print output of brant which UPDATED is yyyy-mm-dd HH:MM."
 }
 
-function compare_qpc_user_fetch_all_and_qpc_user_ls() {
+function compare_qpc_user_fetch_and_qpc_user_ls() {
   echo "# ##########"
-  echo "# compare_qpc_user_fetch_all_and_qpc_user_ls"
+  echo "# compare_qpc_user_fetch_and_qpc_user_ls"
   echo "# "
-  qpc user fetch-all >/tmp/qpc_user_fetch_all.$$ 2>&1
+  qpc user fetch >/tmp/qpc_user_fetch.$$ 2>&1
   qpc user ls >/tmp/qpc_user_ls.$$ 2>&1
-  if diff /tmp/qpc_user_fetch_all.$$ /tmp/qpc_user_ls.$$ |
+  if diff /tmp/qpc_user_fetch.$$ /tmp/qpc_user_ls.$$ |
     sed 's/^/# /'; then
-    ok 1 "\`qpc user fetch-all\` and \`qpc user ls\` are the same."
+    ok 1 "\`qpc user fetch\` and \`qpc user ls\` are the same."
   else
-    ok 0 "\`qpc user fetch-all\` and \`qpc user ls\` are different."
+    ok 0 "\`qpc user fetch\` and \`qpc user ls\` are different."
   fi
   # Clean up temporary files
-  rm -f /tmp/qpc_user_fetch_all.$$ /tmp/qpc_user_ls.$$
+  rm -f /tmp/qpc_user_fetch.$$ /tmp/qpc_user_ls.$$
 }
 
 function main() {
@@ -129,9 +129,9 @@ function main() {
   export PATH=.:${PATH}
   test_qpc_exists
   test_qpc_user
-  test_qpc_user_fetch_all
+  test_qpc_user_fetch
   test_qpc_user_ls
-  compare_qpc_user_fetch_all_and_qpc_user_ls
+  compare_qpc_user_fetch_and_qpc_user_ls
 
   popd &>/dev/null
 
